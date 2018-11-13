@@ -25,8 +25,8 @@ public class Order {
     
     public Order(){
         orderId=null;
-        orderItem=new ArrayList<String>();
-        quantity=new ArrayList<Integer>();
+        orderItem=new ArrayList<>();
+        quantity=new ArrayList<>();
         total=0;
         method=null;
         pDate=null;
@@ -45,7 +45,9 @@ public class Order {
         this.address=address;
     }
     
-    public void setOrderId(String orderId){
+    public void setOrderId(){
+        int rNum=(int)(Math.random() * 999 + 1);
+        String orderId="OR" + rNum;
         this.orderId=orderId;
     }
     
@@ -110,12 +112,12 @@ public class Order {
     }
     
     public String toString(){
-        return "Order ID: " + orderId +
+        return "\nOrder ID: " + orderId +
                "\nOrder Item: " + orderItem + 
                "\nQuantity: " + quantity +
                "\nTotal: " + total +
                "\nMethod: " + method +
                "\nDate: " + pDate +
-               "\nTime: " + pTime;
+               "\nTime: " + pTime + "\n";
     }
 }
