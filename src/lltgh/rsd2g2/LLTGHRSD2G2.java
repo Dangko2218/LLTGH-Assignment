@@ -8,6 +8,7 @@ package lltgh.rsd2g2;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -22,6 +23,9 @@ public class LLTGHRSD2G2 {
     public static void main(String[] args) {
         LLTGHRSD2G2 mainMenu = new LLTGHRSD2G2();//mainMenu
         String option = null;
+        
+        
+        
         
 //        int i;
 //        String placeholder;
