@@ -17,19 +17,17 @@ import java.util.logging.Logger;
  *
  * @author User
  */
-public class LLTGHRSD2G2 {
-    
+public class LLTGHRSD2G2 { 
+
     public static void main(String[] args) {
-        LLTGHRSD2G2 mainMenu = new LLTGHRSD2G2();
-        //mainMenu.
+        LLTGHRSD2G2 mainMenu = new LLTGHRSD2G2();//mainMenu
+        String option = null;
         
 //        int i;
 //        String placeholder;
 //        Scanner scanner = new Scanner(System.in);
 //        for(i=1; i<24; i++){System.out.println();}
-//        placeholder = scanner.next();
-
-        String option = null;
+//        placeholder = scanner.next();   
         
         do{
             option = mainMenu.displayMainMenu();
@@ -71,9 +69,9 @@ public class LLTGHRSD2G2 {
         
     }
     
-    private String displayMainMenu(){
+    public String displayMainMenu(){
 
-        System.out.println("\nWelcome to...");
+        System.out.println("\n\n\nWelcome to...");
         System.out.println("========================================================");
         System.out.println("                          LLTGH");
         System.out.println("                    Fiore Flowershop");
