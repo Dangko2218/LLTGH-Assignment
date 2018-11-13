@@ -16,7 +16,8 @@ import java.util.logging.Logger;
  */
 public class CustomizedFloralArrangements {
     Scanner scanner = new Scanner(System.in);
-    String inputScanner = null;
+    String inputScanner, consumer, custStyle, custSize, custType, custAcc, pickupPrio;
+    Boolean chkConsumer, chkStyle, chkSize, chkType, chkAcc, chkPickupPrio;
 
     public void printTest(){
         String option = null;
@@ -90,24 +91,116 @@ public class CustomizedFloralArrangements {
         System.out.println("========================================================");
         
         //display consumer list
-        System.out.print("Please Enter Consumer ID (Enter -1 to Exit) > ");
-        inputScanner = scanner.nextLine();
-        
+//        do{
+//            System.out.println("\n\n\n========================================================");
+//            System.out.println("                        Consumer");
+//            System.out.println("========================================================");
+//            System.out.print("\nPlease Enter Consumer ID (Enter -1 to Exit) > ");
+//            consumer = scanner.nextLine();
+//            chkConsumer = checkCustInput(consumer);
+//        }while(chkConsumer == false);
+
         //display f.a.Style
-        System.out.print("Please Select Flower Arrangement Style (Enter -1 to Exit) > ");
-        inputScanner = scanner.nextLine();
+        do{
+            System.out.println("\n========================================================");
+            System.out.println("               Flower Arrangement Style");
+            System.out.println("========================================================");
+            System.out.println("1) Traditional or Western");
+            System.out.println("2) Oriental");
+            System.out.println("3) Modern");
+            System.out.print("Please Select Flower Arrangement Style (Enter -1 to Exit) > ");
+            custStyle = scanner.nextLine();
+            chkStyle = checkCustInput(custStyle);
+        }while(chkStyle == false);
         
         //display f.a.Size
-        System.out.print("Please Select Flower Arrangement Size (Enter -1 to Exit) > ");
-        inputScanner = scanner.nextLine();
+        do{
+            System.out.println("\n========================================================");
+            System.out.println("                Flower Arrangement Size");
+            System.out.println("========================================================");
+            System.out.println("1) Large(5.5” X 5.5”)");
+            System.out.println("2) Medium(4.5” X 4.5”)");
+            System.out.println("3) Small(3.5” X 3.5”)");
+            System.out.print("Please Select Flower Arrangement Size (Enter -1 to Exit) > ");
+            custSize = scanner.nextLine();
+            chkSize = checkCustInput(custSize);
+        }while(chkSize == false);
         
         //display f.Type
-        System.out.print("Please Select Flower Type Code (Enter -1 to Exit) > ");
-        inputScanner = scanner.nextLine();
+        //can choose maximum 3 type
+        do{
+            System.out.println("\n========================================================");
+            System.out.println("                      Flower Type");
+            System.out.println("========================================================");
+            System.out.println("1) Baby's Breath");
+            System.out.println("2) Carnations");
+            System.out.println("3) Hydrangea");
+            System.out.print("Please Select Flower Type(Maximum 3) (Enter -1 to Exit) > ");
+            custType = scanner.nextLine();
+            chkType = checkCustInput(custType);
+        }while(chkType == false);
         
         //display Accessories
-        System.out.print("Please Enter Accessories Code (Enter -1 to Exit) > ");
-        inputScanner = scanner.nextLine();
+        //can choose maximum 3 type
+        do{
+            System.out.println("\n========================================================");
+            System.out.println("                       Accessories");
+            System.out.println("========================================================");
+            System.out.println("1) Floral Tape");
+            System.out.println("2) Clear Cellophane");
+            System.out.println("3) Wire Gravestone Saddle");
+            System.out.print("Please Select Accessories(Maximum 3) (Enter -1 to Exit) > ");
+            custAcc = scanner.nextLine();
+            chkAcc = checkCustInput(custAcc);
+        }while(chkAcc == false);
+        
+        //display Pick-up Priority
+        do{
+            System.out.println("\n========================================================");
+            System.out.println("                    Pick-up Priority");
+            System.out.println("========================================================");
+            System.out.println("1) Express(Highest Priority)");
+            System.out.println("2) Normal(Median Priority)");
+            System.out.println("3) Flexi(Lowest Priority)");
+            System.out.print("Please Select Pick-up Priority (Enter -1 to Exit) > ");
+            pickupPrio = scanner.nextLine();
+            chkPickupPrio = checkCustInput(pickupPrio);
+        }while(chkPickupPrio == false);
+        System.out.println("\nTHANKS FOR YOUR ORDER.");
+    }
+    
+    public Boolean checkCustInput(String custInput){
+        Boolean returnValue = true;
+        
+        if(custInput == null || custInput.isEmpty()){
+            System.out.println("***Do Not Leave Blank. Please enter again...");
+            returnValue = false;
+        }
+        else{
+            try { 
+                Integer.parseInt(custInput); 
+            } catch(NumberFormatException e) { 
+                System.out.println("***Please Enter Only Digit Number.");
+                returnValue = false;
+            }
+        
+            if(returnValue == true){
+                if(custInput.equals("1") || custInput.equals("2") || custInput.equals("3") || custInput.equals("-1")){
+                    if(custInput.equals("-1")){
+                        displayMenu();
+                    }
+                    else{
+                        returnValue = true;
+                    }
+                }
+                else{
+                    System.out.println("***Please Enter A Valid Selection.");
+                    returnValue = false;
+                }
+            }
+        }
+        
+        return returnValue;
     }
     
     public void displayManageMenu(){
