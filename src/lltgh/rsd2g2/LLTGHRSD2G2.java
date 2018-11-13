@@ -8,6 +8,7 @@ package lltgh.rsd2g2;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -22,6 +23,22 @@ public class LLTGHRSD2G2 {
     public static void main(String[] args) {
         LLTGHRSD2G2 mainMenu = new LLTGHRSD2G2();//mainMenu
         String option = null;
+        
+        
+        ArrayList<Product> prod = new ArrayList<Product>();//product
+
+        prod.add(new Product("p0001", "Red Rose", "Fresh Flower", "Rose in Red Color", 2, 30));
+        prod.add(new Product("p0002", "I Love You", "Bouquet", "520 Rose", 520, 5));
+        prod.add(new Product("p0003", "LWY Pack", "Floral Arrangement", "Made by Low Wei Yin", 200, 5));
+        prod.add(new Product("p0004", "Love You Forever", "Bouquet", "1001 Rose", 1000, 3));
+        prod.add(new Product("p0005", "TJH Pack", "Floral Arrangement", "Made by Tai Jia Hao", 200, 5));
+        prod.add(new Product("p0006", "White Rose", "Fresh Flower", "Rose in White Color", 2, 30));
+        prod.add(new Product("p0007", "Pink Rose", "Fresh Flower", "Rose in Pink Color", 2, 30));
+        prod.add(new Product("p0008", "GCY Pack", "Floral Arrangement", "Made by Goh Ching Yaw", 200, 5));
+        prod.add(new Product("p0009", "Blue Rose", "Fresh Flower", "Rose in Blue Color", 2, 30));
+        prod.add(new Product("p0010", "LXY Pack", "Floral Arrangement", "Made by Lim Xin Yi", 200, 5));
+        prod.add(new Product("p0011", "100% Love You", "Bouquet", "100 Red Rose", 100, 8));
+        prod.add(new Product("p0012", "HZW Pack", "Floral Arrangement", "Made by Hoe Zhi Wen", 200, 5));
         
 //        int i;
 //        String placeholder;
