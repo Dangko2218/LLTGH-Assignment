@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class CatalogMaintenance {
 
-    public static ArrayList<Product> prod = new ArrayList<Product>();//product
+    public ArrayList<Product> prod = new ArrayList<Product>();//product
     Scanner input = new Scanner(System.in);
 
     public void printTest() {
@@ -36,14 +36,14 @@ public class CatalogMaintenance {
         prod.add(new Product("p0010", "LXY Pack", "Floral Arrangement", "Made by Lim Xin Yi", 200, 5));
         prod.add(new Product("p0011", "100% Love You", "Bouquet", "100 Red Rose", 100, 8));
         prod.add(new Product("p0012", "HZW Pack", "Floral Arrangement", "Made by Hoe Zhi Wen", 200, 5));
-
-        System.out.println("Catalog Maintenance");
-        System.out.println("1) View Product");
-        System.out.println("2) View Promotions");
-        System.out.println("3) Maintain Catalog");
-        System.out.println("4) Check Stock");
-        System.out.println("5) Back");
         do {
+            System.out.println();
+            System.out.println("Catalog Maintenance");
+            System.out.println("1) View Product");
+            System.out.println("2) View Promotions");
+            System.out.println("3) Maintain Catalog");
+            System.out.println("4) Check Stock");
+            System.out.println("5) Back");
             System.out.print("Please enter your option>");
             option = input.nextLine();
 
@@ -77,13 +77,14 @@ public class CatalogMaintenance {
 
     public void viewProduct() {
         String option = null;
-        System.out.println("View Products");
-        System.out.println("1) Fresh Flowers");
-        System.out.println("2) Bouquets");
-        System.out.println("3) Floral Arrangement");
-        System.out.println("4) View All");
-        System.out.println("5) Back");
         do {
+            System.out.println();
+            System.out.println("View Products");
+            System.out.println("1) Fresh Flowers");
+            System.out.println("2) Bouquets");
+            System.out.println("3) Floral Arrangement");
+            System.out.println("4) View All");
+            System.out.println("5) Back");
             System.out.print("Please enter your option>");
             option = input.nextLine();
 
@@ -115,10 +116,13 @@ public class CatalogMaintenance {
     }
 
     public void viewPromotions() {
+        System.out.println("Constructing...");
 
     }
 
     public void maintainCatalog() {
+        System.out.println();
+        System.out.println("Maintain Catalog");
         System.out.println("1) Add");
         System.out.println("2) Edit");
         System.out.println("3) Delete");
