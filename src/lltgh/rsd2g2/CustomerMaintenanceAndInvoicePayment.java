@@ -7,7 +7,7 @@ public class CustomerMaintenanceAndInvoicePayment {
     Scanner scan = new Scanner(System.in);
     String addMore = null;
     
-    
+    //testing?
     public void printTest(){
         System.out.println("==========================================");
         System.out.println(" Customer Maintenance And Invoice Payment");
