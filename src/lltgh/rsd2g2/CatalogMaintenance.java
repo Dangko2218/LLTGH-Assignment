@@ -37,8 +37,7 @@ public class CatalogMaintenance {
         prod.add(new Product("p0011", "100% Love You", "Bouquet", "100 Red Rose", 100, 8));
         prod.add(new Product("p0012", "HZW Pack", "Floral Arrangement", "Made by Hoe Zhi Wen", 200, 5));
         do {
-            System.out.println();
-            System.out.println("Catalog Maintenance");
+            System.out.printf("\n" + "Catalog Maintenance");
             System.out.println("1) View Product");
             System.out.println("2) View Promotions");
             System.out.println("3) Maintain Catalog");
