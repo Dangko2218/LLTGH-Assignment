@@ -6,15 +6,20 @@
 package lltgh.rsd2g2;
 
 import java.util.*;
-
 /**
  *
  * @author User
  */
 public class CatalogOrders {
 
-    Order order = new Order();
+    boolean valid;
     Scanner scanner = new Scanner(System.in);
+    
+    Order order = new Order();
+    List<Order> orderList=new ArrayList<>();
+    
+//    CatalogMaintenance CM;
+//    ArrayList<Product> prodList;
 
     public void printTest() {
 
@@ -28,95 +33,125 @@ public class CatalogOrders {
 
     }
 
-    public void orderItem() {
-        int prodOpt, actOpt = 0;
+    private void orderItem() {
+        int typeOpt=0, actOpt = 0;
 
         do {
-            System.out.println("1) Fresh Flowers");
-            System.out.println("2) Bouquets");
-            System.out.println("3) Floral Arrangement");
-            System.out.print("Please select a product(Enter -1 to back): ");
-
-            try {
-                prodOpt = scanner.nextInt();
-                switch (prodOpt) {
-                    case 1:
-                        order.setOrderItem("Fresh Flowers");
-                        getQuantity();
-                        break;
-                    case 2:
-                        order.setOrderItem("Bouquets");
-                        getQuantity();
-                        break;
-                    case 3:
-                        order.setOrderItem("Floral Arrangement");
-                        getQuantity();
-                        break;
-                    case -1:
-                        LLTGHRSD2G2 Main=new LLTGHRSD2G2();
-                        Main.main(null);
-                    default:
-                        System.out.println("Invalid input!Please enter again.\n");
-                        orderItem();
-                }
-            } 
-            catch (InputMismatchException ex) {
-                System.out.println("Invalid input!Please enter again.\n");
-                scanner.next();
-                orderItem();
+            typeOpt=itemMenu();
+            if(typeOpt!=-1){
+                actOpt=moreItem();
             }
-            
-            boolean valid;
-            do{
-                System.out.println("1) More items?");
-                System.out.println("2) Place order");
-                System.out.print("Please enter option: ");
-                try {
-                    valid=true;
-                    actOpt = scanner.nextInt();
-                    if (actOpt != 1 && actOpt != 2) {
-                        System.out.println("Invalid input!Please enter again.\n");
-                        valid = false;
-                    }
-                    if (actOpt == 2) {
-                        calTotal();
-                        order.setOrderId();
-                        System.out.println(order);
-                    }
-                } 
-                catch (InputMismatchException ex) {
-                    System.out.println("Invalid input!Please enter again.\n");
-                    scanner.next();
-                    valid = false;
-                }
-            }while(valid==false);
-            
         } while (actOpt == 1);
     }
 
+    private int itemMenu() {
+        int typeOpt=0;
+        
+        do{
+            System.out.println("1) Fresh Flowers");
+            System.out.println("2) Bouquets");
+            System.out.println("3) Floral Arrangement");
+            System.out.print("Please select a product type(Enter -1 to back): ");
+
+            try {
+                valid = true;
+                typeOpt = scanner.nextInt();
+                if(typeOpt>=1 && typeOpt<=3){
+                    showDetail(typeOpt);
+                    getQuantity();
+                }else{
+                    System.out.println("Invalid input!Please enter again.\n");
+                    valid = false;
+                }
+//                switch (typeOpt) {
+//                    case 1:
+//                        show
+//                        getQuantity();
+//                        break;
+//                    case 2:
+//                        order.setOrderItem("Bouquets");
+//                        getQuantity();
+//                        break;
+//                    case 3:
+//                        order.setOrderItem("Floral Arrangement");
+//                        getQuantity();
+//                        break;
+//                    case -1:
+//                        break;
+//                    default:
+//                        System.out.println("Invalid input!Please enter again.\n");
+//                        valid = false;
+//                }
+            } catch (InputMismatchException ex) {
+                System.out.println("Invalid input!Please enter again.\n");
+                scanner.next();
+                valid = false;
+            }
+        }while(valid==false);
+        return typeOpt;
+    }
+
+    private void showDetail(int typeOpt) {
+        CatalogMaintenance CM=new CatalogMaintenance();
+//        prodList=new ArrayList<Product>(CM.prod);
+        
+        if(typeOpt==1){
+            System.out.println();
+//            for(int i=0;i<prodList.size();i++){
+//                System.out.println(prodList.get(i).getProdID());
+//            }
+        }
+    }
+    
     private void getQuantity() {
         int quantity;
-        boolean valid;
 
         do {
             System.out.print("Please enter quantity: ");
-            try{
+            try {
                 quantity = scanner.nextInt();
                 if (quantity > 0) {
                     order.setQuantity(quantity);
                     valid = true;
-                } 
-                else {
+                } else {
                     System.out.println("Invalid input.Please enter again.\n");
                     valid = false;
                 }
-            }
-            catch(InputMismatchException ex){
+            } catch (InputMismatchException ex) {
                 System.out.println("Invalid input!Please enter again.\n");
                 scanner.next();
-                valid=false;
+                valid = false;
             }
         } while (valid==false);
+    }
+
+    private int moreItem() {
+        int actOpt=0;
+        
+        do {
+            System.out.println("1) More items?");
+            System.out.println("2) Place order");
+            System.out.print("Please enter option: ");
+            try {
+                valid = true;
+                actOpt = scanner.nextInt();
+                if (actOpt != 1 && actOpt != 2) {
+                    System.out.println("Invalid input!Please enter again.\n");
+                    valid = false;
+                }
+                if (actOpt == 2) {
+                    calTotal();
+                    String orderId = generateId();
+                    order.setOrderId(orderId);
+                    System.out.println(order);
+                }
+            } catch (InputMismatchException ex) {
+                System.out.println("Invalid input!Please enter again.\n");
+                scanner.next();
+                valid = false;
+            }
+        } while (valid == false);
+        return actOpt;
     }
 
 //    public void getCustId() {
@@ -145,7 +180,13 @@ public class CatalogOrders {
         //double total=
     }
     
-    public void pickUpMethod() {
-
+    private String generateId() {
+        int rNum = (int) (Math.random() * 999 + 1);
+        String orderId = "OR" + rNum;
+        return orderId;
+    }
+    
+    private void pickUpMethod() {
+        
     }
 }

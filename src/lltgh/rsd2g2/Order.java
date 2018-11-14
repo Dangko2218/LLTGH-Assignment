@@ -12,7 +12,7 @@ import java.util.*;
  *
  * @author XinYi
  */
-public class Order {
+public class Order implements OrderADT{
     
     private String orderId;
     private List<String> orderItem;
@@ -45,9 +45,7 @@ public class Order {
         this.address=address;
     }
     
-    public void setOrderId(){
-        int rNum=(int)(Math.random() * 999 + 1);
-        String orderId="OR" + rNum;
+    public void setOrderId(String orderId){
         this.orderId=orderId;
     }
     
