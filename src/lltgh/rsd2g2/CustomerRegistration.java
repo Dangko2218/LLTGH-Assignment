@@ -51,15 +51,15 @@ public class CustomerRegistration {
                         Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
                     }
             }
-            if (custType.equals("Normal"))
-                creditLimit = 0;
-            else{
-            System.out.print("Credit limit > ");
-            creditLimit = input.nextDouble();
-        }
             
         }while(!custSelection.equals("1") && !custSelection.equals("2"));
         
+        if (custType.equals("Normal"))
+                creditLimit = 0;
+        else{
+            System.out.print("Credit limit > ");
+            creditLimit = input.nextDouble();
+        }
         
         Customer newCust = new Customer(custName, custType, creditLimit);
         customerList.add(newCust);
