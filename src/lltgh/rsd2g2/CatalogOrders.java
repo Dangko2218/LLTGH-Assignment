@@ -187,6 +187,6 @@ public class CatalogOrders {
     }
     
     private void pickUpMethod() {
-
+        
     }
 }
