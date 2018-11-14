@@ -55,8 +55,6 @@ public class CustomizedFloralArrangements {
                 displayManageMenu();
                 break;
             case "3":
-                LLTGHRSD2G2 main = new LLTGHRSD2G2();
-                main.displayMainMenu();
                 break;
             default:
                 System.out.println("***Invalid input, please enter between 1 to 3.***");
@@ -112,7 +110,7 @@ public class CustomizedFloralArrangements {
             custStyle = scanner.nextLine();
             chkStyle = checkCustInput(custStyle);
         }while(chkStyle == false);
-        
+
         //display f.a.Size
         do{
             System.out.println("\n========================================================");
@@ -172,11 +170,21 @@ public class CustomizedFloralArrangements {
     public Boolean checkCustInput(String custInput){
         Boolean returnValue = true;
         
+//        switch(custInput){
+//                case "-1":
+//                    returnValue = false;
+//                    break;
+//                default:
+//                    returnValue = true;
+//        
+//        }
+        
         if(custInput == null || custInput.isEmpty()){
             System.out.println("***Do Not Leave Blank. Please enter again...");
             returnValue = false;
         }
         else{
+            
             try { 
                 Integer.parseInt(custInput); 
             } catch(NumberFormatException e) { 
@@ -185,13 +193,20 @@ public class CustomizedFloralArrangements {
             }
         
             if(returnValue == true){
-                if(custInput.equals("1") || custInput.equals("2") || custInput.equals("3") || custInput.equals("-1")){
+//                if(custInput.equals("-1")){
+//                        displayMenu();
+//                    }
+//                    else{
+//                        returnValue = true;
+//                    }
+                if(custInput.equals("1") || custInput.equals("2") || custInput.equals("3") || custInput.equals("-1")){ 
                     if(custInput.equals("-1")){
                         displayMenu();
                     }
                     else{
                         returnValue = true;
                     }
+                    //returnValue = true;
                 }
                 else{
                     System.out.println("***Please Enter A Valid Selection.");
@@ -236,7 +251,6 @@ public class CustomizedFloralArrangements {
                     displayAccMenu();
                     break;
                 case "5":
-                    displayMenu();
                     break;
                 default:
                     System.out.println("***Invalid input, please enter between 1 to 5.***");
