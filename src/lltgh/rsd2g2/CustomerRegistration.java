@@ -10,36 +10,36 @@ import java.util.logging.Logger;
 
 public class CustomerRegistration {
     
-    String custID = null;
-    String custName = null;
-    String custIC = null;
-    String contactNo = null;
-    String custType =null;
-    String custCorp = null;
-    String custSelection = null;
+    // global variable declaration<?>
+    String custID = null, custName = null, custIC = null, contactNo = null, custType =null, custCorp = null, custSelection = null;
     double creditLimit = 0;
 
-    CustomerRegistration regCust = new CustomerRegistration();
+    // new object<?>
+    // CustomerRegistration regCust = new CustomerRegistration();
     public static List<Customer> customerList = new ArrayList<>();
     
     Scanner input = new Scanner(System.in);
-    
+      
+    // display registration form
     public void custReg(){
         System.out.println("  Customer Registration  ");
         System.out.println("=========================");
+        
+        // get customer name
         System.out.print("Customer name > ");
         custName = input.nextLine();
         
+        // get ic no.
+        System.out.print("Identity Card No./Passport no. > ");
+        custIC = input.nextLine();
         
+        // get contact no.
+        System.out.print("Contact no. > ");
+        contactNo = input.nextLine();        
+        
+        
+        // select customer type; loop if invalid selection
         do{
-            /*custSelection = selectType();
-            if (custSelection.equals("1"))
-                custType = "Normal";
-            else if (custSelection.equals("2"))
-                custType = "Corporate";
-            else{
-                System.out.println("Invalid selection. Please re-select.");
-            }*/
             custSelection = selectType();
             switch(custSelection){
                 case "1":
@@ -59,26 +59,29 @@ public class CustomerRegistration {
             
         }while(!custSelection.equals("1") && !custSelection.equals("2"));
         
-        if (custType.equals("Normal"))
-                creditLimit = 0;
+        // get credit limit if the customer type is corporate customer
+        if (custType.equals("Normal")){
+            creditLimit = 0;
+            custCorp = "N/A";
+        }
         else{
+            // get customer company name
+            System.out.print("Company/Corporate name > ");
+            custCorp = input.nextLine();
+            
             System.out.print("Credit limit > ");
             creditLimit = input.nextDouble();
         }
         
+        // generate id for customer; to be updated
+        custID = generateCustID(custType);
+        
+        // add customer details into list
         Customer newCust = new Customer(custID, custName, custIC, contactNo, custType, custCorp, creditLimit);
         customerList.add(newCust);
         System.out.println("Customer Successfully Saved.");
         CustomerMaintenanceAndInvoicePayment custMain = new CustomerMaintenanceAndInvoicePayment();
         custMain.printTest();
-        
-        /*do{
-           switch(custSelection){
-                case 1: custType = "Normal"; break;
-                case 2: custType = "Corporate"; break;
-                default: System.out.println("Invalid selection. Please re-select.");            
-            }
-        }while(custSelection != 1 || custSelection != 2);*/
     }
     
     public String selectType(){
@@ -89,21 +92,29 @@ public class CustomerRegistration {
         
         System.out.print("Customer Type > ");
         return custSelection = input.nextLine();
-//        do{
-//            switch (custSelection){
-//                case "1":
-//                    
-//            }            
-//        }while(!custSelection.equals("1") && !custSelection.equals("2"));
     }
     
-    public String generateCustID(){
+    public String generateCustID(String type){
         String ID = null;
-        int counter = 0;
-        while(!customerList.isEmpty())
-            counter++;
+        int nCounter = 0;
+        int cCounter = 0;
         
+        for (int i = 0; i < customerList.size(); i++) {
+            if (customerList.get(i).getType().equals("Normal"))
+                nCounter++;
+            else
+                cCounter++;
+        }
         
+        if (type.equals("Normal")){
+            ID = "N" + nCounter;
+            nCounter++;
+        }
+        else{
+            ID = "C" + cCounter;
+            cCounter++;
+        }
+     
         return ID;
     }
 }
