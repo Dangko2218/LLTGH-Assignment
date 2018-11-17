@@ -10,11 +10,16 @@ import java.util.logging.Logger;
 
 public class CustomerRegistration {
     
-    String custType = "";
+    String custID = null;
+    String custName = null;
+    String custIC = null;
+    String contactNo = null;
+    String custType =null;
+    String custCorp = null;
     String custSelection = null;
     double creditLimit = 0;
-    String custName= null;
-    
+
+    CustomerRegistration regCust = new CustomerRegistration();
     public static List<Customer> customerList = new ArrayList<>();
     
     Scanner input = new Scanner(System.in);
@@ -61,7 +66,7 @@ public class CustomerRegistration {
             creditLimit = input.nextDouble();
         }
         
-        Customer newCust = new Customer(custName, custType, creditLimit);
+        Customer newCust = new Customer(custID, custName, custIC, contactNo, custType, custCorp, creditLimit);
         customerList.add(newCust);
         System.out.println("Customer Successfully Saved.");
         CustomerMaintenanceAndInvoicePayment custMain = new CustomerMaintenanceAndInvoicePayment();
@@ -90,5 +95,15 @@ public class CustomerRegistration {
 //                    
 //            }            
 //        }while(!custSelection.equals("1") && !custSelection.equals("2"));
+    }
+    
+    public String generateCustID(){
+        String ID = null;
+        int counter = 0;
+        while(!customerList.isEmpty())
+            counter++;
+        
+        
+        return ID;
     }
 }
