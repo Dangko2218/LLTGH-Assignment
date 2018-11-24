@@ -13,37 +13,24 @@ import java.util.List;
  */
 public interface OrderADT<T> {
     
-    public void setOrderId(String orderId);
-    
+    public void setOrderId();
     public void setOrderItem(String orderItem);
-    
     public void setQuantity(int quantity);
-    
     public void setTotal(double total);
-    
     public void setMethod(String method);
-    
     public void setPDate(String pDate);
-    
     public void setPTime(String pTime);
-    
     public void setAddress(String address);
     
     public String getOrderId();
-    
     public List<String> getOrderItem();
-    
     public List<Integer> getQuantity();
-    
     public double getTotal();
-    
     public String getMethod();
-    
     public String getPDate();
-    
     public String getPTime();
-    
     public String getAddress();
-    
     public String toString();
+    
+    public void addOrder(T item);
 }
