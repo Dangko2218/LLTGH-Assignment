@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class CustomerRegistration {
     
     // global variable declaration<?>
-    String custID = null, custName = null, custIC = null, contactNo = null, custType =null, custCorp = null, custSelection = null;
+    String custID = null, custName = null, custIC = null, contactNo = null, custType =null, custCorp = null, corpAddr = null, custSelection = null;
     double creditLimit = 0;
 
     // new object<?>
@@ -62,12 +62,15 @@ public class CustomerRegistration {
         // get credit limit if the customer type is corporate customer
         if (custType.equals("Normal")){
             creditLimit = 0;
-            custCorp = "N/A";
+            custCorp = corpAddr = "N/A";
         }
         else{
             // get customer company name
             System.out.print("Company/Corporate name > ");
             custCorp = input.nextLine();
+            
+            System.out.print("Company/Corporate address > ");
+            corpAddr = input.nextLine();
             
             System.out.print("Credit limit > ");
             creditLimit = input.nextDouble();

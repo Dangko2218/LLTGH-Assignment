@@ -13,6 +13,8 @@ public interface CustomerADT {
     public String getType();
     public void setCustCorp(String custCorp);
     public String getCustCorp();
+    public void setCorpAddr(String corpAddr);
+    public String getCorpAddr();
     public void setCreditLimit(double creditLimit);
     public double getCreditLimit();
 }

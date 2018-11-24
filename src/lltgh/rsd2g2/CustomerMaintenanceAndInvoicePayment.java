@@ -20,8 +20,8 @@ public class CustomerMaintenanceAndInvoicePayment {
         System.out.println("These are the options you can choose:");
         System.out.println("1) Customer Registration");
         System.out.println("2) View Customer List");
-        System.out.println("3) To be confirmed");
-        System.out.println("4) To be confirmed");
+        System.out.println("3) Generate Monthly Invoice");
+        System.out.println("4) Customer Payment Status");
         System.out.println("5) To be confirmed");
         System.out.println("6) Exit");
         System.out.print("Please enter your option > ");

@@ -2,7 +2,7 @@ package lltgh.rsd2g2;
 
 public class Customer implements CustomerADT{
 
-    private String custID, custName, custIC, contactNo, custType, custCorp;
+    private String custID, custName, custIC, contactNo, custType, custCorp, corpAddr;
     private double creditLimit;
     
     @Override
@@ -63,6 +63,16 @@ public class Customer implements CustomerADT{
     @Override
     public String getCustCorp() {
         return custCorp;
+    }
+    
+    @Override
+    public void setCorpAddr(String corpAddr) {
+        this.corpAddr = corpAddr;
+    }
+    
+    @Override
+    public String getCorpAddr() {
+        return corpAddr;
     }
 
     @Override
