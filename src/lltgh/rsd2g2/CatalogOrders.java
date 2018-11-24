@@ -6,6 +6,8 @@
 package lltgh.rsd2g2;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,17 +35,17 @@ public class CatalogOrders {
 //        getCustId();
         orderItem();
         pickUpMethod();
+        getAddress();
+        generateSO();   //sales order?
     }
 
 //    public void getCustId() {
 //        String inCustId;
 //
 //        do {
-//            scanner.nextLine();
 //            System.out.print("Please enter customer ID: ");
-//            inCustId = scanner.nextLine();
-//            
-//            if (!inCustId.equals(custId)) {
+//            inCustId = scanner.next();
+//            if (!inCustId.equals()) {
 //                System.out.println("Invalid customer ID!");
 //                System.out.println("Press enter to continue...");
 //            }
@@ -59,7 +61,7 @@ public class CatalogOrders {
                 break;
             default:
                 actOpt = moreItem();
-                while(actOpt==1){
+                while (actOpt == 1) {
                     printTest();
                     break;
                 }
@@ -189,15 +191,8 @@ public class CatalogOrders {
                 }
                 if (actOpt == 2) {
                     calTotal();
-                    String orderId = generateId();
-                    order.setOrderId(orderId);
-                    System.out.println(order);
-                    System.out.print("Press enter to continue...");
-                    try {
-                        System.in.read();
-                    } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    order.setOrderId();
+                    
                 }
             } catch (InputMismatchException ex) {
                 System.out.println("***Invalid input!Please enter again.***\n");
@@ -220,19 +215,151 @@ public class CatalogOrders {
                     price = CM.prod.get(j).getprodPrice();
                     total += (price * quantity);
                     order.setTotal(total);
+                    
+                    updateStock(itemName,quantity);
                     break;
                 }
             }
         }
     }
 
-    public String generateId() {
-        int rNum = (int) (Math.random() * 999 + 1);
-        String orderId = "OR" + rNum;
-        return orderId;
+    private void updateStock(String itemName,int quantity) {
+            for (int j = 0; j < CM.prod.size(); j++) {
+                if (itemName.equals(CM.prod.get(j).getprodName())) {
+                    int stock=CM.prod.get(j).getprodStock();
+                    stock-=quantity;
+                    CM.prod.get(j).setprodStock(stock);
+                    break;
+                }
+            }
     }
-
+    
     public void pickUpMethod() {
-
+        int methodOpt;
+        
+        do{
+            System.out.println("1) Pick up");
+            System.out.println("2) Delivery");
+            System.out.println("Please select pick up method: ");
+            try {
+                valid = true;
+                methodOpt = scanner.nextInt();
+                if(methodOpt==1){
+                    order.setMethod("Pick up");
+                    pickUpDT();
+                } else if(methodOpt==2){
+                    order.setMethod("Delivery");
+                    pickUpDT();
+                    getAddress();
+                } else{
+                    System.out.println("***Invalid input!Please enter again.***\n");
+                    valid = false;
+                }
+            } catch (InputMismatchException ex) {
+                System.out.println("***Invalid input!Please enter again.***\n");
+                scanner.next();
+                valid = false;
+            }
+        }while(valid==false);
     }
+
+    public void pickUpDT() {
+        System.out.println("Please enter pick up date: ");
+        System.out.println("Day: ");
+        int day=scanner.nextInt();
+        System.out.println("Month: ");
+        int month=scanner.nextInt();
+        System.out.println("Year: ");
+        int year=scanner.nextInt();
+        chkDate(day,month,year);
+    }
+
+    public void chkDate(int day,int month,int year){
+        do{
+            valid=true;
+            switch(month){
+                case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+                    if (day < 1 || day > 31) {
+                        System.out.println("***Invalid day!Please enter again.***\n");
+                        System.out.println("Month entered is: " + month);
+                        System.out.println("Day: ");
+                        int newDay = scanner.nextInt();
+                        day = newDay;
+                        valid = false;
+                    }
+                    break;
+                case 4: case 6: case 9: case 11:
+                    if (day < 1 || day > 30) {
+                        System.out.println("***Invalid day!Please enter again.***\n");
+                        System.out.println("Month entered is: " + month);
+                        System.out.println("Day: ");
+                        int newDay = scanner.nextInt();
+                        day = newDay;
+                        valid = false;
+                    }
+                    break;
+                case 2:
+                    if ((year%4==1) && (day < 1 || day > 28)) {
+                        System.out.println("***Invalid day!Please enter again.***\n");
+                        System.out.println("Month entered is: " + month);
+                        System.out.println("This year is not a leap year.Only 28 days.");
+                        System.out.println("Day: ");
+                        int newDay = scanner.nextInt();
+                        day = newDay;
+                        valid = false;
+                    }else if((year%4==0) && (day<1 || day>29)){
+                        System.out.println("***Invalid day!Please enter again.***\n");
+                        System.out.println("Month entered is: " + month);
+                        System.out.println("This year is a leap year.Has 29 days.");
+                        System.out.println("Day: ");
+                        int newDay = scanner.nextInt();
+                        day = newDay;
+                        valid = false;
+                    }
+                    break;
+                default:
+                    System.out.println("***Invalid month!Please enter again.***\n");
+                    System.out.println("Month: ");
+                    int newMonth = scanner.nextInt();
+                    month = newMonth;
+                    valid = false;
+                    break;
+            }
+            
+            String orderDate=day + "/" + month + "/" + year;
+            Date pDate = null;
+            try {
+                pDate = new SimpleDateFormat("dd/MM/yyyy").parse(orderDate);
+            } catch (ParseException ex) {
+                Logger.getLogger(CatalogOrders.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            valid=cmpDate(pDate);
+        }while(valid==false);
+    }
+    
+    public boolean cmpDate(Date orderDate) {
+        valid = true;
+        Date today = new Date();
+        if (orderDate.before(today)) {
+            System.out.println("***The date entered has passed.Please enter again.***");
+            //looping.....
+            valid=false;
+        }
+        return valid;
+    }
+    
+    public void getAddress() {
+        
+    }
+    
+    public void generateSO() {
+        System.out.println(order);
+        System.out.print("Press enter to continue...");
+        try {
+            System.in.read();
+        } catch (IOException ex) {
+            Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
 }
