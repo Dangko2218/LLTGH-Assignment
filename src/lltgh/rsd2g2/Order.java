@@ -12,7 +12,7 @@ import java.util.*;
  *
  * @author XinYi
  */
-public class Order implements OrderADT{
+public class Order<T> implements OrderADT<T>{
     
     private String orderId;
     private List<String> orderItem;
@@ -34,16 +34,16 @@ public class Order implements OrderADT{
         address=null;
     }
     
-    public Order(String orderId,String orderItem,int quantity,double total,String method,String pDate,String pTime,String address){
-        this.orderId=orderId;
-        this.orderItem.add(orderItem);
-        this.quantity.add(quantity);
-        this.total=total;
-        this.method=method;
-        this.pDate=pDate;
-        this.pTime=pTime;
-        this.address=address;
-    }
+//    public Order(String orderId,String orderItem,int quantity,double total,String method,String pDate,String pTime,String address){
+//        this.orderId=orderId;
+//        this.orderItem.add(orderItem);
+//        this.quantity.add(quantity);
+//        this.total=total;
+//        this.method=method;
+//        this.pDate=pDate;
+//        this.pTime=pTime;
+//        this.address=address;
+//    }
     
     public void setOrderId(String orderId){
         this.orderId=orderId;
