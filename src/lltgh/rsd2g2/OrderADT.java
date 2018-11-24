@@ -11,7 +11,8 @@ import java.util.List;
  *
  * @author XinYi
  */
-public interface OrderADT {
+public interface OrderADT<T> {
+    
     public void setOrderId(String orderId);
     
     public void setOrderItem(String orderItem);
