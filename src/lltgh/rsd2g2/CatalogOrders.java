@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package lltgh.rsd2g2;
 
 import java.io.IOException;
@@ -12,10 +7,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author User
- */
 public class CatalogOrders {
 
     private boolean valid;
@@ -23,8 +14,12 @@ public class CatalogOrders {
 
     private Order order = new Order();
     private List<Order> orderList = new ArrayList<>();
+    
+    private String inCustId = null, custAddr = null, custContact = null;
+    
 
     CatalogMaintenance CM = new CatalogMaintenance();
+    CustomerRegistration regCust = new CustomerRegistration();
 
     public void printTest() {
 
@@ -32,25 +27,24 @@ public class CatalogOrders {
         System.out.println("                     Catalog Order");
         System.out.println("========================================================");
 
-//        getCustId();
+        getCustId();
         orderItem();
         pickUpMethod();
-        getAddress();
         generateSO();   //sales order?
     }
 
-//    public void getCustId() {
-//        String inCustId;
-//
-//        do {
-//            System.out.print("Please enter customer ID: ");
-//            inCustId = scanner.next();
-//            if (!inCustId.equals()) {
-//                System.out.println("Invalid customer ID!");
-//                System.out.println("Press enter to continue...");
-//            }
-//        } while (!inCustId.equals(custId));
-//    }
+    public void getCustId() {
+
+        System.out.print("Please enter customer ID: ");
+        inCustId = scanner.nextLine();
+        for (int i = 0; i < regCust.customerList.size(); i++){
+            if (inCustId.equals(regCust.customerList.get(i).getCustID())){
+                custAddr = regCust.customerList.get(i).getCorpAddr();
+                custContact = regCust.customerList.get(i).getContactNo();
+                break;
+            }
+        }
+    }
     
     public void orderItem() {
         int typeOpt, actOpt = 0;
@@ -250,7 +244,6 @@ public class CatalogOrders {
                 } else if(methodOpt==2){
                     order.setMethod("Delivery");
                     pickUpDT();
-                    getAddress();
                 } else{
                     System.out.println("***Invalid input!Please enter again.***\n");
                     valid = false;
@@ -346,10 +339,6 @@ public class CatalogOrders {
             valid=false;
         }
         return valid;
-    }
-    
-    public void getAddress() {
-        
     }
     
     public void generateSO() {
