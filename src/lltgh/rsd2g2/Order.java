@@ -12,7 +12,7 @@ import java.util.*;
  *
  * @author XinYi
  */
-public class Order {
+public class Order<T> implements OrderADT<T>{
     
     private String orderId;
     private List<String> orderItem;
@@ -34,20 +34,20 @@ public class Order {
         address=null;
     }
     
-    public Order(String orderId,String orderItem,int quantity,double total,String method,String pDate,String pTime,String address){
-        this.orderId=orderId;
-        this.orderItem.add(orderItem);
-        this.quantity.add(quantity);
-        this.total=total;
-        this.method=method;
-        this.pDate=pDate;
-        this.pTime=pTime;
-        this.address=address;
-    }
+//    public Order(String orderId,String orderItem,int quantity,double total,String method,String pDate,String pTime,String address){
+//        this.orderId=orderId;
+//        this.orderItem.add(orderItem);
+//        this.quantity.add(quantity);
+//        this.total=total;
+//        this.method=method;
+//        this.pDate=pDate;
+//        this.pTime=pTime;
+//        this.address=address;
+//    }
     
     public void setOrderId(){
-        int rNum=(int)(Math.random() * 999 + 1);
-        String orderId="OR" + rNum;
+        int rNum = (int) (Math.random() * 999 + 1);
+        String orderId = "OR" + rNum;
         this.orderId=orderId;
     }
     
@@ -115,9 +115,13 @@ public class Order {
         return "\nOrder ID: " + orderId +
                "\nOrder Item: " + orderItem + 
                "\nQuantity: " + quantity +
-               "\nTotal: " + total +
+               "\nTotal: RM" + String.format("%.2f",total) +
                "\nMethod: " + method +
                "\nDate: " + pDate +
                "\nTime: " + pTime + "\n";
+    }
+
+    public void addOrder(T item) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

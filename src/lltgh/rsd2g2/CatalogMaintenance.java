@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class CatalogMaintenance {
 
-    public ArrayList<Product> prod = new ArrayList<Product>();//product
+    public static ArrayList<Product> prod = new ArrayList<Product>();//product   //xinyi add static
     Scanner input = new Scanner(System.in);
 
     public void printTest() {
