@@ -148,6 +148,7 @@ public class CatalogMaintenance {
                     searchByPrice();
                     break;
                 case "2":
+                    searchByProduct();
                     break;
                 case "3":
                     break;
@@ -202,7 +203,32 @@ public class CatalogMaintenance {
 
     public void searchByProduct() {
         String userInput = null;
-        
+        String nextSearch = null;
+        boolean isContinue = false;
+        do {
+            System.out.print("Enter product name to Search>");
+            userInput = input.nextLine();
+            header();
+            for (int i = 0; i < prod.size(); i++) {
+                userInput = userInput.toLowerCase();
+                if (prod.get(i).getprodName().toLowerCase().contains(userInput) || prod.get(i).getprodDetail().toLowerCase().contains(userInput)) {
+                    getProductList(prod, i);
+                }
+            }
+            tailer();
+            System.out.println();
+            System.out.print("Continue Search?(Y/N)>");
+            nextSearch = input.nextLine();
+            nextSearch = nextSearch.toLowerCase();
+            if ("y".equals(nextSearch) || "yes".equals(nextSearch) || "ya".equals(nextSearch) || "ok".equals(nextSearch)) {
+                isContinue = true;
+            } else if ("n".equals(nextSearch) || "no".equals(nextSearch) || "nope".equals(nextSearch)) {
+                isContinue = false;
+            } else {
+                System.out.println("Invalid Input, Please Try Again!");
+                isContinue = false;
+            }
+        } while (isContinue == true);
 
     }
 
