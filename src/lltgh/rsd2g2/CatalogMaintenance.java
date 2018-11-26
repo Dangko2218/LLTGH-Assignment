@@ -37,12 +37,13 @@ public class CatalogMaintenance {
         prod.add(new Product("p0011", "100% Love You", "Bouquet", "100 Red Rose", 100, 8));
         prod.add(new Product("p0012", "HZW Pack", "Floral Arrangement", "Made by Hoe Zhi Wen", 200, 5));
         do {
-            System.out.printf("\n" + "Catalog Maintenance");
+            System.out.printf("\n" + "Catalog Maintenance\n");
             System.out.println("1) View Product");
             System.out.println("2) View Promotions");
             System.out.println("3) Maintain Catalog");
-            System.out.println("4) Check Stock");
-            System.out.println("5) Back");
+            System.out.println("4) Search Product");
+            System.out.println("5) Check Stock");
+            System.out.println("6) Back");
             System.out.print("Please enter your option>");
             option = input.nextLine();
 
@@ -57,9 +58,12 @@ public class CatalogMaintenance {
                     maintainCatalog();
                     break;
                 case "4":
-                    System.out.println("CheckStock");
+                    searchProduct();
                     break;
                 case "5":
+                    System.out.println("CheckStock");
+                    break;
+                case "6":
                     break;
                 default:
                     System.out.println("***Invalid input, please enter between 1 to 5.***");
@@ -70,7 +74,7 @@ public class CatalogMaintenance {
                         Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
                     }
             }
-        } while (!option.equals("5"));
+        } while (!option.equals("6"));
 
     }
 
@@ -128,48 +132,201 @@ public class CatalogMaintenance {
         System.out.println("4) Back");
     }
 
+    public void searchProduct() {
+        String option = null;
+        do {
+            System.out.println();
+            System.out.println("Search Products");
+            System.out.println("1) By Price");
+            System.out.println("2) By Name");
+            System.out.println("3) Back");
+            System.out.print("Please enter your option>");
+            option = input.nextLine();
+
+            switch (option) {
+                case "1":
+                    searchByPrice();
+                    break;
+                case "2":
+                    break;
+                case "3":
+                    break;
+                default:
+                    System.out.println("***Invalid input, please enter between 1 to 4.***");
+                    System.out.println("Press enter to continue...");
+                    try {
+                        System.in.read();
+                    } catch (IOException ex) {
+                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+            }
+        } while (!option.equals("3"));
+    }
+
+    public void searchByPrice() {
+        String option = null;
+        do {
+            option = null;
+            System.out.println();
+            System.out.println("Search Products By Price");
+            System.out.println("1) More Than");
+            System.out.println("2) Less Than");
+            System.out.println("3) Between");
+            System.out.println("4) Back");
+            System.out.print("Please enter your option>");
+            option = input.nextLine();
+
+            switch (option) {
+                case "1":
+                    searchPriceOption("1");
+                    break;
+                case "2":
+                    searchPriceOption("2");
+                    break;
+                case "3":
+                    searchPriceOption("3");
+                    break;
+                case "4":
+                    break;
+                default:
+                    System.out.println("***Invalid input, please enter between 1 to 4.***");
+                    System.out.println("Press enter to continue...");
+                    try {
+                        System.in.read();
+                    } catch (IOException ex) {
+                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+            }
+        } while (!option.equals("4"));
+    }
+
+    public void searchByProduct() {
+        String userInput = null;
+        
+
+    }
+
+    public void searchPriceOption(String option) {
+        String priceInput = null;
+        String priceInput2 = null;
+
+        if (option == "1") {
+            do {
+                System.out.print("Enter a price to search>");
+                priceInput = input.nextLine();
+            } while (isDouble(priceInput) != true);
+            header();
+            for (int i = 0; i < prod.size(); i++) {
+                if (prod.get(i).getprodPrice() >= Double.parseDouble(priceInput)) {
+                    getProductList(prod, i);
+                }
+            }
+            tailer();
+        } else if (option == "2") {
+            do {
+                System.out.print("Enter a price to search>");
+                priceInput = input.nextLine();
+            } while (isDouble(priceInput) != true);
+            header();
+            for (int i = 0; i < prod.size(); i++) {
+                if (prod.get(i).getprodPrice() <= Double.parseDouble(priceInput)) {
+                    getProductList(prod, i);
+                }
+            }
+            tailer();
+        } else {
+            do {
+                System.out.print("Enter Starting price>");
+                priceInput = input.nextLine();
+            } while (isDouble(priceInput) != true);
+            boolean isMoreThan = false;
+            do {
+                do {
+
+                    System.out.print("Enter Ending price>");
+                    priceInput2 = input.nextLine();
+                    if (Double.parseDouble(priceInput2) <= Double.parseDouble(priceInput)) {
+                        System.out.println("Ending Price must more than Starting Price!");
+                        isMoreThan = false;
+                    } else {
+                        isMoreThan = true;
+                    }
+                } while (isMoreThan != true);
+            } while (isDouble(priceInput2) != true);
+
+            header();
+            for (int i = 0; i < prod.size(); i++) {
+                if (prod.get(i).getprodPrice() >= Double.parseDouble(priceInput) && prod.get(i).getprodPrice() <= Double.parseDouble(priceInput2)) {
+                    getProductList(prod, i);
+                }
+            }
+            tailer();
+        }
+
+    }
+
     public static void viewFlower(ArrayList<Product> al, String option) {
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Price", "Stock");
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+        header();
         for (int i = 0; i < al.size(); i++) {
             if (al.get(i).getprodType() == "Fresh Flower" && option == "1") {
-                System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock());
+                getProductList(al, i);
             } else if (al.get(i).getprodType() == "Bouquet" && option == "2") {
-                System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock());
-
+                getProductList(al, i);
             } else if (al.get(i).getprodType() == "Floral Arrangement" && option == "3") {
-                System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock());
+                getProductList(al, i);
             }
         }
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+        tailer();
         System.out.println();
 
     }
 
     public static void viewAll(ArrayList<Product> al) {
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Price", "Stock");
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+        header();
         //here maybe can use stack;
         //push to stack ??
         for (int i = 0; i < al.size(); i++) {
             if (al.get(i).getprodType() == "Fresh Flower") {
-                System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock());
+                getProductList(al, i);
             }
         }
         for (int i = 0; i < al.size(); i++) {
             if (al.get(i).getprodType() == "Bouquet") {
-                System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock());
+                getProductList(al, i);
             }
         }
         for (int i = 0; i < al.size(); i++) {
             if (al.get(i).getprodType() == "Floral Arrangement") {
-                System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock());
+                getProductList(al, i);
             }
         }
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+        tailer();
         System.out.println();
     }
 
+    public static void header() {
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Price", "Stock");
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+    }
+
+    public static void tailer() {
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+    }
+
+    public static void getProductList(ArrayList<Product> al, int i) {
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", prod.get(i).getProdID(), prod.get(i).getprodName(), prod.get(i).getprodType(), prod.get(i).getprodDetail(), prod.get(i).getprodPrice(), prod.get(i).getprodStock());
+    }
+
+    public boolean isDouble(String userInput) {
+        boolean isDouble = true;
+        try {
+            double doubleValue = Double.parseDouble(userInput);
+            isDouble = true;
+        } catch (NumberFormatException e) {
+            System.out.println("Input is not a valid integer");
+            isDouble = false;
+        }
+        return isDouble;
+    }
 }
