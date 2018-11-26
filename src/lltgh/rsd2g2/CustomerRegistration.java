@@ -55,8 +55,7 @@ public class CustomerRegistration {
                     } catch (IOException ex) {
                         Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
                     }
-            }
-            
+            }           
         }while(!custSelection.equals("1") && !custSelection.equals("2"));
         
         // get credit limit if the customer type is corporate customer
@@ -110,12 +109,12 @@ public class CustomerRegistration {
         }
         
         if (type.equals("Normal")){
-            ID = "N" + nCounter;
             nCounter++;
+            ID = "N" + nCounter;
         }
         else{
-            ID = "C" + cCounter;
             cCounter++;
+            ID = "C" + cCounter;
         }
      
         return ID;
