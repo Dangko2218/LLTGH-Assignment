@@ -34,9 +34,7 @@ public class CustomerMaintenanceAndInvoicePayment {
                 break;
             case "2":
                 DisplayCustomerList displayList = new DisplayCustomerList();
-                displayList.displayCust();
-                displayList.nCustList();
-                displayList.cCustList();
+                displayList.displayMenu();
                 break;
             case "3":
                 EditCustDetails editCustDetail = new EditCustDetails();
