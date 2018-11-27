@@ -11,6 +11,7 @@ package Customized;
  */
 public class CustomizedEntity implements Comparable<CustomizedEntity>{
 
+    private String OrderNo;
     private String custID;
     private String style;
     private String size;
@@ -20,7 +21,8 @@ public class CustomizedEntity implements Comparable<CustomizedEntity>{
     private int price;
     private int status;
     
-    public CustomizedEntity(String custID, String style, String size, String type, String acc, int prior, int price, int status) {
+    public CustomizedEntity(String OrderNo, String custID, String style, String size, String type, String acc, int prior, int price, int status) {
+        this.OrderNo = OrderNo;
         this.custID = custID;
         this.style = style;
         this.size = size;
@@ -29,6 +31,14 @@ public class CustomizedEntity implements Comparable<CustomizedEntity>{
         this.prior = prior;
         this.price = price;
         this.status = status;
+    }
+    
+    public String getOrderNo() {
+        return OrderNo;
+    }
+
+    public void setOrderNo(String OrderNo) {
+        this.OrderNo = OrderNo;
     }
     
     public String getCustID() {
@@ -97,7 +107,7 @@ public class CustomizedEntity implements Comparable<CustomizedEntity>{
 
     public int compareTo(CustomizedEntity customized) {
         
-        if(this.prior > customized.prior){
+        if(this.prior >= customized.prior){
             return 1;
         }else   
             return -1;

@@ -228,33 +228,37 @@ public class CustomizedFloralArrangements {
     }
     
     public void displayOrderMenu(){
-        System.out.println("\n\n\n========================================================");
-        System.out.println("                      Customized Order");
-        System.out.println("========================================================");
-        System.out.println("These are the options you can choose:");
-        System.out.println("1) View Customized Order");
-        System.out.println("2) Update Customized Order Status");
-        System.out.println("3) Back to Previous");
-        System.out.print("Please enter your option > ");
-        inputScanner = scanner.nextLine();
-        checkOrderInput(inputScanner);
-    }
-    
-    public void checkOrderInput(String orderInput){
         
-        do{   
+        do{
+            System.out.println("\n\n\n========================================================");
+            System.out.println("                      Customized Order");
+            System.out.println("========================================================");
+            System.out.println("These are the options you can choose:");
+            System.out.println("1) View Customized Order(Pending)");
+            System.out.println("2) View Customized Order(Completed)");
+            System.out.println("3) View Customized Order(Cancelled)");
+            System.out.println("4) Update Customized Order Status");
+            System.out.println("5) Back to Previous");
+            System.out.print("Please enter your option > ");
+            inputScanner = scanner.nextLine();
             
-            switch(orderInput){
+            switch(inputScanner){
                 case "1":
-                    viewOrder();
+                    viewOrderPending();
                     break;
                 case "2":
-                    modifyOrder();
-                    break;  
+                    viewOrderCompleted();
+                    break;
                 case "3":
+                    viewOrderCancelled();
+                    break;
+                case "4":
+                    modifyOrder();
+                    break; 
+                case "5":
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 3.***");
+                    System.out.println("***Invalid input, please enter between 1 to 5.***");
                     System.out.print("Press enter to continue...");
                     try {
                         System.in.read();
@@ -262,15 +266,16 @@ public class CustomizedFloralArrangements {
                         Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
                     }
             }      
-        }while(!orderInput.equals("3"));
+        }while(!inputScanner.equals("5"));
+        
     }
     
-    public void viewOrder(){
-        System.out.println("\n\n\n====================================================================================================================================================================================");
-        System.out.println("                                                                                    View Customized Order");
-        System.out.println("====================================================================================================================================================================================");
+    public void viewOrderPending(){
+        System.out.println("\n\n\n==============================================================================================================================================================================================");
+        System.out.println("                                                                              View Customized Order(Pending)");
+        System.out.println("==============================================================================================================================================================================================");
         QueueInterface<CustomizedEntity> orderList = readCustDat();
-        printCustOrderList(orderList);
+        printCustOrderList(orderList,1);
 
         System.out.print("Press enter to continue...");
         try {
@@ -280,154 +285,272 @@ public class CustomizedFloralArrangements {
         }
     }
     
-    public void modifyOrder(){
-        System.out.println("\n\n\n====================================================================================================================================================================================");
-        System.out.println("                                                                                              Update Status");
-        System.out.println("====================================================================================================================================================================================");
-        ListInterface<CustomizedEntity> orderList = readCustDatList();
-        printCustOrderListList(orderList);
-        orderList = readCustDatList();
-        int selected, input2;
-        
+    public void viewOrderCompleted(){
+        System.out.println("\n\n\n==============================================================================================================================================================================================");
+        System.out.println("                                                                            View Customized Order(Completed)");
+        System.out.println("==============================================================================================================================================================================================");
+        QueueInterface<CustomizedEntity> orderList = readCustDat();
+        printCustOrderList(orderList,2);
+
+        System.out.print("Press enter to continue...");
+        try {
+            System.in.read();
+        } catch (IOException ex) {
+             Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void viewOrderCancelled(){
+        System.out.println("\n\n\n==============================================================================================================================================================================================");
+        System.out.println("                                                                             View Customized Order(Cancelled)");
+        System.out.println("==============================================================================================================================================================================================");
+        QueueInterface<CustomizedEntity> orderList = readCustDat();
+        printCustOrderList(orderList,3);
+
+        System.out.print("Press enter to continue...");
+        try {
+            System.in.read();
+        } catch (IOException ex) {
+             Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public boolean modifyOrder(){
+        ListInterface<CustomizedEntity> orderListL = readCustDatList();
+        QueueInterface<CustomizedEntity> orderListQ = readCustDat();
+        int selected, tempCount=0, status=0;
+        String input, tempInput=null;
+        boolean chkInput, chkInput2;
+        CustomizedEntity update=null;
         do{
-            System.out.print("Enter Order No. to Update Status > ");
+            System.out.println("\n\n\n==============================================================================================================================================================================================");
+            System.out.println("                                                                                              Update Status");
+            System.out.println("==============================================================================================================================================================================================");
+            printCustOrderList(orderListQ,1);
+            orderListQ = readCustDat();
+
+            System.out.print("Enter Order Number(e.g ON001) to Update Status(Enter -1 to Exit) > ");
             modifyStatus = scanner.nextLine();
-            
-            selected = Integer.parseInt(modifyStatus);
-            CustomizedEntity update = orderList.get(selected-1);
+            if(modifyStatus.equals("-1"))
+                return false;
 
-            System.out.println("\n\n");
-            QueueInterface<CustomizedEntity> tempQueue = new Queue();
-            tempQueue.enqueue(update);
-            printCustOrderList(tempQueue);
+            for(int i=0;i<orderListL.size();i++){
+                if(orderListL.get(i).getOrderNo().toUpperCase().equals(modifyStatus.toUpperCase())){
+                    update=orderListL.get(i);
+                    tempCount = i;
+                }
+            }
+            if(modifyStatus == null || modifyStatus.isEmpty())
+                System.out.println("\n***Do Not Leave Blank. Please enter again...***");
+            else if(update==null)
+                System.out.println("\n***Invalid Order Number. Please enter again...***");
+            else if(update.getStatus()!=1)
+                System.out.println("\n***The Selected Order Number is NOT Pending. Please enter again...***");
+        }while(modifyStatus == null || modifyStatus.isEmpty() || update==null||update.getStatus()!=1);
+        
+//      
+//           tempInput = modifyStatus.substring(3, 3);
+//            tempCount = Integer.parseInt(tempInput.replaceFirst("^0+(?!$)", ""));
+        //CustomizedEntity update = orderListL.get(tempCount);
 
+        System.out.println("\n\n");
+        QueueInterface<CustomizedEntity> tempQueue = new Queue();
+        tempQueue.enqueue(update);
+        printCustOrderList(tempQueue,0);
+
+        do{
             System.out.println("\n========================================================");
             System.out.println("                       Order Status");
             System.out.println("========================================================");
-            System.out.println("1) Pending");
-            System.out.println("2) Completed");
-            System.out.println("3) Cancelled");
-            System.out.print("Please enter the new status(1-3)> ");
+            System.out.println("1) Completed");
+            System.out.println("2) Cancelled");
+            System.out.println("3) Exit");
+            System.out.print("Please enter the new status(1 - 3)> ");
             inputScanner = scanner.nextLine();
-            input2 = Integer.parseInt(inputScanner);
+            if(inputScanner.equals("3"))
+                    return false;
+            chkInput2 = checkModifyStatus(inputScanner, update.getOrderNo());
+        }while(chkInput2 == false);
 
-            update.setStatus(input2);
-            orderList.update(selected-1, update);
-            writeCustDatList(orderList);
-            System.out.println("\n***Updated successfully!!***");
-            tempQueue.enqueue(update);
-            printCustOrderList(tempQueue);  
-        }while(Integer.parseInt(modifyStatus) > orderList.size());
-        
+        if(inputScanner.equals("1"))
+            status = 2;
+        else if(inputScanner.equals("2"))
+            status = 3;
+
+        update.setStatus(status);
+        orderListL.update(tempCount, update);
+        writeCustDatList(orderListL);
+        System.out.println("\n***Updated successfully!!***");
+        tempQueue.enqueue(update);
+        printCustOrderList(tempQueue,0);  
+
         System.out.print("Press enter to continue...");
         try {
             System.in.read();
         } catch (IOException ex) {
             Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
         }
-        displayOrderMenu();
+        return true;
     }
     
-//    public void modifyOrder(){
-//        System.out.println("\n\n\n====================================================================================================================================================================================");
-//        System.out.println("                                                                                              Update Status");
-//        System.out.println("====================================================================================================================================================================================");
-//        ListInterface<CustomizedEntity> orderList = readCustDatList();
-//        printCustOrderListList(orderList);
-//        orderList = readCustDatList();
-//        int selected;
-//        String input2;
-//        
-//        do{
-//            System.out.print("Enter Order No. to Update Status > ");
-//            modifyStatus = scanner.nextLine();
-//            
-//            if(modifyStatus.equals("")){
-//                System.out.println("Do Not Leave Blank. Please enter again...");
-//            }
-//            if(Integer.parseInt(modifyStatus) > orderList.size() || Integer.parseInt(modifyStatus) <= 0)
-//                System.out.println("Invalid selection. Please enter again...");
-//            else{
-//                selected = Integer.parseInt(modifyStatus);
-//                CustomizedEntity update = orderList.get(selected-1);
-//
-//                System.out.println("\n\n");
-//                QueueInterface<CustomizedEntity> tempQueue = new Queue();
-//                tempQueue.enqueue(update);
-//                printCustOrderList(tempQueue);
-//
-//                do{
-//                    System.out.println("\n========================================================");
-//                    System.out.println("                       Order Status");
-//                    System.out.println("========================================================");
-//                    System.out.println("1) Pending");
-//                    System.out.println("2) Completed");
-//                    System.out.println("3) Cancelled");
-//                    System.out.print("Please enter the new status(1-3)> ");
-//                    input2 = scanner.nextLine();
-//                    
-//                    if(input2.equals("")){
-//                        System.out.println("Do Not Leave Blank. Please enter again...");
+    public Boolean checkModifyStatus(String input, String orderNo){
+        QueueInterface<CustomizedEntity> orderList = readCustDat();
+        //orderList = readCustDat();
+        Boolean returnValue = true, check = true;
+        String tempOrderNo = null;
+        
+        if(input == null || input.isEmpty()){
+            System.out.println("\n***Do Not Leave Blank. Please enter again...***");
+            returnValue = false;
+        }
+        else{
+            try { 
+                Integer.parseInt(input); 
+            } catch(NumberFormatException e) { 
+                System.out.println("\n***Please Enter Only Digit Number.");
+                returnValue = false;
+            }
+            
+            if(returnValue == true){
+                if(input.equals("1")){
+                    for(int i=0; i<orderList.size(); i++){
+                        CustomizedEntity first = orderList.dequeue();
+                        if(first.getStatus()==1){
+                            if(first.getOrderNo().equals(orderNo)){
+                                returnValue=true;
+                                break;
+                            }
+                            else{
+                                System.out.println("\n***Please Complete Job According to Priority.");
+                                returnValue=false;
+                            }
+                        }
+                    }
+                        
+//                    System.out.println("***in to 1"+orderList.size());
+//                    for(int i=0; i<orderList.size(); i++){
+//                        System.out.println("***into loop");
+//                        CustomizedEntity cust = orderList.dequeue();     
+//                        if(cust.getStatus() == 1){
+//                            if(tempOrderNo == null){
+//                                tempOrderNo = cust.getOrderNo();
+//                                System.out.println("***null");
+//                            }
+//                                
+//                            else{
+//                                if(cust.getOrderNo().equals(tempOrderNo)){
+//                                    System.out.println("***sameON");
+//                                    check = true;
+//                                    returnValue = true;
+//                                    break; 
+//                                }
+//                                else{
+//                                    System.out.println("***NotSameON");
+//                                    check = false;
+//                                }
+//                            }      
+//                        }    
 //                    }
-//                    if(!(Integer.parseInt(input2) >= 1 && Integer.parseInt(input2) <= 3)){
-//                        System.out.println("Invalid selection. Please enter again...");
+//                    if(check == false){
+//                        System.out.println("\n***Please Complete Job According to Priority.");
+//                        returnValue = false;
 //                    }
-//                    else{
-//                        update.setStatus(Integer.parseInt(input2));
-//                        orderList.update(selected-1, update);
-//                        writeCustDatList(orderList);
-//                        System.out.println("\n***Updated successfully!!***");
-//                        tempQueue.enqueue(update);
-//                        printCustOrderList(tempQueue);
-//                    }  
-//                }while(Integer.parseInt(input2) < 0);
-//                !(Integer.parseInt(input2) >= 1 && Integer.parseInt(input2) <= 3) || input2.equals("")
-//            }
-//        }while(Integer.parseInt(modifyStatus) > orderList.size());
-//        
-//        //Integer.parseInt(modifyStatus) > orderList.size() || Integer.parseInt(modifyStatus) <= 0 || modifyStatus.equals("")
-//        System.out.print("Press enter to continue...");
-//        try {
-//            System.in.read();
-//        } catch (IOException ex) {
-//            Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
-//        displayOrderMenu();
-//    }
+                }
+                else if(input.equals("2")){
+                    returnValue = true;
+                }
+                else{
+                    System.out.println("\n***Please Enter Between 1 to 3 Only.");
+                    returnValue = false;
+                }
+            }
+        }
+        
+        return returnValue;
+    }
     
-    private void printCustOrderList(QueueInterface<CustomizedEntity> orderList){//print Customized Order List
+    private void printCustOrderList(QueueInterface<CustomizedEntity> orderList, int input){//print Customized Order List
         String prior="", status="";
-        System.out.printf("|%-5s|%-15s|%-30s|%-30s|%-30s|%-30s|%-10s|%-10s|%-10s|\n", "No.", "Customer ID","Style", "Size","Flower Type", "Accessories", "Priority", "Price(RM)", "Status");
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("|%-15s|%-15s|%-30s|%-30s|%-30s|%-30s|%-10s|%-10s|%-10s|\n", "Order Number", "Customer ID","Style", "Size","Flower Type", "Accessories", "Priority", "Price(RM)", "Status");
+        System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
         int size = orderList.size();
-        for(int i=0; i<size; i++){
-            CustomizedEntity cust = orderList.dequeue();
-            
-            if(cust.getPrior() == 1)
-                prior = "Express";
-            else if(cust.getPrior() == 2)
-                prior = "Normal";
-            else if(cust.getPrior() == 3)
-                prior = "Flexi";
+        if(input == 0){
+            for(int i=0; i<size; i++){
+                CustomizedEntity cust = orderList.dequeue();
+                if(cust.getPrior() == 1)
+                    prior = "Express";
+                else if(cust.getPrior() == 2)
+                    prior = "Normal";
+                else if(cust.getPrior() == 3)
+                    prior = "Flexi";
 
-            if(cust.getStatus() == 1)
-                status = "Pending";
-            else if(cust.getStatus() == 2)
-                status = "Completed";
-            else if(cust.getStatus() == 3)
-                status = "Cancelled";
+                if(cust.getStatus() == 1)
+                    status = "Pending";
+                else if(cust.getStatus() == 2)
+                    status = "Completed";
+                else if(cust.getStatus() == 3)
+                    status = "Cancelled";
 
-            System.out.printf("|%-5s|%-15s|%-30s|%-30s|%-30s|%-30s|%-10s|%-10d|%-10s|\n", i+1, cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType(), cust.getAcc(), prior, cust.getPrice(), status);
+                System.out.printf("|%-15s|%-15s|%-30s|%-30s|%-30s|%-30s|%-10s|%-10d|%-10s|\n", cust.getOrderNo(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType(), cust.getAcc(), prior, cust.getPrice(), status);
+            }
         }
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        else if(input == 1){
+            for(int i=0; i<size; i++){
+                CustomizedEntity cust = orderList.dequeue();
+                if(cust.getStatus() == 1){
+                    if(cust.getPrior() == 1)
+                        prior = "Express";
+                    else if(cust.getPrior() == 2)
+                        prior = "Normal";
+                    else if(cust.getPrior() == 3)
+                        prior = "Flexi";
+
+                    status = "Pending";
+                    System.out.printf("|%-15s|%-15s|%-30s|%-30s|%-30s|%-30s|%-10s|%-10d|%-10s|\n", cust.getOrderNo(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType(), cust.getAcc(), prior, cust.getPrice(), status);
+                } 
+            }      
+        }
+        else if(input == 2){
+            for(int i=0; i<size; i++){
+                CustomizedEntity cust = orderList.dequeue();
+                if(cust.getStatus() == 2){
+                    if(cust.getPrior() == 1)
+                        prior = "Express";
+                    else if(cust.getPrior() == 2)
+                        prior = "Normal";
+                    else if(cust.getPrior() == 3)
+                        prior = "Flexi";
+
+                    status = "Completed";
+                    System.out.printf("|%-15s|%-15s|%-30s|%-30s|%-30s|%-30s|%-10s|%-10d|%-10s|\n", cust.getOrderNo(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType(), cust.getAcc(), prior, cust.getPrice(), status);
+                }
+            }               
+        }
+        else if(input == 3){
+            for(int i=0; i<size; i++){
+                CustomizedEntity cust = orderList.dequeue();
+                if(cust.getStatus() == 3){
+                    if(cust.getPrior() == 1)
+                        prior = "Express";
+                    else if(cust.getPrior() == 2)
+                        prior = "Normal";
+                    else if(cust.getPrior() == 3)
+                        prior = "Flexi";
+
+                    status = "Cancelled";
+                    System.out.printf("|%-15s|%-15s|%-30s|%-30s|%-30s|%-30s|%-10s|%-10d|%-10s|\n", cust.getOrderNo(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType(), cust.getAcc(), prior, cust.getPrice(), status);
+                }
+            }                   
+        }
+        
+        System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
     }
     
     private void printCustOrderListList(ListInterface<CustomizedEntity> orderList){//print Customized Order List
         String prior="", status="";
         System.out.printf("|%-5s|%-15s|%-30s|%-30s|%-30s|%-30s|%-10s|%-10s|%-10s|\n", "No.", "Customer ID","Style", "Size","Flower Type", "Accessories", "Priority", "Price(RM)", "Status");
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
         int size = orderList.size();
         for(int i=0; i<size; i++){
@@ -449,12 +572,12 @@ public class CustomizedFloralArrangements {
 
             System.out.printf("|%-5s|%-15s|%-30s|%-30s|%-30s|%-30s|%-10s|%-10d|%-10s|\n", i+1, cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType(), cust.getAcc(), prior, cust.getPrice(), status);
         }
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
     }
     
-    public QueueInterface<CustomizedEntity> readCustDat(){//get requests from dat file
+    public QueueInterface<CustomizedEntity> readCustDat(){//get orderData from dat file
         QueueInterface<CustomizedEntity> custQueue = new Queue<>();
-        //read data from Request.dat
+        //read data from CustomizedOrderData.dat
         BufferedReader br = null;
 	FileReader fr = null;
 
@@ -467,7 +590,7 @@ public class CustomizedFloralArrangements {
             while ((sCurrentLine = br.readLine()) != null) {
                 
                 String[] s =sCurrentLine.split("\\|");
-                CustomizedEntity custEn = new CustomizedEntity(s[0], s[1], s[2], s[3], s[4], Integer.parseInt(s[5]), Integer.parseInt(s[6]), Integer.parseInt(s[7]));
+                CustomizedEntity custEn = new CustomizedEntity(s[0], s[1], s[2], s[3], s[4], s[5], Integer.parseInt(s[6]), Integer.parseInt(s[7]), Integer.parseInt(s[8]));
                 custQueue.enqueue(custEn);//add to list
             }
 
@@ -488,9 +611,9 @@ public class CustomizedFloralArrangements {
 
     }
     
-    public ListInterface<CustomizedEntity> readCustDatList(){//get equipment from dat file with list
+    public ListInterface<CustomizedEntity> readCustDatList(){//get orderData from dat file with list
         ListInterface<CustomizedEntity> custDatList = new List<>();
-        //read data from Request.dat
+        //read data from CustomizedOrderData.dat
         BufferedReader br = null;
 	FileReader fr = null;
 
@@ -502,7 +625,7 @@ public class CustomizedFloralArrangements {
 
             while ((sCurrentLine = br.readLine()) != null) {
                 String[] s =sCurrentLine.split("\\|");
-                CustomizedEntity custEn = new CustomizedEntity(s[0], s[1], s[2], s[3], s[4], Integer.parseInt(s[5]), Integer.parseInt(s[6]), Integer.parseInt(s[7]));
+                CustomizedEntity custEn = new CustomizedEntity(s[0], s[1], s[2], s[3], s[4], s[5], Integer.parseInt(s[6]), Integer.parseInt(s[7]), Integer.parseInt(s[8]));
                 custDatList.add(custEn);//add to list
             }
 
@@ -527,7 +650,7 @@ public class CustomizedFloralArrangements {
 
         for(int i=0; i<size; i++){
             CustomizedEntity custEn = orderList.remove(0);
-            s += custEn.getCustID()+ "|" + custEn.getStyle() + "|" + custEn.getSize() + "|" + custEn.getType() + "|" + custEn.getAcc() + "|" + Integer.toString(custEn.getPrior()) + "|" + Integer.toString(custEn.getPrice()) + "|" + Integer.toString(custEn.getStatus()) + "\n";
+            s += custEn.getOrderNo() + "|" + custEn.getCustID()+ "|" + custEn.getStyle() + "|" + custEn.getSize() + "|" + custEn.getType() + "|" + custEn.getAcc() + "|" + Integer.toString(custEn.getPrior()) + "|" + Integer.toString(custEn.getPrice()) + "|" + Integer.toString(custEn.getStatus()) + "\n";
         }
 
         BufferedWriter bw = null;
