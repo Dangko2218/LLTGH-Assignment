@@ -34,8 +34,8 @@ public class CatalogOrders {
         System.out.println("========================================================");
 
 //        getCustId();
-        int typeOpt=orderItem();
-        switch(typeOpt){
+        int typeOpt = orderItem();
+        switch (typeOpt) {
             case -1:
                 break;
             default:
@@ -70,7 +70,7 @@ public class CatalogOrders {
                     System.out.println("\n========================================================");
                     System.out.println("                     Catalog Order");
                     System.out.println("========================================================");
-                    
+
                     orderItem();
                     break;
                 }
@@ -120,7 +120,7 @@ public class CatalogOrders {
     }
 
     public void getId(int typeOpt) {
-        String itemId = "";
+        String itemId;
 
         do {
             System.out.print("Please enter item ID: ");
@@ -132,7 +132,7 @@ public class CatalogOrders {
         } while (valid == false);
     }
 
-    public boolean chkItem(String itemId, int typeOpt) {
+    public boolean chkItem(String itemId,int typeOpt) {
         valid = false;
         String prodId;
 
@@ -171,13 +171,14 @@ public class CatalogOrders {
             try {
                 quantity = scanner.nextInt();
                 if (quantity > 0) {
-                    order.setQuantity(quantity);
-                    valid = true;
+                    valid = chkStock(quantity);
+                    if (valid == true) {
+                        order.setQuantity(quantity);
+                    }
                 } else {
                     System.out.println("***Invalid input.Please enter again.***\n");
                     valid = false;
                 }
-//                chkStock();
             } catch (InputMismatchException ex) {
                 System.out.println("***Invalid input!Please enter again.***\n");
                 scanner.next();
@@ -185,22 +186,23 @@ public class CatalogOrders {
             }
         } while (valid == false);
     }
-
-    public boolean chkStock(){
-        valid=true;
+    
+    public boolean chkStock(int quantity) {
+        valid = true;
         int size = order.getOrderItem().size();
         int numStock;
-        
+
         for (int i = 0; i < size; i++) {
             String itemName = (String) order.getOrderItem().get(i);
-            int quantity = (int) order.getQuantity().get(i);
             for (int j = 0; j < CM.prod.size(); j++) {
                 if (itemName.equals(CM.prod.get(j).getprodName())) {
                     numStock = CM.prod.get(j).getprodStock();
-                    if(numStock==0){
+                    if (numStock == 0) {
                         System.out.println("***There is no more stock.***\n");
-                    }else if(numStock-quantity<0){
+                        itemMenu();
+                    } else if (numStock - quantity < 0) {
                         System.out.println("***There is no enough stock.***\n");
+                        valid = false;
                     }
                     break;
                 }
@@ -208,7 +210,7 @@ public class CatalogOrders {
         }
         return valid;
     }
-    
+
     public int moreItem() {
         int actOpt = 0;
 
@@ -297,7 +299,7 @@ public class CatalogOrders {
     }
 
     public void pickUpDT() {
-        do{
+        do {
             System.out.println("Please enter pick up date: ");
             System.out.print("Day: ");
             int day = scanner.nextInt();
@@ -306,7 +308,7 @@ public class CatalogOrders {
             System.out.print("Year: ");
             int year = scanner.nextInt();
             valid = chkDate(day, month, year);
-        }while(valid==false);
+        } while (valid == false);
     }
 
     public boolean chkDate(int day, int month, int year) {
@@ -372,31 +374,31 @@ public class CatalogOrders {
         } while (valid == false);
 
         String orderDate = day + "/" + month + "/" + year;
-        LocalDate date=LocalDate.of(year,month,day);
+        LocalDate date = LocalDate.of(year, month, day);
         Date pDate = null;
         try {
             pDate = new SimpleDateFormat("dd/MM/yyyy").parse(orderDate);
         } catch (ParseException ex) {
             Logger.getLogger(CatalogOrders.class.getName()).log(Level.SEVERE, null, ex);
         }
-        valid = cmpDate(pDate,date);
-        if(valid==true){
+        valid = cmpDate(pDate, date);
+        if (valid == true) {
             order.setPDate(orderDate);
         }
         return valid;
     }
 
-    public boolean cmpDate(Date pDate,LocalDate date) {
+    public boolean cmpDate(Date pDate, LocalDate date) {
         valid = true;
         Date today = new Date();
-        
-        LocalDate toDate=LocalDate.now();
-        Period diff = Period.between(toDate,date);
-        
+
+        LocalDate toDate = LocalDate.now();
+        Period diff = Period.between(toDate, date);
+
         if (pDate.before(today)) {
             System.out.println("***The date entered has passed.Please enter again.***");
             valid = false;
-        }else if(diff.getMonths()>2 || diff.getYears()>0){  //3 month ,count from 0
+        } else if (diff.getMonths() > 2 || diff.getYears() > 0) {  //3 month ,count from 0
             System.out.println("***The date entered is too far.Please enter another date.***");
         }
         return valid;
@@ -416,5 +418,5 @@ public class CatalogOrders {
         }
         //next customer please.......
     }
-    
+
 }
