@@ -34,10 +34,15 @@ public class CatalogOrders {
         System.out.println("========================================================");
 
 //        getCustId();
-        orderItem();
-        pickUpMethod();
-        getAddress();
-        generateSO();   //sales order?
+        int typeOpt=orderItem();
+        switch(typeOpt){
+            case -1:
+                break;
+            default:
+                pickUpMethod();
+                getAddress();
+                generateSO();   //sales order?
+        }
     }
 
 //    public void getCustId() {
@@ -52,7 +57,7 @@ public class CatalogOrders {
 //            }
 //        } while (!inCustId.equals(custId));
 //    }
-    public void orderItem() {
+    public int orderItem() {
         int typeOpt, actOpt = 0;
 
         typeOpt = itemMenu();
@@ -70,6 +75,7 @@ public class CatalogOrders {
                     break;
                 }
         }
+        return typeOpt;
     }
 
     public int itemMenu() {
@@ -171,6 +177,7 @@ public class CatalogOrders {
                     System.out.println("***Invalid input.Please enter again.***\n");
                     valid = false;
                 }
+//                chkStock();
             } catch (InputMismatchException ex) {
                 System.out.println("***Invalid input!Please enter again.***\n");
                 scanner.next();
@@ -179,6 +186,29 @@ public class CatalogOrders {
         } while (valid == false);
     }
 
+    public boolean chkStock(){
+        valid=true;
+        int size = order.getOrderItem().size();
+        int numStock;
+        
+        for (int i = 0; i < size; i++) {
+            String itemName = (String) order.getOrderItem().get(i);
+            int quantity = (int) order.getQuantity().get(i);
+            for (int j = 0; j < CM.prod.size(); j++) {
+                if (itemName.equals(CM.prod.get(j).getprodName())) {
+                    numStock = CM.prod.get(j).getprodStock();
+                    if(numStock==0){
+                        System.out.println("***There is no more stock.***\n");
+                    }else if(numStock-quantity<0){
+                        System.out.println("***There is no enough stock.***\n");
+                    }
+                    break;
+                }
+            }
+        }
+        return valid;
+    }
+    
     public int moreItem() {
         int actOpt = 0;
 
@@ -362,12 +392,11 @@ public class CatalogOrders {
         
         LocalDate toDate=LocalDate.now();
         Period diff = Period.between(toDate,date);
-        System.out.print(diff.getMonths());
         
         if (pDate.before(today)) {
             System.out.println("***The date entered has passed.Please enter again.***");
             valid = false;
-        }else if(diff.getMonths()>2){  //3 month ,count from 0
+        }else if(diff.getMonths()>2 || diff.getYears()>0){  //3 month ,count from 0
             System.out.println("***The date entered is too far.Please enter another date.***");
         }
         return valid;
