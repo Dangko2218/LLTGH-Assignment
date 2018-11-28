@@ -21,6 +21,7 @@ public class CatalogOrders {
 
     private boolean valid;
     private Scanner scanner = new Scanner(System.in);
+    private String iName;
 
     private Order order = new Order();
     private List<Order> orderList = new ArrayList<>();
@@ -140,21 +141,24 @@ public class CatalogOrders {
             if (typeOpt == 1 && CM.prod.get(i).getprodType() == "Fresh Flower") {
                 prodId = CM.prod.get(i).getProdID();
                 if (itemId.equals(prodId)) {
-                    order.setOrderItem(CM.prod.get(i).getprodName());
+//                    order.setOrderItem(CM.prod.get(i).getprodName());
+                    iName=CM.prod.get(i).getprodName();
                     valid = true;
                     break;
                 }
             } else if (typeOpt == 2 && CM.prod.get(i).getprodType() == "Bouquet") {
                 prodId = CM.prod.get(i).getProdID();
                 if (itemId.equals(prodId)) {
-                    order.setOrderItem(CM.prod.get(i).getprodName());
+//                    order.setOrderItem(CM.prod.get(i).getprodName());
+                    iName=CM.prod.get(i).getprodName();
                     valid = true;
                     break;
                 }
             } else if (typeOpt == 3 && CM.prod.get(i).getprodType() == "Floral Arrangement") {
                 prodId = CM.prod.get(i).getProdID();
                 if (itemId.equals(prodId)) {
-                    order.setOrderItem(CM.prod.get(i).getprodName());
+//                    order.setOrderItem(CM.prod.get(i).getprodName());
+                    iName=CM.prod.get(i).getprodName();
                     valid = true;
                     break;
                 }
@@ -172,9 +176,10 @@ public class CatalogOrders {
                 quantity = scanner.nextInt();
                 if (quantity > 0) {
                     valid = chkStock(quantity);
-                    if (valid == true) {
-                        order.setQuantity(quantity);
-                    }
+//                    if (valid == true) {
+//                        order.setOrderItem(iName);
+//                        order.setQuantity(quantity);
+//                    }
                 } else {
                     System.out.println("***Invalid input.Please enter again.***\n");
                     valid = false;
@@ -189,13 +194,12 @@ public class CatalogOrders {
     
     public boolean chkStock(int quantity) {
         valid = true;
-        int size = order.getOrderItem().size();
         int numStock;
 
-        for (int i = 0; i < size; i++) {
-            String itemName = (String) order.getOrderItem().get(i);
+//        for (int i = 0; i < size; i++) {
+//            String itemName = (String) order.getOrderItem().get(i);
             for (int j = 0; j < CM.prod.size(); j++) {
-                if (itemName.equals(CM.prod.get(j).getprodName())) {
+                if (iName.equals(CM.prod.get(j).getprodName())) {
                     numStock = CM.prod.get(j).getprodStock();
                     if (numStock == 0) {
                         System.out.println("***There is no more stock.***\n");
@@ -203,11 +207,14 @@ public class CatalogOrders {
                     } else if (numStock - quantity < 0) {
                         System.out.println("***There is no enough stock.***\n");
                         valid = false;
+                    }else{
+                        order.setOrderItem(iName);
+                        order.setQuantity(quantity);
                     }
                     break;
                 }
             }
-        }
+//        }
         return valid;
     }
 
