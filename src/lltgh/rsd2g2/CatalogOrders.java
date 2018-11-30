@@ -1,3 +1,11 @@
+// <<<<<<< catalogOrder
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+// =======
+// >>>>>>> master
 package lltgh.rsd2g2;
 
 import java.io.IOException;
@@ -8,10 +16,25 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// <<<<<<< catalogOrder
+/**
+ *
+ * @author User
+ */
+// =======
+// >>>>>>> master
 public class CatalogOrders {
 
     private boolean valid;
     private Scanner scanner = new Scanner(System.in);
+// <<<<<<< catalogOrder
+    private String iName;
+
+    private Order order = new Order();
+    private List<Order> orderList = new ArrayList<>();
+
+    CatalogMaintenance CM = new CatalogMaintenance();
+// =======
 
     private Order order = new Order();
     private List<Order> orderList = new ArrayList<>();
@@ -21,6 +44,7 @@ public class CatalogOrders {
 
     CatalogMaintenance CM = new CatalogMaintenance();
     CustomerRegistration regCust = new CustomerRegistration();
+// >>>>>>> master
 
     public void printTest() {
 
@@ -28,6 +52,8 @@ public class CatalogOrders {
         System.out.println("                     Catalog Order");
         System.out.println("========================================================");
 
+// <<<<<<< catalogOrder
+// =======
 //<<<<<<< custMaintain
         getCustId();
         orderItem();
@@ -50,6 +76,7 @@ public class CatalogOrders {
     
     public void orderItem() {
 //=======
+// >>>>>>> master
 //        getCustId();
         int typeOpt = orderItem();
         switch (typeOpt) {
@@ -75,7 +102,10 @@ public class CatalogOrders {
 //        } while (!inCustId.equals(custId));
 //    }
     public int orderItem() {
+// <<<<<<< catalogOrder
+// =======
 //>>>>>>> master
+// >>>>>>> master
         int typeOpt, actOpt = 0;
 
         typeOpt = itemMenu();
@@ -158,21 +188,36 @@ public class CatalogOrders {
             if (typeOpt == 1 && CM.prod.get(i).getprodType() == "Fresh Flower") {
                 prodId = CM.prod.get(i).getProdID();
                 if (itemId.equals(prodId)) {
+// <<<<<<< catalogOrder
+//                    order.setOrderItem(CM.prod.get(i).getprodName());
+                    iName=CM.prod.get(i).getprodName();
+// =======
                     order.setOrderItem(CM.prod.get(i).getprodName());
+// >>>>>>> master
                     valid = true;
                     break;
                 }
             } else if (typeOpt == 2 && CM.prod.get(i).getprodType() == "Bouquet") {
                 prodId = CM.prod.get(i).getProdID();
                 if (itemId.equals(prodId)) {
+// <<<<<<< catalogOrder
+//                    order.setOrderItem(CM.prod.get(i).getprodName());
+                    iName=CM.prod.get(i).getprodName();
+// =======
                     order.setOrderItem(CM.prod.get(i).getprodName());
+// >>>>>>> master
                     valid = true;
                     break;
                 }
             } else if (typeOpt == 3 && CM.prod.get(i).getprodType() == "Floral Arrangement") {
                 prodId = CM.prod.get(i).getProdID();
                 if (itemId.equals(prodId)) {
+// <<<<<<< catalogOrder
+//                    order.setOrderItem(CM.prod.get(i).getprodName());
+                    iName=CM.prod.get(i).getprodName();
+// =======
                     order.setOrderItem(CM.prod.get(i).getprodName());
+// >>>>>>> master
                     valid = true;
                     break;
                 }
@@ -190,9 +235,16 @@ public class CatalogOrders {
                 quantity = scanner.nextInt();
                 if (quantity > 0) {
                     valid = chkStock(quantity);
+// <<<<<<< catalogOrder
+//                    if (valid == true) {
+//                        order.setOrderItem(iName);
+//                        order.setQuantity(quantity);
+//                    }
+// =======
                     if (valid == true) {
                         order.setQuantity(quantity);
                     }
+// >>>>>>> master
                 } else {
                     System.out.println("***Invalid input.Please enter again.***\n");
                     valid = false;
@@ -207,6 +259,14 @@ public class CatalogOrders {
     
     public boolean chkStock(int quantity) {
         valid = true;
+// <<<<<<< catalogOrder
+        int numStock;
+
+//        for (int i = 0; i < size; i++) {
+//            String itemName = (String) order.getOrderItem().get(i);
+            for (int j = 0; j < CM.prod.size(); j++) {
+                if (iName.equals(CM.prod.get(j).getprodName())) {
+// =======
         int size = order.getOrderItem().size();
         int numStock;
 
@@ -214,6 +274,7 @@ public class CatalogOrders {
             String itemName = (String) order.getOrderItem().get(i);
             for (int j = 0; j < CM.prod.size(); j++) {
                 if (itemName.equals(CM.prod.get(j).getprodName())) {
+// >>>>>>> master
                     numStock = CM.prod.get(j).getprodStock();
                     if (numStock == 0) {
                         System.out.println("***There is no more stock.***\n");
@@ -221,11 +282,21 @@ public class CatalogOrders {
                     } else if (numStock - quantity < 0) {
                         System.out.println("***There is no enough stock.***\n");
                         valid = false;
+// <<<<<<< catalogOrder
+                    }else{
+                        order.setOrderItem(iName);
+                        order.setQuantity(quantity);
+// =======
+// >>>>>>> master
                     }
                     break;
                 }
             }
-        }
+// <<<<<<< catalogOrder
+// //        }
+// =======
+//         }
+// >>>>>>> master
         return valid;
     }
 
@@ -303,12 +374,17 @@ public class CatalogOrders {
                 } else if (methodOpt == 2) {
                     order.setMethod("Delivery");
                     pickUpDT();
-//<<<<<<< custMaintain
-                } else{
-//=======
-                    getAddress();
-                } else {
-//>>>>>>> master
+// <<<<<<< catalogOrder
+//                     getAddress();
+//                 } else {
+// =======
+// //<<<<<<< custMaintain
+//                 } else{
+// //=======
+//                     getAddress();
+//                 } else {
+// //>>>>>>> master
+// >>>>>>> master
                     System.out.println("***Invalid input!Please enter again.***\n");
                     valid = false;
                 }
@@ -425,15 +501,21 @@ public class CatalogOrders {
         }
         return valid;
     }
-//<<<<<<< custMaintain
+// <<<<<<< catalogOrder
+// =======
+// //<<<<<<< custMaintain
     
-//=======
+// //=======
+// >>>>>>> master
 
     public void getAddress() {
 
     }
 
-//>>>>>>> master
+// <<<<<<< catalogOrder
+// =======
+// //>>>>>>> master
+// >>>>>>> master
     public void generateSO() {
         System.out.println(order);
         System.out.print("Press enter to continue...");
