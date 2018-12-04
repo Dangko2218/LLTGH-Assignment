@@ -1,11 +1,8 @@
-// <<<<<<< catalogOrder
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-// =======
-// >>>>>>> master
 package lltgh.rsd2g2;
 
 import java.io.IOException;
@@ -16,35 +13,20 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// <<<<<<< catalogOrder
 /**
  *
  * @author User
  */
-// =======
-// >>>>>>> master
 public class CatalogOrders {
 
     private boolean valid;
     private Scanner scanner = new Scanner(System.in);
-// <<<<<<< catalogOrder
     private String iName;
 
     private Order order = new Order();
     private List<Order> orderList = new ArrayList<>();
 
     CatalogMaintenance CM = new CatalogMaintenance();
-// =======
-
-    private Order order = new Order();
-    private List<Order> orderList = new ArrayList<>();
-    
-    private String inCustId = null, custAddr = null, custContact = null;
-    
-
-    CatalogMaintenance CM = new CatalogMaintenance();
-    CustomerRegistration regCust = new CustomerRegistration();
-// >>>>>>> master
 
     public void printTest() {
 
@@ -52,31 +34,6 @@ public class CatalogOrders {
         System.out.println("                     Catalog Order");
         System.out.println("========================================================");
 
-// <<<<<<< catalogOrder
-// =======
-//<<<<<<< custMaintain
-        getCustId();
-        orderItem();
-        pickUpMethod();
-        generateSO();   //sales order?
-    }
-
-    public void getCustId() {
-
-        System.out.print("Please enter customer ID: ");
-        inCustId = scanner.nextLine();
-        for (int i = 0; i < regCust.customerList.size(); i++){
-            if (inCustId.equals(regCust.customerList.get(i).getCustID())){
-                custAddr = regCust.customerList.get(i).getCorpAddr();
-                custContact = regCust.customerList.get(i).getContactNo();
-                break;
-            }
-        }
-    }
-    
-    public void orderItem() {
-//=======
-// >>>>>>> master
 //        getCustId();
         int typeOpt = orderItem();
         switch (typeOpt) {
@@ -102,10 +59,6 @@ public class CatalogOrders {
 //        } while (!inCustId.equals(custId));
 //    }
     public int orderItem() {
-// <<<<<<< catalogOrder
-// =======
-//>>>>>>> master
-// >>>>>>> master
         int typeOpt, actOpt = 0;
 
         typeOpt = itemMenu();
@@ -180,7 +133,7 @@ public class CatalogOrders {
         } while (valid == false);
     }
 
-    public boolean chkItem(String itemId,int typeOpt) {
+    public boolean chkItem(String itemId, int typeOpt) {
         valid = false;
         String prodId;
 
@@ -188,36 +141,24 @@ public class CatalogOrders {
             if (typeOpt == 1 && CM.prod.get(i).getprodType() == "Fresh Flower") {
                 prodId = CM.prod.get(i).getProdID();
                 if (itemId.equals(prodId)) {
-// <<<<<<< catalogOrder
 //                    order.setOrderItem(CM.prod.get(i).getprodName());
-                    iName=CM.prod.get(i).getprodName();
-// =======
-                    order.setOrderItem(CM.prod.get(i).getprodName());
-// >>>>>>> master
+                    iName = CM.prod.get(i).getprodName();
                     valid = true;
                     break;
                 }
             } else if (typeOpt == 2 && CM.prod.get(i).getprodType() == "Bouquet") {
                 prodId = CM.prod.get(i).getProdID();
                 if (itemId.equals(prodId)) {
-// <<<<<<< catalogOrder
 //                    order.setOrderItem(CM.prod.get(i).getprodName());
-                    iName=CM.prod.get(i).getprodName();
-// =======
-                    order.setOrderItem(CM.prod.get(i).getprodName());
-// >>>>>>> master
+                    iName = CM.prod.get(i).getprodName();
                     valid = true;
                     break;
                 }
             } else if (typeOpt == 3 && CM.prod.get(i).getprodType() == "Floral Arrangement") {
                 prodId = CM.prod.get(i).getProdID();
                 if (itemId.equals(prodId)) {
-// <<<<<<< catalogOrder
 //                    order.setOrderItem(CM.prod.get(i).getprodName());
-                    iName=CM.prod.get(i).getprodName();
-// =======
-                    order.setOrderItem(CM.prod.get(i).getprodName());
-// >>>>>>> master
+                    iName = CM.prod.get(i).getprodName();
                     valid = true;
                     break;
                 }
@@ -235,16 +176,10 @@ public class CatalogOrders {
                 quantity = scanner.nextInt();
                 if (quantity > 0) {
                     valid = chkStock(quantity);
-// <<<<<<< catalogOrder
 //                    if (valid == true) {
 //                        order.setOrderItem(iName);
 //                        order.setQuantity(quantity);
 //                    }
-// =======
-                    if (valid == true) {
-                        order.setQuantity(quantity);
-                    }
-// >>>>>>> master
                 } else {
                     System.out.println("***Invalid input.Please enter again.***\n");
                     valid = false;
@@ -256,47 +191,27 @@ public class CatalogOrders {
             }
         } while (valid == false);
     }
-    
+
     public boolean chkStock(int quantity) {
         valid = true;
-// <<<<<<< catalogOrder
         int numStock;
 
-//        for (int i = 0; i < size; i++) {
-//            String itemName = (String) order.getOrderItem().get(i);
-            for (int j = 0; j < CM.prod.size(); j++) {
-                if (iName.equals(CM.prod.get(j).getprodName())) {
-// =======
-        int size = order.getOrderItem().size();
-        int numStock;
-
-        for (int i = 0; i < size; i++) {
-            String itemName = (String) order.getOrderItem().get(i);
-            for (int j = 0; j < CM.prod.size(); j++) {
-                if (itemName.equals(CM.prod.get(j).getprodName())) {
-// >>>>>>> master
-                    numStock = CM.prod.get(j).getprodStock();
-                    if (numStock == 0) {
-                        System.out.println("***There is no more stock.***\n");
-                        itemMenu();
-                    } else if (numStock - quantity < 0) {
-                        System.out.println("***There is no enough stock.***\n");
-                        valid = false;
-// <<<<<<< catalogOrder
-                    }else{
-                        order.setOrderItem(iName);
-                        order.setQuantity(quantity);
-// =======
-// >>>>>>> master
-                    }
-                    break;
+        for (int j = 0; j < CM.prod.size(); j++) {
+            if (iName.equals(CM.prod.get(j).getprodName())) {
+                numStock = CM.prod.get(j).getprodStock();
+                if (numStock == 0) {
+                    System.out.println("***There is no more stock.***\n");
+                    itemMenu();
+                } else if (numStock - quantity < 0) {
+                    System.out.println("***There is no enough stock.***\n");
+                    valid = false;
+                } else {
+                    order.setOrderItem(iName);
+                    order.setQuantity(quantity);
                 }
+                break;
             }
-// <<<<<<< catalogOrder
-// //        }
-// =======
-//         }
-// >>>>>>> master
+        }
         return valid;
     }
 
@@ -374,17 +289,8 @@ public class CatalogOrders {
                 } else if (methodOpt == 2) {
                     order.setMethod("Delivery");
                     pickUpDT();
-// <<<<<<< catalogOrder
-//                     getAddress();
-//                 } else {
-// =======
-// //<<<<<<< custMaintain
-//                 } else{
-// //=======
-//                     getAddress();
-//                 } else {
-// //>>>>>>> master
-// >>>>>>> master
+                    getAddress();
+                } else {
                     System.out.println("***Invalid input!Please enter again.***\n");
                     valid = false;
                 }
@@ -501,24 +407,44 @@ public class CatalogOrders {
         }
         return valid;
     }
-// <<<<<<< catalogOrder
-// =======
-// //<<<<<<< custMaintain
-    
-// //=======
-// >>>>>>> master
 
     public void getAddress() {
 
     }
 
-// <<<<<<< catalogOrder
-// =======
-// //>>>>>>> master
-// >>>>>>> master
     public void generateSO() {
-        System.out.println(order);
-        System.out.print("Press enter to continue...");
+        double price=0;
+        
+        System.out.println("\n|-----------------------------|");
+        System.out.println("|         Sales  Order        |");
+        System.out.println("|-----------------------------|");
+        System.out.printf("|Order ID   : %-16s|", order.getOrderId());
+        System.out.printf("\n|%-29s|"," ");
+        System.out.printf("\n|Order Item : %-16s|"," ");
+        
+        for (int i = 0; i < order.getOrderItem().size(); i++) {
+            String itemName=(String)order.getOrderItem().get(i);
+            for (int j = 0; j < CM.prod.size(); j++){
+                if (itemName.equals(CM.prod.get(j).getprodName())) {
+                    price = CM.prod.get(j).getprodPrice();
+                    break;
+                }
+            }
+            
+            if(i==0){
+                System.out.printf("\n|  %-18s%-10s%-3s|",order.getOrderItem().get(i),String.format("%.2f",price),order.getQuantity().get(i));
+            } else {
+                System.out.printf("\n|  %-18s%-4s|",order.getOrderItem().get(i),order.getQuantity().get(i));
+            }
+        }
+        
+        System.out.printf("\n|Total      : %-16s|","RM" + String.format("%.2f",order.getTotal()));
+        System.out.printf("\n|Method     : %-16s|",order.getMethod());
+        System.out.printf("\n|Date       : %-16s|",order.getPDate());
+        System.out.printf("\n|Time       : %-16s|",order.getPTime());
+        System.out.println("\n|-----------------------------|");
+        
+        System.out.print("\nPress enter to continue...");
         try {
             System.in.read();
         } catch (IOException ex) {
