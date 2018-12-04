@@ -1,9 +1,15 @@
 package lltgh.rsd2g2;
 
-public class Customer implements CustomerADT{
+public class Customer<T> implements CustomerListADT<T>{
 
     private String custID, custName, custIC, contactNo, custType, custCorp, corpAddr;
     private double creditLimit;
+    private int numOfEnt = 0;
+
+    @Override
+    public int getNumOfEnt() {
+        return numOfEnt;
+    }
     
     @Override
     public void setCustID(String custID) {
@@ -83,6 +89,18 @@ public class Customer implements CustomerADT{
     @Override
     public double getCreditLimit() {
         return creditLimit;
+    }
+
+    @Override
+    public void regCustomer(T item) {
+        numOfEnt++;
+    }
+
+    @Override
+    public boolean isEmpty(){
+        if (numOfEnt == 0)
+            return true;
+        else return false;
     }
     
     Customer(String custID, String name, String custIC, String contactNo, String type, String custCorp, double creditLimit) {
