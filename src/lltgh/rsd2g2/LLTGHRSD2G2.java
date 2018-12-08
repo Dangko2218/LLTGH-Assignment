@@ -27,7 +27,7 @@ public class LLTGHRSD2G2 {
         
         
         
-        
+        //change abit
 //        int i;
 //        String placeholder;
 //        for(i=1; i<24; i++){System.out.println();}
