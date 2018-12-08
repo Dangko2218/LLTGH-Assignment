@@ -9,7 +9,7 @@ package lltgh.rsd2g2;
  *
  * @author Desmond
  */
-public class Product implements ProductADT{
+public class Product implements Comparable<Product>{
 
     private String prodID;
     private String prodName;
@@ -90,24 +90,11 @@ public class Product implements ProductADT{
     }
 
     @Override
-    public ProductADT add(ProductADT product) {
-        ProductADT latestProd = new Product();
-        latestProd.setProdID(product.getProdID());
-        latestProd.setprodName(product.getprodName());
-        latestProd.setprodDetail(product.getprodDetail());
-        latestProd.setprodType(product.getprodType());
-        latestProd.setprodPrice(product.getprodPrice());
-        latestProd.setprodStock(product.getprodStock());
-        return product;
+    public int compareTo(Product prod) {
+        if(this.prodStock >= prod.prodStock){
+            return 1;
+        }else   
+            return -1;
     }
 
-    @Override
-    public ProductADT update(ProductADT product) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ProductADT delete(ProductADT product) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }
