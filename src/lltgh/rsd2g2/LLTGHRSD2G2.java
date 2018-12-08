@@ -27,7 +27,7 @@ public class LLTGHRSD2G2 {
         
         
         
-        
+        //change abit
 //        int i;
 //        String placeholder;
 //        Scanner scanner = new Scanner(System.in);
