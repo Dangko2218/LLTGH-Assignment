@@ -5,9 +5,14 @@
  */
 package lltgh.rsd2g2;
 
+import Customized.List;
+import Customized.ListInterface;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,23 +24,24 @@ import java.util.logging.Logger;
 public class CatalogMaintenance {
 
     public static ArrayList<Product> prod = new ArrayList<Product>();//product   //xinyi add static
+
     Scanner input = new Scanner(System.in);
 
     public void printTest() {
         String option = null;
 
-        prod.add(new Product("p0001", "Red Rose", "Fresh Flower", "Rose in Red Color", 2, 30));
-        prod.add(new Product("p0002", "I Love You", "Bouquet", "520 Rose", 520, 5));
-        prod.add(new Product("p0003", "LWY Pack", "Floral Arrangement", "Made by Low Wei Yin", 200, 5));
-        prod.add(new Product("p0004", "Love You Forever", "Bouquet", "1001 Rose", 1000, 3));
-        prod.add(new Product("p0005", "TJH Pack", "Floral Arrangement", "Made by Tai Jia Hao", 200, 5));
-        prod.add(new Product("p0006", "White Rose", "Fresh Flower", "Rose in White Color", 2, 30));
-        prod.add(new Product("p0007", "Pink Rose", "Fresh Flower", "Rose in Pink Color", 2, 30));
-        prod.add(new Product("p0008", "GCY Pack", "Floral Arrangement", "Made by Goh Ching Yaw", 200, 5));
-        prod.add(new Product("p0009", "Blue Rose", "Fresh Flower", "Rose in Blue Color", 2, 30));
-        prod.add(new Product("p0010", "LXY Pack", "Floral Arrangement", "Made by Lim Xin Yi", 200, 5));
-        prod.add(new Product("p0011", "100% Love You", "Bouquet", "100 Red Rose", 100, 8));
-        prod.add(new Product("p0012", "HZW Pack", "Floral Arrangement", "Made by Hoe Zhi Wen", 200, 5));
+//        prod.add(new Product("p0001", "Red Rose", "Fresh Flower", "Rose in Red Color", 2, 30));
+//        prod.add(new Product("p0002", "I Love You", "Bouquet", "520 Rose", 520, 5));
+//        prod.add(new Product("p0003", "LWY Pack", "Floral Arrangement", "Made by Low Wei Yin", 200, 5));
+//        prod.add(new Product("p0004", "Love You Forever", "Bouquet", "1001 Rose", 1000, 3));
+//        prod.add(new Product("p0005", "TJH Pack", "Floral Arrangement", "Made by Tai Jia Hao", 200, 5));
+//        prod.add(new Product("p0006", "White Rose", "Fresh Flower", "Rose in White Color", 2, 30));
+//        prod.add(new Product("p0007", "Pink Rose", "Fresh Flower", "Rose in Pink Color", 2, 30));
+//        prod.add(new Product("p0008", "GCY Pack", "Floral Arrangement", "Made by Goh Ching Yaw", 200, 5));
+//        prod.add(new Product("p0009", "Blue Rose", "Fresh Flower", "Rose in Blue Color", 2, 30));
+//        prod.add(new Product("p0010", "LXY Pack", "Floral Arrangement", "Made by Lim Xin Yi", 200, 5));
+//        prod.add(new Product("p0011", "100% Love You", "Bouquet", "100 Red Rose", 100, 8));
+//        prod.add(new Product("p0012", "HZW Pack", "Floral Arrangement", "Made by Hoe Zhi Wen", 200, 5));
         do {
             System.out.printf("\n" + "Catalog Maintenance\n");
             System.out.println("1) View Product");
@@ -61,7 +67,7 @@ public class CatalogMaintenance {
                     searchProduct();
                     break;
                 case "5":
-                    System.out.println("CheckStock");
+                    checkStock();
                     break;
                 case "6":
                     break;
@@ -75,10 +81,10 @@ public class CatalogMaintenance {
                     }
             }
         } while (!option.equals("6"));
-
     }
 
     public void viewProduct() {
+        ListInterface<Product> prodList = readProdDatList();
         String option = null;
         do {
             System.out.println();
@@ -93,16 +99,16 @@ public class CatalogMaintenance {
 
             switch (option) {
                 case "1":
-                    viewFlower(prod, "1");
+                    viewFlowerList(prodList, "1");
                     break;
                 case "2":
-                    viewFlower(prod, "2");
+                    viewFlowerList(prodList, "2");
                     break;
                 case "3":
-                    viewFlower(prod, "3");
+                    viewFlowerList(prodList, "3");
                     break;
                 case "4":
-                    viewAll(prod);
+                    viewAll(prodList);
                     break;
                 case "5":
                     break;
@@ -202,6 +208,7 @@ public class CatalogMaintenance {
     }
 
     public void searchByProduct() {
+        ListInterface<Product> prod = readProdDatList();
         String userInput = null;
         String nextSearch = null;
         boolean isContinue = false;
@@ -212,7 +219,7 @@ public class CatalogMaintenance {
             for (int i = 0; i < prod.size(); i++) {
                 userInput = userInput.toLowerCase();
                 if (prod.get(i).getprodName().toLowerCase().contains(userInput) || prod.get(i).getprodDetail().toLowerCase().contains(userInput)) {
-                    getProductList(prod, i);
+                    getProductListFromDat(prod, i);
                 }
             }
             tailer();
@@ -233,30 +240,31 @@ public class CatalogMaintenance {
     }
 
     public void searchPriceOption(String option) {
+        ListInterface<Product> ProdList = readProdDatList();
         String priceInput = null;
         String priceInput2 = null;
 
-        if (option == "1") {
+        if ("1".equals(option)) {
             do {
                 System.out.print("Enter a price to search>");
                 priceInput = input.nextLine();
             } while (isDouble(priceInput) != true);
             header();
-            for (int i = 0; i < prod.size(); i++) {
-                if (prod.get(i).getprodPrice() >= Double.parseDouble(priceInput)) {
-                    getProductList(prod, i);
+            for (int i = 0; i < ProdList.size(); i++) {
+                if (ProdList.get(i).getprodPrice() >= Double.parseDouble(priceInput)) {
+                    getProductListFromDat(ProdList, i);
                 }
             }
             tailer();
-        } else if (option == "2") {
+        } else if ("2".equals(option)) {
             do {
                 System.out.print("Enter a price to search>");
                 priceInput = input.nextLine();
             } while (isDouble(priceInput) != true);
             header();
-            for (int i = 0; i < prod.size(); i++) {
-                if (prod.get(i).getprodPrice() <= Double.parseDouble(priceInput)) {
-                    getProductList(prod, i);
+            for (int i = 0; i < ProdList.size(); i++) {
+                if (ProdList.get(i).getprodPrice() <= Double.parseDouble(priceInput)) {
+                    getProductListFromDat(ProdList, i);
                 }
             }
             tailer();
@@ -281,9 +289,9 @@ public class CatalogMaintenance {
             } while (isDouble(priceInput2) != true);
 
             header();
-            for (int i = 0; i < prod.size(); i++) {
-                if (prod.get(i).getprodPrice() >= Double.parseDouble(priceInput) && prod.get(i).getprodPrice() <= Double.parseDouble(priceInput2)) {
-                    getProductList(prod, i);
+            for (int i = 0; i < ProdList.size(); i++) {
+                if (ProdList.get(i).getprodPrice() >= Double.parseDouble(priceInput) && ProdList.get(i).getprodPrice() <= Double.parseDouble(priceInput2)) {
+                    getProductListFromDat(ProdList, i);
                 }
             }
             tailer();
@@ -291,14 +299,124 @@ public class CatalogMaintenance {
 
     }
 
-    public static void viewFlower(ArrayList<Product> al, String option) {
+    public void checkStock() {
+        ListInterface<Product> prodList = readProdDatList();
+        header();
+        for (int i = 0; i < prodList.size(); i++) {
+            if (prodList.get(i).getprodStock() == 0) {
+                getProductListFromDat(prodList, i);
+            }
+
+        }
+        tailer();
+        for (int i = 0; i < prodList.size(); i++) {
+            if (prodList.get(i).getprodStock() != 0) {
+                getProductListFromDat(prodList, i);
+            }
+        }
+        tailer();
+
+        String option = null;
+        do {
+            System.out.println();
+            System.out.println("Check Stock");
+            System.out.println("1) Add Stock");
+            System.out.println("2) Edit Stock");
+            System.out.println("3) Remove Stock");
+            System.out.println("4) Back");
+            System.out.print("Please enter your option>");
+            option = input.nextLine();
+
+            switch (option) {
+                case "1":
+                    StockMaintainOption(1);
+                    break;
+                case "2":
+                    StockMaintainOption(2);
+                    break;
+                case "3":
+                    StockMaintainOption(3);
+                    break;
+                case "4":
+                    break;
+                default:
+                    System.out.println("***Invalid input, please enter between 1 to 4.***");
+                    System.out.println("Press enter to continue...");
+                    try {
+                        System.in.read();
+                    } catch (IOException ex) {
+                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+            }
+        } while (!option.equals("4"));
+    }
+
+    private void StockMaintainOption(int option) {
+        ListInterface<Product> prodList = readProdDatList();
+        Product modProd = null;
+        int prodPosition = 0;
+        if (option == 1) {
+            boolean isCorrect = false;
+            String stockNum = null;
+            String userInput = null;
+            do {
+
+                System.out.print("Enter product ID to ADD Stock>");
+                userInput = input.nextLine();
+                for (int i = 0; i < prodList.size(); i++) {
+                    userInput = userInput.toLowerCase();
+                    if (prodList.get(i).getProdID().toLowerCase().equals(userInput)) {
+                        header();
+                        getProductListFromDat(prodList, i);
+                        tailer();
+                        isCorrect = true;
+                        prodPosition = i;
+                        modProd = prodList.get(i);
+                    }
+                }
+
+            } while (isCorrect != true);
+
+            System.out.println();
+            do {
+                System.out.print("Enter Number of Stock to ADD >");
+                stockNum = input.nextLine();
+
+                if (isInteger(stockNum) == true) {
+                    int total = modProd.getprodStock()+ Integer.parseInt(stockNum);
+                    modProd.setprodStock(total);
+                    prodList.update(prodPosition, modProd);
+                    writeProdDatList(prodList);
+                }
+            } while (isInteger(stockNum) != true);
+
+        }
+    }
+
+    public void viewFlowerList(ListInterface<Product> prodList, String option) {
+        header();
+        for (int i = 0; i < prodList.size(); i++) {
+            if ("Fresh Flower".equals(prodList.get(i).getprodType()) && "1".equals(option)) {
+                getProductListFromDat(prodList, i);
+            } else if ("Bouquet".equals(prodList.get(i).getprodType()) && "2".equals(option)) {
+                getProductListFromDat(prodList, i);
+            } else if ("Floral Arrangement".equals(prodList.get(i).getprodType()) && "3".equals(option)) {
+                getProductListFromDat(prodList, i);
+            }
+        }
+        tailer();
+        System.out.println();
+
+    }
+
+    public void viewFlower(ArrayList<Product> al, String option) { // for arraylist let people use
         header();
         for (int i = 0; i < al.size(); i++) {
-            if (al.get(i).getprodType() == "Fresh Flower" && option == "1") {
+            if ("Fresh Flower".equals(al.get(i).getprodType()) && "1".equals(option)) {
                 getProductList(al, i);
-            } else if (al.get(i).getprodType() == "Bouquet" && option == "2") {
+            } else if ("Bouquet".equals(al.get(i).getprodType()) && "2".equals(option)) {
                 getProductList(al, i);
-            } else if (al.get(i).getprodType() == "Floral Arrangement" && option == "3") {
+            } else if ("Floral Arrangement".equals(al.get(i).getprodType()) && "3".equals(option)) {
                 getProductList(al, i);
             }
         }
@@ -307,41 +425,35 @@ public class CatalogMaintenance {
 
     }
 
-    public static void viewAll(ArrayList<Product> al) {
+    public void viewAll(ListInterface<Product> prodList) {
+        prodList = readProdDatList();
         header();
-        //here maybe can use stack;
-        //push to stack ??
-        for (int i = 0; i < al.size(); i++) {
-            if (al.get(i).getprodType() == "Fresh Flower") {
-                getProductList(al, i);
+        for (int i = 0; i < prodList.size(); i++) {
+            if ("Fresh Flower".equals(prodList.get(i).getprodType())) {
+                getProductListFromDat(prodList, i);
             }
         }
-        for (int i = 0; i < al.size(); i++) {
-            if (al.get(i).getprodType() == "Bouquet") {
-                getProductList(al, i);
+        for (int i = 0; i < prodList.size(); i++) {
+            if ("Bouquet".equals(prodList.get(i).getprodType())) {
+                getProductListFromDat(prodList, i);
             }
         }
-        for (int i = 0; i < al.size(); i++) {
-            if (al.get(i).getprodType() == "Floral Arrangement") {
-                getProductList(al, i);
+        for (int i = 0; i < prodList.size(); i++) {
+            if ("Floral Arrangement".equals(prodList.get(i).getprodType())) {
+                getProductListFromDat(prodList, i);
             }
         }
         tailer();
         System.out.println();
-    }
-
-    public static void header() {
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Price", "Stock");
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
-    }
-
-    public static void tailer() {
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
     }
 
     public static void getProductList(ArrayList<Product> al, int i) {
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", prod.get(i).getProdID(), prod.get(i).getprodName(), prod.get(i).getprodType(), prod.get(i).getprodDetail(), prod.get(i).getprodPrice(), prod.get(i).getprodStock());
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock());
+    }
+
+    public void getProductListFromDat(ListInterface<Product> prodList, int i) {
+        prodList = readProdDatList();
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock());
     }
 
     public boolean isDouble(String userInput) {
@@ -355,4 +467,95 @@ public class CatalogMaintenance {
         }
         return isDouble;
     }
+
+    public boolean isInteger(String userInput) {
+        boolean isInt = true;
+        try {
+            int intValue = Integer.parseInt(userInput);
+            isInt = true;
+        } catch (NumberFormatException e) {
+            System.out.println("Input is not a valid integer");
+            isInt = false;
+        }
+        return isInt;
+    }
+
+    public ListInterface<Product> readProdDatList() {//get orderData from dat file with list
+        ListInterface<Product> prodDatList = new List<>();
+        //read data from CustomizedOrderData.dat
+        BufferedReader br = null;
+        FileReader fr = null;
+
+        try {
+            fr = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/Product.dat");
+            br = new BufferedReader(fr);
+
+            String sCurrentLine;
+
+            while ((sCurrentLine = br.readLine()) != null) {
+                String[] s = sCurrentLine.split("\\|");
+                Product prodEn = new Product(s[0], s[1], s[2], s[3], Double.parseDouble(s[4]), Integer.parseInt(s[5]));
+                prodDatList.add(prodEn);//add to list
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+                if (fr != null) {
+                    fr.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return prodDatList;
+    }
+
+    public void writeProdDatList(ListInterface<Product> prodList) {//Rewrite dat file
+        String s = "";
+        int size = prodList.size();
+
+        for (int i = 0; i < size; i++) {
+            Product prodEn = prodList.remove(0);
+            s += prodEn.getProdID() + "|" + prodEn.getprodName()+ "|" + prodEn.getprodType()+ "|" + prodEn.getprodDetail()+ "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
+        }
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+
+        try {
+            fw = new FileWriter("../LLTGH-Assignment/src/lltgh/rsd2g2/Product.dat");
+            bw = new BufferedWriter(fw);
+            bw.write(s);
+            System.out.println("Process Completed.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+                if (fw != null) {
+                    fw.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public static void header() {
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Price", "Stock");
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+    }
+
+    public static void tailer() {
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+    }
+
 }
