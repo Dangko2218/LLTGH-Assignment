@@ -30,6 +30,7 @@ public class LLTGHRSD2G2 {
         //change abit
 //        int i;
 //        String placeholder;
+//        Scanner scanner = new Scanner(System.in);
 //        for(i=1; i<24; i++){System.out.println();}
 //        placeholder = scanner.next();   
         
@@ -74,6 +75,7 @@ public class LLTGHRSD2G2 {
     }
     
     public String displayMainMenu(){
+
         System.out.println("\n\n\nWelcome to...");
         System.out.println("========================================================");
         System.out.println("                          LLTGH");
@@ -88,9 +90,8 @@ public class LLTGHRSD2G2 {
         System.out.println("5) Customized Floral Arrangements");
         System.out.println("6) Exit");
         System.out.print("Please enter your option > ");
-        Scanner scan = new Scanner(System.in);
-        String ans = scan.nextLine();
-        scan.close();
-        return ans;
-    }  
+        Scanner scanner = new Scanner(System.in); 
+        return scanner.nextLine();
+    }
+    
 }
