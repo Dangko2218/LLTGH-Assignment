@@ -11,28 +11,25 @@ package Customized;
  */
 public class CustomizedEntity implements Comparable<CustomizedEntity>{
 
-    private String OrderNo;
-    private String custID;
-    private String style;
-    private String size;
-    private String type;
-    private String acc;
-    private int prior;
-    private int price;
-    private int status;
+    private String OrderNo, custID, style, size, type1, type2, type3, acc1, acc2, acc3, itemCode, itemName, itemStatus;
+    int prior, price, status, itemPrice;
     
-    public CustomizedEntity(String OrderNo, String custID, String style, String size, String type, String acc, int prior, int price, int status) {
+    public CustomizedEntity(String OrderNo, String custID, String style, String size, String type1, String type2, String type3, String acc1, String acc2, String acc3, int prior, int price, int status) {
         this.OrderNo = OrderNo;
         this.custID = custID;
         this.style = style;
         this.size = size;
-        this.type = type;
-        this.acc = acc;
+        this.type1 = type1;
+        this.type2 = type2;
+        this.type3 = type3;
+        this.acc1 = acc1;
+        this.acc2 = acc2;
+        this.acc3 = acc3;
         this.prior = prior;
         this.price = price;
         this.status = status;
     }
-    
+
     public String getOrderNo() {
         return OrderNo;
     }
@@ -65,20 +62,52 @@ public class CustomizedEntity implements Comparable<CustomizedEntity>{
         this.size = size;
     }
     
-    public String getType() {
-        return type;
+    public String getType1() {
+        return type1;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setType1(String type1) {
+        this.type1 = type1;
     }
     
-    public String getAcc() {
-        return acc;
+    public String getType2() {
+        return type2;
     }
 
-    public void setAcc(String acc) {
-        this.acc = acc;
+    public void setType2(String type2) {
+        this.type2 = type2;
+    }
+    
+    public String getType3() {
+        return type3;
+    }
+
+    public void setType3(String type3) {
+        this.type3 = type3;
+    }
+    
+    public String getAcc1() {
+        return acc1;
+    }
+
+    public void setAcc1(String acc1) {
+        this.acc1 = acc1;
+    }
+    
+    public String getAcc2() {
+        return acc2;
+    }
+
+    public void setAcc2(String acc2) {
+        this.acc2 = acc2;
+    }
+    
+    public String getAcc3() {
+        return acc3;
+    }
+
+    public void setAcc3(String acc3) {
+        this.acc3 = acc3;
     }
     
     public int getPrior() {
@@ -103,6 +132,45 @@ public class CustomizedEntity implements Comparable<CustomizedEntity>{
 
     public void setStatus(int status) {
         this.status = status;
+    }
+    
+    public CustomizedEntity(String itemCode, String itemName, int itemPrice, String itemStatus){
+        this.itemCode = itemCode;
+        this.itemName = itemName;
+        this.itemPrice = itemPrice;
+        this.itemStatus = itemStatus;
+    }
+    
+    public String getItemCode() {
+        return itemCode;
+    }
+
+    public void setItemCode(String itemCode) {
+        this.itemCode = itemCode;
+    }
+    
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+    
+    public int getItemPrice() {
+        return itemPrice;
+    }
+
+    public void setItemPrice(int itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+    
+    public String getItemStatus() {
+        return itemStatus;
+    }
+
+    public void setItemStatus(String itemStatus) {
+        this.itemStatus = itemStatus;
     }
 
     public int compareTo(CustomizedEntity customized) {
