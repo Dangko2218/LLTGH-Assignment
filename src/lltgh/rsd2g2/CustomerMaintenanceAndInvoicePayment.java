@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 public class CustomerMaintenanceAndInvoicePayment {
 
     Scanner scan = new Scanner(System.in);
-    String addMore = null;
-    String cmipSelection = null;
+    String addMore = null, cmipSelection = null;
+    static int index = 1;
 
     //testing?
     public void printTest() {
@@ -110,17 +110,10 @@ public class CustomerMaintenanceAndInvoicePayment {
         invoice.add(inv3);
 
         System.out.println(invoice.toString());//get all items detail from all the linkedList's nodes
-        //-------------------------------------------------------------
-
-        //System.out.println(invoice.get(0).getCustID());
-        //System.out.println(invoice.get(1).getItemName());
-        //System.out.println(invoice.get(2).getInvoiceNo());
-        //System.out.println(invoice.get(0).getGrandTotal());
     }
 
     public String genInvID() {
         String prefix = "INV";
-        int index = 1;
         String invNo = prefix + String.format("%04d", index);
         index++;
 
