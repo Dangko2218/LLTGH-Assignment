@@ -5,10 +5,14 @@
  */
 package lltgh.rsd2g2;
 
+import Customized.ListInterface;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,23 +30,25 @@ public class CatalogOrders {
     private Order order = new Order();
     private List<Order> orderList = new ArrayList<>();
 
-    CatalogMaintenance CM = new CatalogMaintenance();
-
     public void printTest() {
-
-        System.out.println("\n========================================================");
-        System.out.println("                     Catalog Order");
-        System.out.println("========================================================");
-
 //        getCustId();
         int typeOpt = orderItem();
         switch (typeOpt) {
             case -1:
                 break;
             default:
-                pickUpMethod();
-                getAddress();
-                generateSO();   //sales order?
+                int methodOpt = pickUpMethod();
+                if (methodOpt == 1) {
+                    order.setMethod("Pick up");
+                    pickUpDate();
+                    pickUpTime();
+                } else {
+                    order.setMethod("Delivery");
+                    pickUpDate();
+                    pickUpTime();
+                    getAddress();
+                }
+                generateSO();
         }
     }
 
@@ -60,22 +66,22 @@ public class CatalogOrders {
 //    }
     public int orderItem() {
         int typeOpt, actOpt = 0;
-
-        typeOpt = itemMenu();
-        switch (typeOpt) {
-            case -1:
-                break;
-            default:
-                actOpt = moreItem();
-                while (actOpt == 1) {
-                    System.out.println("\n========================================================");
-                    System.out.println("                     Catalog Order");
-                    System.out.println("========================================================");
-
-                    orderItem();
+        valid=true;
+        
+        do{
+            typeOpt = itemMenu();
+            switch (typeOpt) {
+                case -1:
                     break;
-                }
-        }
+                default:
+                    getQuantity();
+                    actOpt = moreItem();
+                    while (actOpt == 1) {
+                        valid=false;
+                        break;
+                    }
+            }
+        }while(valid==false);
         return typeOpt;
     }
 
@@ -83,6 +89,9 @@ public class CatalogOrders {
         int typeOpt = 0;
 
         do {
+            System.out.println("\n========================================================");
+            System.out.println("                     Catalog Order");
+            System.out.println("========================================================");
             System.out.println("1) Fresh Flowers");
             System.out.println("2) Bouquets");
             System.out.println("3) Floral Arrangement");
@@ -93,8 +102,7 @@ public class CatalogOrders {
                 typeOpt = scanner.nextInt();
                 if (typeOpt >= 1 && typeOpt <= 3) {
                     showDetail(typeOpt);
-                    getId(typeOpt);
-                    getQuantity();
+                    valid = getId(typeOpt);
                 } else if (typeOpt == -1) {
                     break;
                 } else {
@@ -111,54 +119,73 @@ public class CatalogOrders {
     }
 
     public void showDetail(int typeOpt) {
-        if (typeOpt == 1) {
-            CM.viewFlower(CM.prod, "1");
-        } else if (typeOpt == 2) {
-            CM.viewFlower(CM.prod, "2");
-        } else {
-            CM.viewFlower(CM.prod, "3");
+        ListInterface<Product> prodList = readProdDatList();
+
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Price", "Stock");
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+
+        for (int i = 0; i < prodList.size(); i++) {
+            String prodType = prodList.get(i).getprodType();
+            if (typeOpt == 1 && prodType.equals("Fresh Flower")) {
+                getProductListFromDat(i);
+            } else if (typeOpt == 2 && prodType.equals("Bouquet")) {
+                getProductListFromDat(i);
+            } else if (typeOpt == 3 && prodType.equals("Floral Arrangement")) {
+                getProductListFromDat(i);
+            }
         }
+
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|\n", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
     }
 
-    public void getId(int typeOpt) {
+    public boolean getId(int typeOpt) {
         String itemId;
 
         do {
-            System.out.print("Please enter item ID: ");
+            System.out.print("Please enter item ID(Enter -1 to back): ");
             itemId = scanner.next();
-            valid = chkItem(itemId, typeOpt);
-            if (valid == false) {
-                System.out.println("***The item ID is not exist.Please enter again.***\n");
+            if (itemId.equals("-1")) {
+                valid = false;
+                break;
+            } else {
+                valid = chkItem(itemId, typeOpt);
+                if (valid == false) {
+                    System.out.println("***The item ID is not exist.Please enter again.***\n");
+                }
             }
         } while (valid == false);
+        return valid;
     }
 
     public boolean chkItem(String itemId, int typeOpt) {
         valid = false;
         String prodId;
+        ListInterface<Product> prodList = readProdDatList();
 
-        for (int i = 0; i < CM.prod.size(); i++) {
-            if (typeOpt == 1 && CM.prod.get(i).getprodType() == "Fresh Flower") {
-                prodId = CM.prod.get(i).getProdID();
+        for (int i = 0; i < prodList.size(); i++) {
+            String prodType = prodList.get(i).getprodType();
+            if (typeOpt == 1 && prodType.equals("Fresh Flower")) {
+                prodId = prodList.get(i).getProdID();
                 if (itemId.equals(prodId)) {
-//                    order.setOrderItem(CM.prod.get(i).getprodName());
-                    iName = CM.prod.get(i).getprodName();
+//                    order.setOrderItem(prodList.get(i).getprodName());
+                    iName = prodList.get(i).getprodName();
                     valid = true;
                     break;
                 }
-            } else if (typeOpt == 2 && CM.prod.get(i).getprodType() == "Bouquet") {
-                prodId = CM.prod.get(i).getProdID();
+            } else if (typeOpt == 2 && prodType.equals("Bouquet")) {
+                prodId = prodList.get(i).getProdID();
                 if (itemId.equals(prodId)) {
-//                    order.setOrderItem(CM.prod.get(i).getprodName());
-                    iName = CM.prod.get(i).getprodName();
+//                    order.setOrderItem(prodList.get(i).getprodName());
+                    iName = prodList.get(i).getprodName();
                     valid = true;
                     break;
                 }
-            } else if (typeOpt == 3 && CM.prod.get(i).getprodType() == "Floral Arrangement") {
-                prodId = CM.prod.get(i).getProdID();
+            } else if (typeOpt == 3 && prodType.equals("Floral Arrangement")) {
+                prodId = prodList.get(i).getProdID();
                 if (itemId.equals(prodId)) {
-//                    order.setOrderItem(CM.prod.get(i).getprodName());
-                    iName = CM.prod.get(i).getprodName();
+//                    order.setOrderItem(prodList.get(i).getprodName());
+                    iName = prodList.get(i).getprodName();
                     valid = true;
                     break;
                 }
@@ -176,10 +203,6 @@ public class CatalogOrders {
                 quantity = scanner.nextInt();
                 if (quantity > 0) {
                     valid = chkStock(quantity);
-//                    if (valid == true) {
-//                        order.setOrderItem(iName);
-//                        order.setQuantity(quantity);
-//                    }
                 } else {
                     System.out.println("***Invalid input.Please enter again.***\n");
                     valid = false;
@@ -195,13 +218,13 @@ public class CatalogOrders {
     public boolean chkStock(int quantity) {
         valid = true;
         int numStock;
+        ListInterface<Product> prodList = readProdDatList();
 
-        for (int j = 0; j < CM.prod.size(); j++) {
-            if (iName.equals(CM.prod.get(j).getprodName())) {
-                numStock = CM.prod.get(j).getprodStock();
+        for (int j = 0; j < prodList.size(); j++) {
+            if (iName.equals(prodList.get(j).getprodName())) {
+                numStock = prodList.get(j).getprodStock();
                 if (numStock == 0) {
                     System.out.println("***There is no more stock.***\n");
-                    itemMenu();
                 } else if (numStock - quantity < 0) {
                     System.out.println("***There is no enough stock.***\n");
                     valid = false;
@@ -219,7 +242,7 @@ public class CatalogOrders {
         int actOpt = 0;
 
         do {
-            System.out.println("1) More items?");
+            System.out.println("\n1) More items?");
             System.out.println("2) Place order");
             System.out.print("Please enter option: ");
             try {
@@ -245,13 +268,14 @@ public class CatalogOrders {
     public void calTotal() {
         int size = order.getOrderItem().size();
         double price, total = 0.0;
+        ListInterface<Product> prodList = readProdDatList();
 
         for (int i = 0; i < size; i++) {     //orderItem array
             String itemName = (String) order.getOrderItem().get(i);
             int quantity = (int) order.getQuantity().get(i);
-            for (int j = 0; j < CM.prod.size(); j++) {    //product array
-                if (itemName.equals(CM.prod.get(j).getprodName())) {
-                    price = CM.prod.get(j).getprodPrice();
+            for (int j = 0; j < prodList.size(); j++) {    //product array
+                if (itemName.equals(prodList.get(j).getprodName())) {
+                    price = prodList.get(j).getprodPrice();
                     total += (price * quantity);
                     order.setTotal(total);
 
@@ -263,18 +287,21 @@ public class CatalogOrders {
     }
 
     private void updateStock(String itemName, int quantity) {
-        for (int j = 0; j < CM.prod.size(); j++) {
-            if (itemName.equals(CM.prod.get(j).getprodName())) {
-                int stock = CM.prod.get(j).getprodStock();
+        ListInterface<Product> prodList = readProdDatList();
+
+        for (int j = 0; j < prodList.size(); j++) {
+            if (itemName.equals(prodList.get(j).getprodName())) {
+                int stock = prodList.get(j).getprodStock();
                 stock -= quantity;
-                CM.prod.get(j).setprodStock(stock);
+                prodList.get(j).setprodStock(stock);
+                writeProdDatList(prodList);
                 break;
             }
         }
     }
 
-    public void pickUpMethod() {
-        int methodOpt;
+    public int pickUpMethod() {
+        int methodOpt=0;
 
         do {
             System.out.println("1) Pick up");
@@ -283,14 +310,7 @@ public class CatalogOrders {
             try {
                 valid = true;
                 methodOpt = scanner.nextInt();
-                if (methodOpt == 1) {
-                    order.setMethod("Pick up");
-                    pickUpDT();
-                } else if (methodOpt == 2) {
-                    order.setMethod("Delivery");
-                    pickUpDT();
-                    getAddress();
-                } else {
+                if (methodOpt < 1 || methodOpt > 2) {
                     System.out.println("***Invalid input!Please enter again.***\n");
                     valid = false;
                 }
@@ -300,51 +320,109 @@ public class CatalogOrders {
                 valid = false;
             }
         } while (valid == false);
+        return methodOpt;
     }
 
-    public void pickUpDT() {
+    public void pickUpDate() {
+        int day,month,year;
+        
         do {
-            System.out.println("Please enter pick up date: ");
-            System.out.print("Day: ");
-            int day = scanner.nextInt();
-            System.out.print("Month: ");
-            int month = scanner.nextInt();
-            System.out.print("Year: ");
-            int year = scanner.nextInt();
-            valid = chkDate(day, month, year);
+            valid=true;
+            System.out.println("\nPlease enter pick up date: ");
+            year=getYear();
+            month=getMonth();
+            day=getDay(month,year);
+            valid=cmpDate(day,month,year);
         } while (valid == false);
     }
-
-    public boolean chkDate(int day, int month, int year) {
+    
+    public int getYear(){
+        int year=0;
+        
         do {
-            valid = true;
-            switch (month) {
-                case 1:
-                case 3:
-                case 5:
-                case 7:
-                case 8:
-                case 10:
-                case 12:
+            valid=true;
+            try{
+                System.out.print("Year: ");
+                year = scanner.nextInt();
+                valid = chkYear(year);
+            } catch (InputMismatchException ex) {
+                System.out.println("***Invalid input!Please enter again.***\n");
+                scanner.next();
+                valid = false;
+            }
+        } while (valid == false);
+        return year;
+    }
+    
+    public boolean chkYear(int year){
+        valid=true;
+        
+        LocalDate today=LocalDate.now();
+        int toYear=today.getYear();
+        if(year<toYear){
+            System.out.println("***The year entered has passed.Please enter again.***\n");
+            valid=false;
+        }
+        return valid;
+    }
+    
+    public int getMonth(){
+        int month=0;
+        
+        do{
+            valid=true;
+            try {
+                System.out.print("Month: ");
+                month = scanner.nextInt();
+                valid = chkMonth(month);
+            } catch (InputMismatchException ex) {
+                System.out.println("***Invalid input!Please enter again.***\n");
+                scanner.next();
+                valid = false;
+            }
+        }while(valid==false);
+        return month;
+    }
+    
+    public boolean chkMonth(int month){
+        valid=true;
+        if(month<1 || month>12){
+            System.out.println("***Invalid month!Please enter again.***\n");
+            valid = false;
+        }
+        return valid;
+    }
+    
+    public int getDay(int month,int year){
+        int day=0;
+        
+        do{
+            valid=true;
+            try {
+                System.out.print("Day: ");
+                day = scanner.nextInt();
+                valid = chkDay(day, month, year);
+            } catch (InputMismatchException ex) {
+                System.out.println("***Invalid input!Please enter again.***\n");
+                scanner.next();
+                valid = false;
+            }
+        }while(valid==false);
+        return day;
+    }
+    
+    public boolean chkDay(int day,int month,int year){
+        valid=true;
+        switch (month) {
+                case 1:case 3:case 5:case 7:case 8:case 10:case 12:
                     if (day < 1 || day > 31) {
-                        System.out.println("***Invalid day!Please enter again.***\n");
-                        System.out.println("Month entered is: " + month);
-                        System.out.print("Day: ");
-                        int newDay = scanner.nextInt();
-                        day = newDay;
+                        System.out.println("***Invalid day!Please enter again.***\n");;
                         valid = false;
                     }
                     break;
-                case 4:
-                case 6:
-                case 9:
-                case 11:
+                case 4:case 6:case 9:case 11:
                     if (day < 1 || day > 30) {
                         System.out.println("***Invalid day!Please enter again.***\n");
-                        System.out.println("Month entered is: " + month);
-                        System.out.print("Day: ");
-                        int newDay = scanner.nextInt();
-                        day = newDay;
                         valid = false;
                     }
                     break;
@@ -353,57 +431,131 @@ public class CatalogOrders {
                         System.out.println("***Invalid day!Please enter again.***\n");
                         System.out.println("Month entered is: " + month);
                         System.out.println("This year is not a leap year.Only 28 days.");
-                        System.out.print("Day: ");
-                        int newDay = scanner.nextInt();
-                        day = newDay;
                         valid = false;
                     } else if ((year % 4 == 0) && (day < 1 || day > 29)) {
                         System.out.println("***Invalid day!Please enter again.***\n");
                         System.out.println("Month entered is: " + month);
                         System.out.println("This year is a leap year.Only 29 days.");
-                        System.out.print("Day: ");
-                        int newDay = scanner.nextInt();
-                        day = newDay;
                         valid = false;
                     }
                     break;
-                default:
-                    System.out.println("***Invalid month!Please enter again.***\n");
-                    System.out.print("Month: ");
-                    int newMonth = scanner.nextInt();
-                    month = newMonth;
-                    valid = false;
-                    break;
-            }
-        } while (valid == false);
-
-        String orderDate = day + "/" + month + "/" + year;
-        LocalDate date = LocalDate.of(year, month, day);
-        Date pDate = null;
-        try {
-            pDate = new SimpleDateFormat("dd/MM/yyyy").parse(orderDate);
-        } catch (ParseException ex) {
-            Logger.getLogger(CatalogOrders.class.getName()).log(Level.SEVERE, null, ex);
         }
-        valid = cmpDate(pDate, date);
-        if (valid == true) {
+        return valid;
+    }
+
+    public boolean cmpDate(int day,int month,int year) {
+        String orderDate = day + "/" + month + "/" + year;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
+        valid = true;
+
+        LocalDate toDate = LocalDate.now();
+        LocalDate pDate = LocalDate.parse(orderDate, formatter);
+        Period diff = Period.between(toDate, pDate);
+
+        if (pDate.isBefore(toDate)) {
+            System.out.println("***The date entered has passed.Please enter again.***");
+            valid = false;
+        } else if (diff.getMonths() > 2 || diff.getYears() > 0) {  //assume order only in 3 month ,count from 0
+            System.out.println("***The date entered is too far.Please enter another date.***");
+            valid = false;
+        }
+        
+        if(valid==true){
             order.setPDate(orderDate);
         }
         return valid;
     }
 
-    public boolean cmpDate(Date pDate, LocalDate date) {
+    public void pickUpTime(){
+        int hours,minutes;
+        String meridiem;
+        
+        do {
+            System.out.println("\nPlease enter pick up time: ");
+            hours=getHours();
+            minutes=getMinutes();
+            meridiem=getMeridiem();
+            
+            valid = chkTime(hours, minutes, meridiem);
+        } while (valid == false);
+    }
+    
+    public int getHours(){
+        int hours=0;
+
+        do{
+            valid=true;
+            try {
+                System.out.print("Hours(12-Hours form): ");
+                hours = scanner.nextInt();
+            } catch (InputMismatchException ex) {
+                System.out.println("***Invalid input!Please enter again.***\n");
+                scanner.next();
+                valid = false;
+            }
+        }while(valid==false);
+        return hours;
+    }
+    
+    public int getMinutes(){
+        int minutes=0;
+        
+        do{
+            valid=true;
+            try {
+                System.out.print("Minutes: ");
+                minutes = scanner.nextInt();
+            } catch (InputMismatchException ex) {
+                System.out.println("***Invalid input!Please enter again.***\n");
+                scanner.next();
+                valid = false;
+            }
+        }while(valid==false);
+        return minutes;
+    }
+    
+    public String getMeridiem(){
+        String meridiem=null;
+        
+        do{
+            valid = true;
+            System.out.print("AM or PM: ");
+            meridiem = scanner.next();
+            meridiem = meridiem.toUpperCase();
+            if (!"AM".equals(meridiem) || !"PM".equals(meridiem)) {
+                System.out.println("***Invalid input.Please enter again.***\n");
+                valid=false;
+            }
+        }while(valid==false);
+        return meridiem;
+    }
+    
+    public boolean chkTime(int hours, int minutes, String meridiem) {
         valid = true;
-        Date today = new Date();
+        
 
-        LocalDate toDate = LocalDate.now();
-        Period diff = Period.between(toDate, date);
-
-        if (pDate.before(today)) {
-            System.out.println("***The date entered has passed.Please enter again.***");
+        //Assume open from 9am to 5pm
+        if (minutes < 0 || minutes > 59) {
+            System.out.println("***Invalid minutes.Please enter again.***\n");
             valid = false;
-        } else if (diff.getMonths() > 2 || diff.getYears() > 0) {  //3 month ,count from 0
-            System.out.println("***The date entered is too far.Please enter another date.***");
+        } else if (hours < 1 || hours > 12) {
+            System.out.println("***Invalid hours.Please enter again.***\n");
+            valid = false;
+        } else {
+            switch (meridiem) {
+                case "AM":
+                    if (hours < 9 || hours > 11) {
+                        System.out.println("***Shop open from 9am.Please choose another time.***\n");
+                        valid = false;
+                    }
+                    break;
+                case "PM":
+                    if (hours != 12 && hours > 5) {
+                        System.out.println("***Shop closed on 5pm.Please choose another time.***\n");
+                        valid = false;
+                    }
+                    break;
+            }
         }
         return valid;
     }
@@ -413,37 +565,32 @@ public class CatalogOrders {
     }
 
     public void generateSO() {
-        double price=0;
-        
-        System.out.println("\n|-----------------------------|");
-        System.out.println("|         Sales  Order        |");
-        System.out.println("|-----------------------------|");
-        System.out.printf("|Order ID   : %-16s|", order.getOrderId());
-        System.out.printf("\n|%-29s|"," ");
-        System.out.printf("\n|Order Item : %-16s|"," ");
-        
+        double price = 0;
+        ListInterface<Product> prodList = readProdDatList();
+
+        System.out.println("\n|---------------------------------|");
+        System.out.println("|           Sales  Order          |");
+        System.out.println("|---------------------------------|");
+        System.out.printf("|Order ID   : %-20s|", order.getOrderId());
+        System.out.printf("\n|Order Item : %-20s|", " ");
+
         for (int i = 0; i < order.getOrderItem().size(); i++) {
-            String itemName=(String)order.getOrderItem().get(i);
-            for (int j = 0; j < CM.prod.size(); j++){
-                if (itemName.equals(CM.prod.get(j).getprodName())) {
-                    price = CM.prod.get(j).getprodPrice();
+            String itemName = (String) order.getOrderItem().get(i);
+            for (int j = 0; j < prodList.size(); j++) {
+                if (itemName.equals(prodList.get(j).getprodName())) {
+                    price = prodList.get(j).getprodPrice();
                     break;
                 }
             }
-            
-            if(i==0){
-                System.out.printf("\n|  %-18s%-10s%-3s|",order.getOrderItem().get(i),String.format("%.2f",price),order.getQuantity().get(i));
-            } else {
-                System.out.printf("\n|  %-18s%-4s|",order.getOrderItem().get(i),order.getQuantity().get(i));
-            }
+            System.out.printf("\n|   %-4s%-18s%-8s|", order.getQuantity().get(i), order.getOrderItem().get(i), String.format("%.2f", price));
         }
-        
-        System.out.printf("\n|Total      : %-16s|","RM" + String.format("%.2f",order.getTotal()));
-        System.out.printf("\n|Method     : %-16s|",order.getMethod());
-        System.out.printf("\n|Date       : %-16s|",order.getPDate());
-        System.out.printf("\n|Time       : %-16s|",order.getPTime());
-        System.out.println("\n|-----------------------------|");
-        
+
+        System.out.printf("\n|Total      : %-20s|", "RM" + String.format("%.2f", order.getTotal()));
+        System.out.printf("\n|Method     : %-20s|", order.getMethod());
+        System.out.printf("\n|Date       : %-20s|", order.getPDate());
+        System.out.printf("\n|Time       : %-20s|", order.getPTime());
+        System.out.println("\n|---------------------------------|");
+
         System.out.print("\nPress enter to continue...");
         try {
             System.in.read();
@@ -451,6 +598,78 @@ public class CatalogOrders {
             Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
         }
         //next customer please.......
+    }
+
+    //dat
+    public void writeProdDatList(ListInterface<Product> prodList) {
+        String s = "";
+        int size = prodList.size();
+
+        for (int i = 0; i < size; i++) {
+            Product prodEn = prodList.remove(0);
+            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
+        }
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+
+        try {
+            fw = new FileWriter("../LLTGH-Assignment/src/lltgh/rsd2g2/Product.dat");
+            bw = new BufferedWriter(fw);
+            bw.write(s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+                if (fw != null) {
+                    fw.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public ListInterface<Product> readProdDatList() {
+        ListInterface<Product> prodDatList = new Customized.List<>();
+        BufferedReader br = null;
+        FileReader fr = null;
+
+        try {
+            fr = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/Product.dat");
+            br = new BufferedReader(fr);
+
+            String sCurrentLine;
+
+            while ((sCurrentLine = br.readLine()) != null) {
+                String[] s = sCurrentLine.split("\\|");
+                Product prodEn = new Product(s[0], s[1], s[2], s[3], Double.parseDouble(s[4]), Integer.parseInt(s[5]));
+                prodDatList.add(prodEn);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+                if (fr != null) {
+                    fr.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return prodDatList;
+    }
+
+    public void getProductListFromDat(int i) {
+        ListInterface<Product> prodList = readProdDatList();
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock());
     }
 
 }
