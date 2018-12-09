@@ -25,6 +25,9 @@ public interface InvoiceADT {
     
     public void setItemPrice(double itemPrice);
     public double getItemPrice();
+
+    public void setItemQty(int qty);
+    public int getQty();
     
     public void setSubtotal(double subtotal);
     public double getSubtotal();
