@@ -20,9 +20,9 @@ public class CustomerMaintenanceAndInvoicePayment {
         System.out.println("These are the options you can choose:");
         System.out.println("1) Customer Registration");
         System.out.println("2) View Customer List");
-        System.out.println("3) To be confirmed");
-        System.out.println("4) To be confirmed");
-        System.out.println("5) To be confirmed");
+        System.out.println("3) Modify credit limit");
+        System.out.println("4) Customer Payment Status");
+        System.out.println("5) Print Monthly Invoice");
         System.out.println("6) Exit");
         System.out.print("Please enter your option > ");
         
@@ -34,11 +34,11 @@ public class CustomerMaintenanceAndInvoicePayment {
                 break;
             case "2":
                 DisplayCustomerList displayList = new DisplayCustomerList();
-                displayList.displayCust();
-                displayList.nCustList();
-                displayList.cCustList();
+                displayList.displayMenu();
                 break;
-            case "3":              
+            case "3":
+                EditCustDetails editCustDetail = new EditCustDetails();
+                editCustDetail.modCreditLimit();
                 break;                
             case "4":
                 break;                

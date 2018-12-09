@@ -1,0 +1,54 @@
+{
+    "version": "0.2.0",
+    "tasks":[
+        {
+            "taskName": "lltgh.rsd2g2.LLTGHRSD2G2",
+            "command": "java", 
+            "windows":{
+                "command": "C:\\Program Files\\Java\\jdk1.8.0_181\\bin\\javac.exe"
+            },
+            "args":[
+                "$file"
+            ]
+        },
+        {
+            "taskName": "lltgh.rsd2g2.LLTGHRSD2G2",
+            "command": "java", 
+            "windows":{
+                "command": "C:\\Program Files\\Java\\jdk1.8.0_181\\bin\\java.exe"
+            },
+            "args":[
+                "$fileBasenameNoExtension"
+            ]
+        },
+    ],
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch)",
+            "request": "launch",
+            "mainClass": "LLTGHRSD2G2.java",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-LLTGHRSD2G2",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "lltgh.rsd2g2.LLTGHRSD2G2",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Debug (Attach)",
+            "request": "attach",
+            "hostName": "localhost",
+            "port":0
+        }
+    ]
+}

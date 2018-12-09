@@ -21,6 +21,7 @@ public class CatalogOrders {
 
     private boolean valid;
     private Scanner scanner = new Scanner(System.in);
+    private String iName;
 
     private Order order = new Order();
     private List<Order> orderList = new ArrayList<>();
@@ -132,7 +133,7 @@ public class CatalogOrders {
         } while (valid == false);
     }
 
-    public boolean chkItem(String itemId,int typeOpt) {
+    public boolean chkItem(String itemId, int typeOpt) {
         valid = false;
         String prodId;
 
@@ -140,21 +141,24 @@ public class CatalogOrders {
             if (typeOpt == 1 && CM.prod.get(i).getprodType() == "Fresh Flower") {
                 prodId = CM.prod.get(i).getProdID();
                 if (itemId.equals(prodId)) {
-                    order.setOrderItem(CM.prod.get(i).getprodName());
+//                    order.setOrderItem(CM.prod.get(i).getprodName());
+                    iName = CM.prod.get(i).getprodName();
                     valid = true;
                     break;
                 }
             } else if (typeOpt == 2 && CM.prod.get(i).getprodType() == "Bouquet") {
                 prodId = CM.prod.get(i).getProdID();
                 if (itemId.equals(prodId)) {
-                    order.setOrderItem(CM.prod.get(i).getprodName());
+//                    order.setOrderItem(CM.prod.get(i).getprodName());
+                    iName = CM.prod.get(i).getprodName();
                     valid = true;
                     break;
                 }
             } else if (typeOpt == 3 && CM.prod.get(i).getprodType() == "Floral Arrangement") {
                 prodId = CM.prod.get(i).getProdID();
                 if (itemId.equals(prodId)) {
-                    order.setOrderItem(CM.prod.get(i).getprodName());
+//                    order.setOrderItem(CM.prod.get(i).getprodName());
+                    iName = CM.prod.get(i).getprodName();
                     valid = true;
                     break;
                 }
@@ -172,9 +176,10 @@ public class CatalogOrders {
                 quantity = scanner.nextInt();
                 if (quantity > 0) {
                     valid = chkStock(quantity);
-                    if (valid == true) {
-                        order.setQuantity(quantity);
-                    }
+//                    if (valid == true) {
+//                        order.setOrderItem(iName);
+//                        order.setQuantity(quantity);
+//                    }
                 } else {
                     System.out.println("***Invalid input.Please enter again.***\n");
                     valid = false;
@@ -186,26 +191,25 @@ public class CatalogOrders {
             }
         } while (valid == false);
     }
-    
+
     public boolean chkStock(int quantity) {
         valid = true;
-        int size = order.getOrderItem().size();
         int numStock;
 
-        for (int i = 0; i < size; i++) {
-            String itemName = (String) order.getOrderItem().get(i);
-            for (int j = 0; j < CM.prod.size(); j++) {
-                if (itemName.equals(CM.prod.get(j).getprodName())) {
-                    numStock = CM.prod.get(j).getprodStock();
-                    if (numStock == 0) {
-                        System.out.println("***There is no more stock.***\n");
-                        itemMenu();
-                    } else if (numStock - quantity < 0) {
-                        System.out.println("***There is no enough stock.***\n");
-                        valid = false;
-                    }
-                    break;
+        for (int j = 0; j < CM.prod.size(); j++) {
+            if (iName.equals(CM.prod.get(j).getprodName())) {
+                numStock = CM.prod.get(j).getprodStock();
+                if (numStock == 0) {
+                    System.out.println("***There is no more stock.***\n");
+                    itemMenu();
+                } else if (numStock - quantity < 0) {
+                    System.out.println("***There is no enough stock.***\n");
+                    valid = false;
+                } else {
+                    order.setOrderItem(iName);
+                    order.setQuantity(quantity);
                 }
+                break;
             }
         }
         return valid;
@@ -409,8 +413,38 @@ public class CatalogOrders {
     }
 
     public void generateSO() {
-        System.out.println(order);
-        System.out.print("Press enter to continue...");
+        double price=0;
+        
+        System.out.println("\n|-----------------------------|");
+        System.out.println("|         Sales  Order        |");
+        System.out.println("|-----------------------------|");
+        System.out.printf("|Order ID   : %-16s|", order.getOrderId());
+        System.out.printf("\n|%-29s|"," ");
+        System.out.printf("\n|Order Item : %-16s|"," ");
+        
+        for (int i = 0; i < order.getOrderItem().size(); i++) {
+            String itemName=(String)order.getOrderItem().get(i);
+            for (int j = 0; j < CM.prod.size(); j++){
+                if (itemName.equals(CM.prod.get(j).getprodName())) {
+                    price = CM.prod.get(j).getprodPrice();
+                    break;
+                }
+            }
+            
+            if(i==0){
+                System.out.printf("\n|  %-18s%-10s%-3s|",order.getOrderItem().get(i),String.format("%.2f",price),order.getQuantity().get(i));
+            } else {
+                System.out.printf("\n|  %-18s%-4s|",order.getOrderItem().get(i),order.getQuantity().get(i));
+            }
+        }
+        
+        System.out.printf("\n|Total      : %-16s|","RM" + String.format("%.2f",order.getTotal()));
+        System.out.printf("\n|Method     : %-16s|",order.getMethod());
+        System.out.printf("\n|Date       : %-16s|",order.getPDate());
+        System.out.printf("\n|Time       : %-16s|",order.getPTime());
+        System.out.println("\n|-----------------------------|");
+        
+        System.out.print("\nPress enter to continue...");
         try {
             System.in.read();
         } catch (IOException ex) {
