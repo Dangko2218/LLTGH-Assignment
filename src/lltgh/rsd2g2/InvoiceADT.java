@@ -5,6 +5,9 @@ public interface InvoiceADT {
     public void setInvoiceNo(String invoiceNo);
     public String getInvoiceNo();
     
+    public void setDate(String date);
+    public String getDate();
+    
     public void setCustID(String custID);
     public String getCustID();
     

@@ -4,25 +4,43 @@ public class InvLinkedList<T> implements InvListInterface<T> {
     Node lastNode = null;
     Node firstNode = null;
     private int numOfEnt = 0;
+    
+    public InvLinkedList(){
+        firstNode = new Node(null);
+        numOfEnt = 0;
+    }
 
     @Override
     public void add(T item) {
-        Node newNode = new Node(item);
-
-        if (isEmpty()){
-            firstNode = newNode;
-            lastNode = newNode;
-            numOfEnt++;
-        } else {
-            lastNode.next = newNode;
-            newNode.previous = lastNode;
-            lastNode = newNode;
-            numOfEnt++;
+        
+        if (firstNode == null)
+            firstNode = new Node(item);
+        
+        Node tempNode = new Node(item);
+        Node currentNode = firstNode;
+        
+        if (currentNode != null){
+            while (currentNode.next != null)
+                currentNode = currentNode.next;
+            currentNode.next = tempNode;
         }
+        numOfEnt++;
+//        Node newNode = new Node(item);
+//
+//        if (isEmpty()){
+//            firstNode = newNode;
+//            lastNode = newNode;
+//            numOfEnt++;
+//        } else {
+//            lastNode.next = newNode;
+//            newNode.previous = lastNode;
+//            lastNode = newNode;
+//            numOfEnt++;
+//        }
     }
     
     @Override
-    public T remove() {
+    public T remove(int index) {
         T item = null;
         if (!isEmpty()){
             if (lastNode.next == lastNode) {
@@ -59,22 +77,69 @@ public class InvLinkedList<T> implements InvListInterface<T> {
     }
 
     public String toString() {
-        String o = "";
-        o += print(firstNode);
-        return o;
+        String output = "";
+        if (firstNode != null){
+            Node currentNode = firstNode.next;
+            while(currentNode != null){
+                output += "[" + currentNode.data.toString() + "]" + "\n";
+                currentNode = currentNode.next;
+            }
+        }
+        //output += print(firstNode);
+        return output;
     }
 
     @Override
     public T get(int index) {
-        T result = null;
-        if (isEmpty() && index < numOfEnt){
-            Node currentNode = firstNode;
+        if (index < 0)
+            return null;
+        Node currentNode = null;
+        if (firstNode != null){
+            currentNode = firstNode.next;
             for (int i = 0; i < index; i++){
-                currentNode = currentNode.next;
+                if (currentNode.next == null)
+                    return null;
+                else currentNode = currentNode.next;
             }
-            result = currentNode.data;
+            return currentNode.data;
         }
-        return result;
+        return currentNode.data;
+//        T item = null;
+//        
+//        if (isEmpty() && index < numOfEnt){
+//            Node currentNode = firstNode;
+//            for (int i = 0; i < index; i++){
+//                currentNode = currentNode.next;
+//            }
+//            item = currentNode.data;
+//        }
+//        return item;
+    }
+
+//    @Override
+//    public boolean add(int index, T item) {
+//        if (index < 0 || index > size())
+//            return false;
+//        Node newNode = new Node(item);
+//        Node prev = null;
+//    }
+
+    @Override
+    public boolean contains(T item) {
+        if (firstNode == null)
+            return false;
+        if (firstNode.data == item){
+            System.out.println(firstNode);
+            return true;
+        }
+        while (firstNode.next != null) {
+            firstNode = firstNode.next;
+            if (firstNode.data == item){
+                System.out.println(firstNode);
+                return true;
+            }
+        }
+        return false;
     }
 
     public class Node {
@@ -83,8 +148,22 @@ public class InvLinkedList<T> implements InvListInterface<T> {
         Node previous;
         Invoice invoice = new Invoice();
 
-        public Node(T data){
-            this.data = data;
+        public Node(T item){
+            this.next = null;
+            this.data = item;
         }
+
+//        public Node(T item, Node next) {
+//            this.next = next;
+//            this.data = item;
+//        }
+//        
+//        public T get(){
+//            return data;
+//        }
+//        
+//        public Node next(){
+//            return next;
+//        }       
     }
 }
