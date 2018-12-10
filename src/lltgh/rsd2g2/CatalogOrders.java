@@ -34,20 +34,10 @@ public class CatalogOrders {
 //        getCustId();
         int typeOpt = orderItem();
         switch (typeOpt) {
-            case -1:
+            case -1:case 4:
                 break;
             default:
-                int methodOpt = pickUpMethod();
-                if (methodOpt == 1) {
-                    order.setMethod("Pick up");
-                    pickUpDate();
-                    pickUpTime();
-                } else {
-                    order.setMethod("Delivery");
-                    pickUpDate();
-                    pickUpTime();
-                    getAddress();
-                }
+                pickUpMethod();
                 generateSO();
         }
     }
@@ -66,22 +56,21 @@ public class CatalogOrders {
 //    }
     public int orderItem() {
         int typeOpt, actOpt = 0;
-        valid=true;
-        
-        do{
+        valid = true;
+
+        do {
             typeOpt = itemMenu();
             switch (typeOpt) {
-                case -1:
+                case -1:case 4:
                     break;
                 default:
                     getQuantity();
                     actOpt = moreItem();
-                    while (actOpt == 1) {
-                        valid=false;
-                        break;
+                    if (actOpt == 1 || actOpt == 3) {  //should it like this?
+                        valid = false;
                     }
             }
-        }while(valid==false);
+        } while (valid == false);
         return typeOpt;
     }
 
@@ -95,7 +84,8 @@ public class CatalogOrders {
             System.out.println("1) Fresh Flowers");
             System.out.println("2) Bouquets");
             System.out.println("3) Floral Arrangement");
-            System.out.print("Please select a product type(Enter -1 to back): ");
+            System.out.println("4) Back");
+            System.out.print("Please select a product type: ");
 
             try {
                 valid = true;
@@ -103,7 +93,7 @@ public class CatalogOrders {
                 if (typeOpt >= 1 && typeOpt <= 3) {
                     showDetail(typeOpt);
                     valid = getId(typeOpt);
-                } else if (typeOpt == -1) {
+                } else if (typeOpt == 4) {
                     break;
                 } else {
                     System.out.println("***Invalid input!Please enter again.***\n");
@@ -195,7 +185,7 @@ public class CatalogOrders {
     }
 
     public void getQuantity() {
-        int quantity;
+        int quantity = 0;
 
         do {
             System.out.print("Please enter quantity: ");
@@ -211,6 +201,11 @@ public class CatalogOrders {
                 System.out.println("***Invalid input!Please enter again.***\n");
                 scanner.next();
                 valid = false;
+            }
+
+            if (valid == true) {
+                order.setOrderItem(iName);
+                order.setQuantity(quantity);
             }
         } while (valid == false);
     }
@@ -228,10 +223,10 @@ public class CatalogOrders {
                 } else if (numStock - quantity < 0) {
                     System.out.println("***There is no enough stock.***\n");
                     valid = false;
-                } else {
-                    order.setOrderItem(iName);
-                    order.setQuantity(quantity);
-                }
+                }// else {
+//                    order.setOrderItem(iName);
+//                    order.setQuantity(quantity);
+//                }
                 break;
             }
         }
@@ -244,20 +239,24 @@ public class CatalogOrders {
         do {
             System.out.println("\n1) More items?");
             System.out.println("2) Place order");
+            System.out.println("3) Cancel order");
             System.out.print("Please enter option: ");
             try {
                 valid = true;
                 actOpt = scanner.nextInt();
-                if (actOpt != 1 && actOpt != 2) {
-                    System.out.println("***Invalid input!Please enter again.***\n");
-                    valid = false;
-                }
-                if (actOpt == 2) {
+                if (actOpt == 1) {
+                    break;
+                } else if (actOpt == 2) {
                     calTotal();
                     order.setOrderId();
+                } else if (actOpt == 3) {
+                    break;
+                } else {
+                    System.out.println("***Invalid input!Please enter again.***");
+                    valid = false;
                 }
             } catch (InputMismatchException ex) {
-                System.out.println("***Invalid input!Please enter again.***\n");
+                System.out.println("***Invalid input!Please enter again.***");
                 scanner.next();
                 valid = false;
             }
@@ -300,17 +299,26 @@ public class CatalogOrders {
         }
     }
 
-    public int pickUpMethod() {
-        int methodOpt=0;
+    public void pickUpMethod() {
+        int methodOpt = 0;
 
         do {
-            System.out.println("1) Pick up");
+            System.out.println("\n1) Pick up");
             System.out.println("2) Delivery");
             System.out.print("Please select pick up method: ");
             try {
                 valid = true;
                 methodOpt = scanner.nextInt();
-                if (methodOpt < 1 || methodOpt > 2) {
+                if (methodOpt == 1) {
+                    order.setMethod("Pick up");
+                    String orderDate=pickUpDate();
+                    pickUpTime(orderDate);
+                } else if (methodOpt == 2) {
+                    order.setMethod("Delivery");
+                    String orderDate=pickUpDate();
+                    pickUpTime(orderDate);
+                    getAddress();
+                } else {
                     System.out.println("***Invalid input!Please enter again.***\n");
                     valid = false;
                 }
@@ -320,28 +328,35 @@ public class CatalogOrders {
                 valid = false;
             }
         } while (valid == false);
-        return methodOpt;
     }
 
-    public void pickUpDate() {
-        int day,month,year;
-        
+    public String pickUpDate() {
+        int day, month, year;
+        String orderDate=null;
+
         do {
-            valid=true;
+            valid = true;
             System.out.println("\nPlease enter pick up date: ");
-            year=getYear();
-            month=getMonth();
-            day=getDay(month,year);
-            valid=cmpDate(day,month,year);
+            year = getYear();
+            month = getMonth();
+            day = getDay(month, year);
+
+            orderDate = day + "/" + month + "/" + year;
+            valid = cmpDate(orderDate);
+
+            if (valid == true) {
+                order.setPDate(orderDate);
+            }
         } while (valid == false);
+        return orderDate;
     }
-    
-    public int getYear(){
-        int year=0;
-        
+
+    public int getYear() {
+        int year = 0;
+
         do {
-            valid=true;
-            try{
+            valid = true;
+            try {
                 System.out.print("Year: ");
                 year = scanner.nextInt();
                 valid = chkYear(year);
@@ -353,24 +368,24 @@ public class CatalogOrders {
         } while (valid == false);
         return year;
     }
-    
-    public boolean chkYear(int year){
-        valid=true;
-        
-        LocalDate today=LocalDate.now();
-        int toYear=today.getYear();
-        if(year<toYear){
+
+    public boolean chkYear(int year) {
+        valid = true;
+
+        LocalDate today = LocalDate.now();
+        int toYear = today.getYear();
+        if (year < toYear) {
             System.out.println("***The year entered has passed.Please enter again.***\n");
-            valid=false;
+            valid = false;
         }
         return valid;
     }
-    
-    public int getMonth(){
-        int month=0;
-        
-        do{
-            valid=true;
+
+    public int getMonth() {
+        int month = 0;
+
+        do {
+            valid = true;
             try {
                 System.out.print("Month: ");
                 month = scanner.nextInt();
@@ -380,24 +395,24 @@ public class CatalogOrders {
                 scanner.next();
                 valid = false;
             }
-        }while(valid==false);
+        } while (valid == false);
         return month;
     }
-    
-    public boolean chkMonth(int month){
-        valid=true;
-        if(month<1 || month>12){
+
+    public boolean chkMonth(int month) {
+        valid = true;
+        if (month < 1 || month > 12) {
             System.out.println("***Invalid month!Please enter again.***\n");
             valid = false;
         }
         return valid;
     }
-    
-    public int getDay(int month,int year){
-        int day=0;
-        
-        do{
-            valid=true;
+
+    public int getDay(int month, int year) {
+        int day = 0;
+
+        do {
+            valid = true;
             try {
                 System.out.print("Day: ");
                 day = scanner.nextInt();
@@ -407,47 +422,55 @@ public class CatalogOrders {
                 scanner.next();
                 valid = false;
             }
-        }while(valid==false);
+        } while (valid == false);
         return day;
     }
-    
-    public boolean chkDay(int day,int month,int year){
-        valid=true;
+
+    public boolean chkDay(int day, int month, int year) {
+        valid = true;
         switch (month) {
-                case 1:case 3:case 5:case 7:case 8:case 10:case 12:
-                    if (day < 1 || day > 31) {
-                        System.out.println("***Invalid day!Please enter again.***\n");;
-                        valid = false;
-                    }
-                    break;
-                case 4:case 6:case 9:case 11:
-                    if (day < 1 || day > 30) {
-                        System.out.println("***Invalid day!Please enter again.***\n");
-                        valid = false;
-                    }
-                    break;
-                case 2:
-                    if ((year % 4 != 0) && (day < 1 || day > 28)) {
-                        System.out.println("***Invalid day!Please enter again.***\n");
-                        System.out.println("Month entered is: " + month);
-                        System.out.println("This year is not a leap year.Only 28 days.");
-                        valid = false;
-                    } else if ((year % 4 == 0) && (day < 1 || day > 29)) {
-                        System.out.println("***Invalid day!Please enter again.***\n");
-                        System.out.println("Month entered is: " + month);
-                        System.out.println("This year is a leap year.Only 29 days.");
-                        valid = false;
-                    }
-                    break;
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                if (day < 1 || day > 31) {
+                    System.out.println("***Invalid day!Please enter again.***\n");;
+                    valid = false;
+                }
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                if (day < 1 || day > 30) {
+                    System.out.println("***Invalid day!Please enter again.***\n");
+                    valid = false;
+                }
+                break;
+            case 2:
+                if ((year % 4 != 0) && (day < 1 || day > 28)) {
+                    System.out.println("***Invalid day!Please enter again.***\n");
+                    System.out.println("Month entered is: " + month);
+                    System.out.println("This year is not a leap year.Only 28 days.");
+                    valid = false;
+                } else if ((year % 4 == 0) && (day < 1 || day > 29)) {
+                    System.out.println("***Invalid day!Please enter again.***\n");
+                    System.out.println("Month entered is: " + month);
+                    System.out.println("This year is a leap year.Only 29 days.");
+                    valid = false;
+                }
+                break;
         }
         return valid;
     }
 
-    public boolean cmpDate(int day,int month,int year) {
-        String orderDate = day + "/" + month + "/" + year;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
+    public boolean cmpDate(String orderDate) {
         valid = true;
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
+        
         LocalDate toDate = LocalDate.now();
         LocalDate pDate = LocalDate.parse(orderDate, formatter);
         Period diff = Period.between(toDate, pDate);
@@ -459,103 +482,138 @@ public class CatalogOrders {
             System.out.println("***The date entered is too far.Please enter another date.***");
             valid = false;
         }
-        
-        if(valid==true){
-            order.setPDate(orderDate);
+        return valid;
+    }
+
+    public void pickUpTime(String orderDate) {
+        int hours, minutes;
+        String meridiem;
+
+        do {
+            System.out.println("\nPlease enter pick up time: ");
+            hours = getHours();
+            minutes = getMinutes();
+            meridiem = getMeridiem();
+            valid = chkOpenTime(hours, meridiem);
+            
+            if(valid==true){
+                if (meridiem.equals("AM") && hours == 12) {
+                    hours -= 12;
+                } else if (meridiem.equals("PM") && hours < 11) {
+                    hours += 12;
+                }
+
+                String orderDateTime = orderDate + " " + hours + ":" + minutes;
+                valid = cmpTime(orderDateTime);
+                if (valid == true) {
+                    String orderTime = hours + ":" + minutes + meridiem;
+                    order.setPTime(orderTime);
+                }
+            }
+        } while (valid == false);
+    }
+
+    public int getHours() {
+        int hours = 0;
+
+        do {
+            valid = true;
+            try {
+                System.out.print("Hours(12-Hours form): ");
+                hours = scanner.nextInt();
+                valid = chkHours(hours);
+            } catch (InputMismatchException ex) {
+                System.out.println("***Invalid input!Please enter again.***\n");
+                scanner.next();
+                valid = false;
+            }
+        } while (valid == false);
+        return hours;
+    }
+
+    public boolean chkHours(int hours) {
+        valid = true;
+        if (hours < 1 || hours > 12) {
+            System.out.println("***Invalid hours.Please enter again.***\n");
+            valid = false;
         }
         return valid;
     }
 
-    public void pickUpTime(){
-        int hours,minutes;
-        String meridiem;
-        
-        do {
-            System.out.println("\nPlease enter pick up time: ");
-            hours=getHours();
-            minutes=getMinutes();
-            meridiem=getMeridiem();
-            
-            valid = chkTime(hours, minutes, meridiem);
-        } while (valid == false);
-    }
-    
-    public int getHours(){
-        int hours=0;
+    public int getMinutes() {
+        int minutes = 0;
 
-        do{
-            valid=true;
-            try {
-                System.out.print("Hours(12-Hours form): ");
-                hours = scanner.nextInt();
-            } catch (InputMismatchException ex) {
-                System.out.println("***Invalid input!Please enter again.***\n");
-                scanner.next();
-                valid = false;
-            }
-        }while(valid==false);
-        return hours;
-    }
-    
-    public int getMinutes(){
-        int minutes=0;
-        
-        do{
-            valid=true;
+        do {
+            valid = true;
             try {
                 System.out.print("Minutes: ");
                 minutes = scanner.nextInt();
+                valid = chkMinutes(minutes);
             } catch (InputMismatchException ex) {
                 System.out.println("***Invalid input!Please enter again.***\n");
                 scanner.next();
                 valid = false;
             }
-        }while(valid==false);
+        } while (valid == false);
         return minutes;
     }
-    
-    public String getMeridiem(){
-        String meridiem=null;
-        
-        do{
+
+    public boolean chkMinutes(int minutes) {
+        valid = true;
+        if (minutes < 0 || minutes > 59) {
+            System.out.println("***Invalid minutes.Please enter again.***\n");
+            valid = false;
+        }
+        return valid;
+    }
+
+    public String getMeridiem() {
+        String meridiem = null;
+
+        do {
             valid = true;
             System.out.print("AM or PM: ");
             meridiem = scanner.next();
             meridiem = meridiem.toUpperCase();
-            if (!"AM".equals(meridiem) || !"PM".equals(meridiem)) {
+            if (!"AM".equals(meridiem) && !"PM".equals(meridiem)) {
                 System.out.println("***Invalid input.Please enter again.***\n");
-                valid=false;
+                valid = false;
             }
-        }while(valid==false);
+        } while (valid == false);
         return meridiem;
     }
-    
-    public boolean chkTime(int hours, int minutes, String meridiem) {
+
+    public boolean chkOpenTime(int hours, String meridiem) {
         valid = true;
-        
 
         //Assume open from 9am to 5pm
-        if (minutes < 0 || minutes > 59) {
-            System.out.println("***Invalid minutes.Please enter again.***\n");
+        switch (meridiem) {
+            case "AM":
+                if (hours < 9 || hours > 11) {
+                    System.out.println("***Shop open from 9am.Please choose another time.***\n");
+                    valid = false;
+                }
+                break;
+            case "PM":
+                if (hours != 12 && hours > 4) {
+                    System.out.println("***Shop closed on 5pm.Please choose another time.***\n");
+                    valid = false;
+                }
+                break;
+        }
+        return valid;
+    }
+
+    public boolean cmpTime(String orderDateTime) {
+        valid = true;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y H:m");
+        
+        LocalDateTime toTime = LocalDateTime.now();
+        LocalDateTime pTime=LocalDateTime.parse(orderDateTime,formatter);
+        
+        if(pTime.isBefore(toTime)){
+            System.out.println("***The time entered has passed.Please enter again.***");
             valid = false;
-        } else if (hours < 1 || hours > 12) {
-            System.out.println("***Invalid hours.Please enter again.***\n");
-            valid = false;
-        } else {
-            switch (meridiem) {
-                case "AM":
-                    if (hours < 9 || hours > 11) {
-                        System.out.println("***Shop open from 9am.Please choose another time.***\n");
-                        valid = false;
-                    }
-                    break;
-                case "PM":
-                    if (hours != 12 && hours > 5) {
-                        System.out.println("***Shop closed on 5pm.Please choose another time.***\n");
-                        valid = false;
-                    }
-                    break;
-            }
         }
         return valid;
     }
@@ -572,6 +630,7 @@ public class CatalogOrders {
         System.out.println("|           Sales  Order          |");
         System.out.println("|---------------------------------|");
         System.out.printf("|Order ID   : %-20s|", order.getOrderId());
+        System.out.printf("\n|%-33s|", " ");
         System.out.printf("\n|Order Item : %-20s|", " ");
 
         for (int i = 0; i < order.getOrderItem().size(); i++) {
@@ -582,10 +641,11 @@ public class CatalogOrders {
                     break;
                 }
             }
-            System.out.printf("\n|   %-4s%-18s%-8s|", order.getQuantity().get(i), order.getOrderItem().get(i), String.format("%.2f", price));
+            System.out.printf("\n|    %s%-18s%-8s|", order.getQuantity().get(i) + "x ", order.getOrderItem().get(i), String.format("%.2f", price));
         }
 
-        System.out.printf("\n|Total      : %-20s|", "RM" + String.format("%.2f", order.getTotal()));
+        System.out.printf("\n|Total      : RM%-10s%-8s|", " ", String.format("%.2f", order.getTotal()));
+        System.out.printf("\n|%-33s|", " ");
         System.out.printf("\n|Method     : %-20s|", order.getMethod());
         System.out.printf("\n|Date       : %-20s|", order.getPDate());
         System.out.printf("\n|Time       : %-20s|", order.getPTime());
