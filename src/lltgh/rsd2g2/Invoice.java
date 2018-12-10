@@ -3,8 +3,9 @@ package lltgh.rsd2g2;
 public class Invoice implements InvoiceADT{
 
     private String invoiceNo =  null, custID = null, custName = null, custContact = null, custCorp = null, corpAddr = null;
-    private String itemName = null, invoiceStatus = null;
-    private double itemPrice = 0, subtotal = 0, grandTotal = 0;    
+    private String itemName = null, invoiceStatus = null, date = null;
+    private double itemPrice = 0, subtotal = 0, grandTotal = 0;
+    private int qty;
     
     @Override
     public void setInvoiceNo(String invoiceNo) {
@@ -14,6 +15,16 @@ public class Invoice implements InvoiceADT{
     @Override
     public String getInvoiceNo() {
         return invoiceNo;
+    }
+    
+    @Override
+    public void setDate(String date){
+        this.date = date;
+    }
+    
+    @Override
+    public String getDate(){
+        return date;
     }
 
     @Override
@@ -87,6 +98,16 @@ public class Invoice implements InvoiceADT{
     }
 
     @Override
+    public void setItemQty(int qty) {
+        this.qty = qty;
+    }
+
+    @Override
+    public int getQty() {
+        return qty;
+    }
+
+    @Override
     public void setSubtotal(double subtotal) {
         this.subtotal = subtotal;
     }
@@ -114,5 +135,22 @@ public class Invoice implements InvoiceADT{
     @Override
     public String getInvoiceStatus() {
         return invoiceStatus;
-    }    
+    }
+    
+    public String toString() {
+        String s = "Invoice No: " + invoiceNo + "\n"
+                + "Date: " + date + "\n"
+                + "Customer ID: " + custID + "\n"
+                + "Customer: " + custName + "\n"
+                + "Contact No: " + custContact + "\n"
+                + "Corporation: " + custCorp + "\n"
+                + "Address: " + corpAddr + "\n"
+                + "Item: " + itemName + "\n"
+                + "Unit Price: " + itemPrice + "\n"
+                + "Quantity: " + qty + "\n"
+                + "Subtotal: " + subtotal + "\n"
+                + "Grand Total: " + grandTotal + "\n"
+                + "Status: " + invoiceStatus + "\n";
+        return s;
+    }
 }

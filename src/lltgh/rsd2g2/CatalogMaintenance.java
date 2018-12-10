@@ -7,6 +7,7 @@ package lltgh.rsd2g2;
 
 import Customized.List;
 import Customized.ListInterface;
+import Customized.QueueInterface;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -300,24 +301,41 @@ public class CatalogMaintenance {
     }
 
     public void checkStock() {
-        ListInterface<Product> prodList = readProdDatList();
-        header();
-        for (int i = 0; i < prodList.size(); i++) {
-            if (prodList.get(i).getprodStock() == 0) {
-                getProductListFromDat(prodList, i);
-            }
-
-        }
-        tailer();
-        for (int i = 0; i < prodList.size(); i++) {
-            if (prodList.get(i).getprodStock() != 0) {
-                getProductListFromDat(prodList, i);
-            }
-        }
-        tailer();
-
         String option = null;
+        int prodPosition = 0;
+        int hole = 0;
+
         do {
+            ListInterface<Product> prodList = readProdDatList();
+            Product tempProd = null;
+            Product modProd = null;
+            header();
+            for (int i = 0; i < prodList.size(); i++) {
+                if (prodList.get(i).getprodStock() == 0) {
+                    getProductListFromDat(prodList, i);
+                }
+
+            }
+            tailer();
+            for (int i = 1; i < prodList.size(); i++) {
+                tempProd = prodList.get(i);
+                hole = i;
+                while (hole > 0 && prodList.get(hole - 1).getprodStock() >= tempProd.getprodStock()) {
+                    prodList.remove(hole);
+                    prodList.add(hole - 1, prodList.get(hole));
+                    hole--;
+                }
+                prodList.remove(hole);
+                prodList.add(hole, tempProd);
+
+            }
+            prodList = readProdDatList();
+            for (int i = 0; i < prodList.size(); i++) {
+                if (prodList.get(i).getprodStock() != 0) {
+                    getProductListFromDat(prodList, i);
+                }
+            }
+            tailer();
             System.out.println();
             System.out.println("Check Stock");
             System.out.println("1) Add Stock");
@@ -329,13 +347,13 @@ public class CatalogMaintenance {
 
             switch (option) {
                 case "1":
-                    StockMaintainOption(1);
+                    addStock(prodList, prodPosition, modProd);
                     break;
                 case "2":
-                    StockMaintainOption(2);
+                    editStock(prodList, prodPosition, modProd);
                     break;
                 case "3":
-                    StockMaintainOption(3);
+                    removeStock(prodList, prodPosition, modProd);
                     break;
                 case "4":
                     break;
@@ -351,46 +369,173 @@ public class CatalogMaintenance {
         } while (!option.equals("4"));
     }
 
-    private void StockMaintainOption(int option) {
-        ListInterface<Product> prodList = readProdDatList();
-        Product modProd = null;
-        int prodPosition = 0;
-        if (option == 1) {
-            boolean isCorrect = false;
-            String stockNum = null;
-            String userInput = null;
-            do {
+    public void addStock(ListInterface<Product> prodList, int prodPosition, Product modProd) {
+        boolean isCorrect = false;
+        boolean isValid = false;
+        String stockNum = null;
+        String userInput = null;
+        String confirmation = null;
+        int total = 0;
+        do {
+            System.out.print("Enter Product ID>");
+            userInput = input.nextLine();
+            for (int i = 0; i < prodList.size(); i++) {
+                userInput = userInput.toLowerCase();
 
-                System.out.print("Enter product ID to ADD Stock>");
-                userInput = input.nextLine();
-                for (int i = 0; i < prodList.size(); i++) {
-                    userInput = userInput.toLowerCase();
-                    if (prodList.get(i).getProdID().toLowerCase().equals(userInput)) {
-                        header();
-                        getProductListFromDat(prodList, i);
-                        tailer();
-                        isCorrect = true;
-                        prodPosition = i;
-                        modProd = prodList.get(i);
-                    }
+                if (prodList.get(i).getProdID().toLowerCase().contains(userInput) || prodList.get(i).getprodName().toLowerCase().contains(userInput) || prodList.get(i).getprodDetail().toLowerCase().contains(userInput)) {
+                    header();
+                    getProductListFromDat(prodList, i);
+                    tailer();
+                    isCorrect = true;
+                    prodPosition = i;
+                    modProd = prodList.get(i);
+                    break;
+                } else {
+                    isCorrect = false;
                 }
+            }
+            if (isCorrect == false) {
+                System.out.println("Invalid Input!!!");
 
-            } while (isCorrect != true);
+            }
+        } while (isCorrect != true);
 
-            System.out.println();
+        System.out.println();
+        do {
             do {
                 System.out.print("Enter Number of Stock to ADD >");
                 stockNum = input.nextLine();
-
-                if (isInteger(stockNum) == true) {
-                    int total = modProd.getprodStock()+ Integer.parseInt(stockNum);
-                    modProd.setprodStock(total);
-                    prodList.update(prodPosition, modProd);
-                    writeProdDatList(prodList);
+                if (isInteger(stockNum) == true && Integer.parseInt(stockNum) > 0) {
+                    System.out.print("Are u sure want to ADD " + stockNum + " into Stock?(Y/N)>");
+                    confirmation = input.nextLine();
+                    confirmation = confirmation.toLowerCase();
+                    if (confirmation.equals("yes") || confirmation.equals("ok") || confirmation.equals("y")) {
+                        total = modProd.getprodStock() + Integer.parseInt(stockNum);
+                        modProd.setprodStock(total);
+                        prodList.update(prodPosition, modProd);
+                        writeProdDatList(prodList);
+                        isValid = true;
+                    } else {
+                        break;
+                    }
+                } else {
+                    isValid = false;
+                    System.out.println("Stock to add cannot be 0 or less than 0!");
                 }
-            } while (isInteger(stockNum) != true);
+            } while (isValid != true);
+        } while (isInteger(stockNum) != true);
+    }
 
+    public void editStock(ListInterface<Product> prodList, int prodPosition, Product modProd) {
+        boolean isCorrect = false;
+        String stockNum = null;
+        String userInput = null;
+        String confirmation = null;
+        do {
+            System.out.print("Enter Product>");
+            userInput = input.nextLine();
+            for (int i = 0; i < prodList.size(); i++) {
+                userInput = userInput.toLowerCase();
+
+                if (prodList.get(i).getProdID().toLowerCase().contains(userInput) || prodList.get(i).getprodName().toLowerCase().contains(userInput) || prodList.get(i).getprodDetail().toLowerCase().contains(userInput)) {
+                    header();
+                    getProductListFromDat(prodList, i);
+                    tailer();
+                    isCorrect = true;
+                    prodPosition = i;
+                    modProd = prodList.get(i);
+                    break;
+                } else {
+                    isCorrect = false;
+                }
+            }
+            if (isCorrect == false) {
+                System.out.println("Invalid Input!!!");
+
+            }
+        } while (isCorrect != true);
+
+        System.out.println();
+        do {
+            System.out.print("Enter A Number to change Number of Stock >");
+            stockNum = input.nextLine();
+        } while (isInteger(stockNum) != true);
+
+        if (isInteger(stockNum) == true) {
+            System.out.print("Are u sure want to change " + prodList.get(prodPosition).getprodStock() + " to " + stockNum + " ?(Y/N)>");
+            confirmation = input.nextLine();
+            confirmation = confirmation.toLowerCase();
+            if (confirmation.equals("yes") || confirmation.equals("ok") || confirmation.equals("y")) {
+                modProd.setprodStock(Integer.parseInt(stockNum));
+                prodList.update(prodPosition, modProd);
+                writeProdDatList(prodList);
+            }
         }
+    }
+
+    public void removeStock(ListInterface<Product> prodList, int prodPosition, Product modProd) {
+        boolean isCorrect = false;
+        boolean isValid = false;
+        boolean isNotZero = false;
+        String stockNum = null;
+        String userInput = null;
+        String confirmation = null;
+        int total = 0;
+        do {
+            System.out.print("Enter Product>");
+            userInput = input.nextLine();
+            for (int i = 0; i < prodList.size(); i++) {
+                userInput = userInput.toLowerCase();
+
+                if (prodList.get(i).getprodStock() != 0) {
+                    if (prodList.get(i).getProdID().toLowerCase().contains(userInput) || prodList.get(i).getprodName().toLowerCase().contains(userInput) || prodList.get(i).getprodDetail().toLowerCase().contains(userInput)) {
+                        header();
+                        getProductListFromDat(prodList, i);
+                        tailer();
+                        isNotZero = true;
+                        isCorrect = true;
+                        prodPosition = i;
+                        modProd = prodList.get(i);
+                        break;
+                    } else {
+                        isCorrect = false;
+                    }
+                } else {
+                    isNotZero = false;
+                }
+            }
+            if (isCorrect == false) {
+                System.out.println("Invalid Input!!!");
+            }
+            if (isNotZero == false) {
+                System.out.println("You cannot remove product stock that is 0!!!");
+            }
+        } while (isCorrect != true);
+
+        System.out.println();
+        do {
+            do {
+                System.out.print("Enter Number of Stock to remove >");
+                stockNum = input.nextLine();
+                if (isInteger(stockNum) == true && Integer.parseInt(stockNum) <= modProd.getprodStock() && Integer.parseInt(stockNum) > 0) {
+                    System.out.print("Are u sure want to Remove " + stockNum + " from Stock?(Y/N)>");
+                    confirmation = input.nextLine();
+                    confirmation = confirmation.toLowerCase();
+                    if (confirmation.equals("yes") || confirmation.equals("ok") || confirmation.equals("y")) {
+                        total = modProd.getprodStock() - Integer.parseInt(stockNum);
+                        modProd.setprodStock(total);
+                        prodList.update(prodPosition, modProd);
+                        writeProdDatList(prodList);
+                        isValid = true;
+                    } else {
+                        break;
+                    }
+                } else {
+                    isValid = false;
+                    System.out.println("Stock to remove cannot be 0 and must less than original Stock!");
+                }
+            } while (isValid != true);
+        } while (isInteger(stockNum) != true);
     }
 
     public void viewFlowerList(ListInterface<Product> prodList, String option) {
@@ -452,7 +597,7 @@ public class CatalogMaintenance {
     }
 
     public void getProductListFromDat(ListInterface<Product> prodList, int i) {
-        prodList = readProdDatList();
+//        prodList = readProdDatList();
         System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock());
     }
 
@@ -518,10 +663,9 @@ public class CatalogMaintenance {
     public void writeProdDatList(ListInterface<Product> prodList) {//Rewrite dat file
         String s = "";
         int size = prodList.size();
-
         for (int i = 0; i < size; i++) {
             Product prodEn = prodList.remove(0);
-            s += prodEn.getProdID() + "|" + prodEn.getprodName()+ "|" + prodEn.getprodType()+ "|" + prodEn.getprodDetail()+ "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
+            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
         }
 
         BufferedWriter bw = null;
