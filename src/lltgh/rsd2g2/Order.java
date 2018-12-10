@@ -2,7 +2,7 @@ package lltgh.rsd2g2;
 
 import java.util.*;
 
-public class Order<T> implements OrderADT<T>{
+public class Order<T> implements OrderADT<T>{   //act as linked list?
     
     private String orderId;
     private List<String> orderItem;
@@ -24,16 +24,16 @@ public class Order<T> implements OrderADT<T>{
         address=null;
     }
     
-//    public Order(String orderId,String orderItem,int quantity,double total,String method,String pDate,String pTime,String address){
-//        this.orderId=orderId;
-//        this.orderItem.add(orderItem);
-//        this.quantity.add(quantity);
-//        this.total=total;
-//        this.method=method;
-//        this.pDate=pDate;
-//        this.pTime=pTime;
-//        this.address=address;
-//    }
+    public Order(String orderId,String orderItem,int quantity,double total,String method,String pDate,String pTime,String address){
+        this.orderId=orderId;
+        this.orderItem.add(orderItem);
+        this.quantity.add(quantity);
+        this.total=total;
+        this.method=method;
+        this.pDate=pDate;
+        this.pTime=pTime;
+        this.address=address;
+    }
     
     public void setOrderId(){
         int rNum = (int) (Math.random() * 999 + 1);
@@ -57,11 +57,11 @@ public class Order<T> implements OrderADT<T>{
         this.method=method;
     }
     
-    public void setPDate(String pDate){
+    public void setPDate(String pDate){  //dd/mm/yyyy
         this.pDate=pDate;
     }
     
-    public void setPTime(String pTime){
+    public void setPTime(String pTime){  //hh:mm
         this.pTime=pTime;
     }
     
