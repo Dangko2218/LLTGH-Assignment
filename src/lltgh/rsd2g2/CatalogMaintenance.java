@@ -329,7 +329,7 @@ public class CatalogMaintenance {
                 prodList.add(hole, tempProd);
 
             }
-
+            prodList = readProdDatList();
             for (int i = 0; i < prodList.size(); i++) {
                 if (prodList.get(i).getprodStock() != 0) {
                     getProductListFromDat(prodList, i);
@@ -459,19 +459,18 @@ public class CatalogMaintenance {
         do {
             System.out.print("Enter A Number to change Number of Stock >");
             stockNum = input.nextLine();
+        } while (isInteger(stockNum) != true);
+
+        if (isInteger(stockNum) == true) {
             System.out.print("Are u sure want to change " + prodList.get(prodPosition).getprodStock() + " to " + stockNum + " ?(Y/N)>");
             confirmation = input.nextLine();
             confirmation = confirmation.toLowerCase();
-            if (isInteger(stockNum) == true) {
-                if (confirmation.equals("yes") || confirmation.equals("ok") || confirmation.equals("y")) {
-                    modProd.setprodStock(Integer.parseInt(stockNum));
-                    prodList.update(prodPosition, modProd);
-                    writeProdDatList(prodList);
-                } else {
-                    break;
-                }
+            if (confirmation.equals("yes") || confirmation.equals("ok") || confirmation.equals("y")) {
+                modProd.setprodStock(Integer.parseInt(stockNum));
+                prodList.update(prodPosition, modProd);
+                writeProdDatList(prodList);
             }
-        } while (isInteger(stockNum) != true);
+        }
     }
 
     public void removeStock(ListInterface<Product> prodList, int prodPosition, Product modProd) {
@@ -518,7 +517,7 @@ public class CatalogMaintenance {
             do {
                 System.out.print("Enter Number of Stock to remove >");
                 stockNum = input.nextLine();
-                if (isInteger(stockNum) == true && Integer.parseInt(stockNum) < modProd.getprodStock() && Integer.parseInt(stockNum) > 0) {
+                if (isInteger(stockNum) == true && Integer.parseInt(stockNum) <= modProd.getprodStock() && Integer.parseInt(stockNum) > 0) {
                     System.out.print("Are u sure want to Remove " + stockNum + " from Stock?(Y/N)>");
                     confirmation = input.nextLine();
                     confirmation = confirmation.toLowerCase();
