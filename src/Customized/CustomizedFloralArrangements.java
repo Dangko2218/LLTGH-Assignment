@@ -75,20 +75,28 @@ public class CustomizedFloralArrangements {
         String size=String.format("%03d", custList.size()+1);
         orderNo = "ON" + size;
         
-        System.out.println("\n\n\n========================================================");
-        System.out.println("                 Customized for Consumer");
-        System.out.println("========================================================");
+        System.out.println("\n\n\n================================================");
+        System.out.println("             Customized for Consumer");
+        System.out.println("================================================");
+        System.out.println("|Customer ID    |Customer Name                 |");
+        System.out.println("------------------------------------------------");
+        System.out.println("|C0001          |Daniel                        |");
+        System.out.println("|C0002          |Jennie                        |");
+        System.out.println("|C0003          |Lisa                          |");
+        System.out.println("------------------------------------------------");
         
         //display consumer list
 //        do{
 //            System.out.println("\n\n\n========================================================");
 //            System.out.println("                        Consumer");
 //            System.out.println("========================================================");
-//            System.out.print("\nPlease Enter Consumer ID (Enter -1 to Exit) > ");
-//            consumer = scanner.nextLine();
+            System.out.print("Please Enter Consumer ID (Enter -1 to Exit) > ");
+            inputScanner = scanner.nextLine();
+            if(inputScanner.equals("-1"))
+                return false;
 //            chkConsumer = checkCustInput(consumer);
 //        }while(chkConsumer == false);
-        consumer = "C0001";
+        consumer = inputScanner.toUpperCase();
         custStyle = printItemMenu("ST");
         if(custStyle.equals("false"))
             return false;
@@ -196,18 +204,32 @@ public class CustomizedFloralArrangements {
 
         custList.add(newCustOrder);
         writeCustDatList(custList);
-        System.out.println("New Item Added SUCCESSFULLY!!");
-        System.out.println("\nTHANKS FOR YOUR ORDER.");
-        //display itemize bill
-        
         printItemizedBill(orderNo);
-        System.out.print("Press enter to continue...");
-        try {
-            System.in.read();
-        } catch (IOException ex) {
-             Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+        
+        do{
+            System.out.print("\nAre You CONFIRM to Add This New Customized Order?(Y/N) > ");
+            inputScanner = scanner.nextLine();
+            chkValid = checkNext(inputScanner); 
+        }while(chkValid == false);
+        
+        if(inputScanner.toUpperCase().equals("Y")){
+            System.out.println("\nNew Item Added SUCCESSFULLY!!");
+            System.out.println("THANKS FOR YOUR ORDER.");
+            
+            System.out.print("Press enter to continue...");
+            try {
+                System.in.read();
+            } catch (IOException ex) {
+                 Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            //System.out.println(custList.size()-1);
         }
-
+        else if(inputScanner.toUpperCase().equals("N")){
+            custList = readCustDatList();
+            System.out.println(custList.size()-1);
+            custList.remove(custList.size()-1);  
+            writeCustDatList(custList);    
+        }
         return true;
     }
     
@@ -709,22 +731,33 @@ public class CustomizedFloralArrangements {
         else if(inputScanner.equals("2"))
             status = 3;
 
-        update.setStatus(status);
-        orderListL.update(tempCount, update);
-        writeCustDatList(orderListL);
-        System.out.println("\n***Updated successfully!!***");
-        tempQueue.enqueue(update);
-        System.out.println("\n\n\n==============================================================================================================================================================================================================================================================");
-        System.out.println("                                                                                              Updated Status");
-        System.out.println("==============================================================================================================================================================================================================================================================");
-        printCustOrderList(tempQueue,0);  
+        do{
+            System.out.print("\nAre You CONFIRM to Modify This Status?(Y/N) > ");
+            inputScanner = scanner.nextLine();
+            chkValid = checkNext(inputScanner); 
+        }while(chkValid == false);
 
-        System.out.print("Press enter to continue...");
-        try {
-            System.in.read();
-        } catch (IOException ex) {
-            Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+        if(inputScanner.toUpperCase().equals("Y")){
+            update.setStatus(status);
+            orderListL.update(tempCount, update);
+            writeCustDatList(orderListL);
+            System.out.println("\n***Updated successfully!!***");
+            tempQueue.enqueue(update);
+            System.out.println("\n\n\n==============================================================================================================================================================================================================================================================");
+            System.out.println("                                                                                              Updated Status");
+            System.out.println("==============================================================================================================================================================================================================================================================");
+            printCustOrderList(tempQueue,0);  
+
+            System.out.print("Press enter to continue...");
+            try {
+                System.in.read();
+            } catch (IOException ex) {
+                Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        else
+            return false;
+
         return true;
     }
     
@@ -1116,14 +1149,24 @@ public class CustomizedFloralArrangements {
                     }
                     else{
                         addItem.setItemPrice(Integer.parseInt(inputScanner));
-
                         addItem.setItemCode(item + size);
                         addItem.setItemStatus("Available");
 
-                        itemList.add(addItem);
-                        writeCustItem(itemList, item);
-                        System.out.print("New Item Added SUCCESSFULLY!!\n");
-                        returnValue = true;
+                        do{
+                            System.out.print("\nAre You CONFIRM to Add This New Item?(Y/N) > ");
+                            inputScanner = scanner.nextLine();
+                            chkValid = checkNext(inputScanner); 
+                        }while(chkValid == false);
+                        
+                        if(inputScanner.toUpperCase().equals("Y")){
+                            itemList.add(addItem);
+                            writeCustItem(itemList, item);
+                            System.out.print("New Item Added SUCCESSFULLY!!\n");
+                            returnValue = true;
+                        }
+                        else
+                            return false;
+                        
                     }
                 }
             }
@@ -1185,34 +1228,45 @@ public class CustomizedFloralArrangements {
                     return false;
             chkInput = checkUpdate(inputScanner);
         }while(chkInput == false);
-
+        
         if(inputScanner.equals("1"))
             status = "Available";
         else if(inputScanner.equals("2"))
             status = "Unavailable";
+        
+        do{
+            System.out.print("\nAre You CONFIRM to Modify This Item Status to \""+ status +"\"?(Y/N) > ");
+            inputScanner = scanner.nextLine();
+            chkValid = checkNext(inputScanner); 
+        }while(chkValid == false);
 
-        update.setItemStatus(status);
-        custItem.update(tempCount, update);
-        writeCustItem(custItem, item);
-        System.out.println("\n***Updated successfully!!***");
-        selectedItem.add(update);
-        System.out.println("\n\n\n==============================================================");
-        System.out.println("                Updated " + title + " Status");
-        System.out.println("==============================================================");
-        printItem(selectedItem, 1); 
+        if(inputScanner.toUpperCase().equals("Y")){
+            
 
-        System.out.print("Press enter to continue...");
-        try {
-            System.in.read();
-        } catch (IOException ex) {
-            Logger.getLogger(CustomizedFloralArrangements.class.getName()).log(Level.SEVERE, null, ex);
+            update.setItemStatus(status);
+            custItem.update(tempCount, update);
+            writeCustItem(custItem, item);
+            System.out.println("\n***Updated successfully!!***");
+            selectedItem.add(update);
+            System.out.println("\n\n\n==============================================================");
+            System.out.println("                Updated " + title + " Status");
+            System.out.println("==============================================================");
+            printItem(selectedItem, 1); 
+
+            System.out.print("Press enter to continue...");
+            try {
+                System.in.read();
+            } catch (IOException ex) {
+                Logger.getLogger(CustomizedFloralArrangements.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        else
+            return false;
+
         return true;
     }
     
     public Boolean checkUpdate(String input){
-        QueueInterface<CustomizedEntity> orderList = readCustDat();
-        //orderList = readCustDat();
         Boolean returnValue = true;
         
         if(input == null || input.isEmpty()){
@@ -1268,14 +1322,14 @@ public class CustomizedFloralArrangements {
 	} catch (IOException e) {
             e.printStackTrace();
 	} finally {
-	try {
-            if (br != null)
-		br.close();
-            if (fr != null)
-		fr.close();
-	} catch (IOException ex) {
-		ex.printStackTrace();
-	}
+            try {
+                if (br != null)
+                    br.close();
+                if (fr != null)
+                    fr.close();
+            } catch (IOException ex) {
+                    ex.printStackTrace();
+            }
 	}
         return custItem;
     }
