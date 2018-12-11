@@ -329,13 +329,14 @@ public class CatalogMaintenance {
                 prodList.add(hole, tempProd);
 
             }
-            prodList = readProdDatList();
             for (int i = 0; i < prodList.size(); i++) {
                 if (prodList.get(i).getprodStock() != 0) {
                     getProductListFromDat(prodList, i);
                 }
             }
             tailer();
+            prodList = readProdDatList();
+
             System.out.println();
             System.out.println("Check Stock");
             System.out.println("1) Add Stock");
