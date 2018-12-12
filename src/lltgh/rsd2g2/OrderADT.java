@@ -32,6 +32,4 @@ public interface OrderADT<T> {
     public String getPTime();
     public String getAddress();
     public String toString();
-    
-    public void addOrder(T item);
 }
