@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  */
 public class LLTGHRSD2G2 { 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         LLTGHRSD2G2 mainMenu = new LLTGHRSD2G2();//mainMenu
         String option = null;
         

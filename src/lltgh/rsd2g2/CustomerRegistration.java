@@ -21,7 +21,7 @@ public class CustomerRegistration {
     Scanner input = new Scanner(System.in);
       
     // display registration form
-    public void custReg(){
+    public void custReg() throws IOException{
         System.out.println("  Customer Registration  ");
         System.out.println("=========================");
         
