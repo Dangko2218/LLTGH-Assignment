@@ -93,8 +93,9 @@ public class CatalogMaintenance {
             System.out.println("1) Fresh Flowers");
             System.out.println("2) Bouquets");
             System.out.println("3) Floral Arrangement");
-            System.out.println("4) View All");
-            System.out.println("5) Back");
+            System.out.println("4) Accessory");
+            System.out.println("5) View All");
+            System.out.println("6) Back");
             System.out.print("Please enter your option>");
             option = input.nextLine();
 
@@ -109,9 +110,12 @@ public class CatalogMaintenance {
                     viewFlowerList(prodList, "3");
                     break;
                 case "4":
-                    viewAll(prodList);
+                    viewFlowerList(prodList, "4");
                     break;
                 case "5":
+                    viewAll(prodList);
+                    break;
+                case "6":
                     break;
                 default:
                     System.out.println("***Invalid input, please enter between 1 to 4.***");
@@ -122,7 +126,7 @@ public class CatalogMaintenance {
                         Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
                     }
             }
-        } while (!option.equals("5"));
+        } while (!option.equals("6"));
     }
 
     public void viewPromotions() {
@@ -548,6 +552,8 @@ public class CatalogMaintenance {
                 getProductListFromDat(prodList, i);
             } else if ("Floral Arrangement".equals(prodList.get(i).getprodType()) && "3".equals(option)) {
                 getProductListFromDat(prodList, i);
+            } else if ("Accessory".equals(prodList.get(i).getprodType()) && "4".equals(option)) {
+                getProductListFromDat(prodList, i);
             }
         }
         tailer();
@@ -563,6 +569,8 @@ public class CatalogMaintenance {
             } else if ("Bouquet".equals(al.get(i).getprodType()) && "2".equals(option)) {
                 getProductList(al, i);
             } else if ("Floral Arrangement".equals(al.get(i).getprodType()) && "3".equals(option)) {
+                getProductList(al, i);
+            } else if ("Accessory".equals(al.get(i).getprodType()) && "4".equals(option)) {
                 getProductList(al, i);
             }
         }
@@ -589,17 +597,22 @@ public class CatalogMaintenance {
                 getProductListFromDat(prodList, i);
             }
         }
+        for (int i = 0; i < prodList.size(); i++) {
+            if ("Accessory".equals(prodList.get(i).getprodType())) {
+                getProductListFromDat(prodList, i);
+            }
+        }
         tailer();
         System.out.println();
     }
 
     public static void getProductList(ArrayList<Product> al, int i) {
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock());
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock());
     }
 
     public void getProductListFromDat(ListInterface<Product> prodList, int i) {
 //        prodList = readProdDatList();
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock());
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock());
     }
 
     public boolean isDouble(String userInput) {
@@ -694,13 +707,13 @@ public class CatalogMaintenance {
     }
 
     public static void header() {
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Price", "Stock");
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------");
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Price", "Stock");
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------");
     }
 
     public static void tailer() {
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------");
     }
 
 }
