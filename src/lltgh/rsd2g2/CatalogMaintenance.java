@@ -50,7 +50,7 @@ public class CatalogMaintenance {
             System.out.println("3) Maintain Catalog");
             System.out.println("4) Search Product");
             System.out.println("5) Check Stock");
-            System.out.println("6) Back");
+            System.out.println("99) Back");
             System.out.print("Please enter your option>");
             option = input.nextLine();
 
@@ -70,10 +70,10 @@ public class CatalogMaintenance {
                 case "5":
                     checkStock();
                     break;
-                case "6":
+                case "99":
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 5.***");
+                    System.out.println("***Invalid input, please enter between 1 to 5 or Enter 99 to Back.***");
                     System.out.println("Press enter to continue...");
                     try {
                         System.in.read();
@@ -81,7 +81,7 @@ public class CatalogMaintenance {
                         Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
                     }
             }
-        } while (!option.equals("6"));
+        } while (!option.equals("99"));
     }
 
     public void viewProduct() {
@@ -95,7 +95,7 @@ public class CatalogMaintenance {
             System.out.println("3) Floral Arrangement");
             System.out.println("4) Accessory");
             System.out.println("5) View All");
-            System.out.println("6) Back");
+            System.out.println("99) Back");
             System.out.print("Please enter your option>");
             option = input.nextLine();
 
@@ -115,7 +115,93 @@ public class CatalogMaintenance {
                 case "5":
                     viewAll(prodList);
                     break;
-                case "6":
+                case "99":
+                    break;
+                default:
+                    System.out.println("***Invalid input, please enter between 1 to 5 or Enter 99 to Back.***");
+                    System.out.println("Press enter to continue...");
+                    try {
+                        System.in.read();
+                    } catch (IOException ex) {
+                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+            }
+        } while (!option.equals("99"));
+    }
+
+    public void viewPromotions() {
+        System.out.println("Constructing...");
+
+    }
+
+    public void maintainCatalog() {
+        String option = null;
+        do {
+            System.out.println();
+            System.out.println("Maintain Catalog");
+            System.out.println("1) Add");
+            System.out.println("2) Edit");
+            System.out.println("3) Delete");
+            System.out.println("99) Back");
+            System.out.print("Please enter your option>");
+            option = input.nextLine();
+
+            switch (option) {
+                case "1":
+                    addProduct();
+                    break;
+                case "2":
+                    editProduct();
+                    break;
+                case "3":
+                    break;
+                case "99":
+                    break;
+                default:
+                    System.out.println("***Invalid input, please enter between 1 to 3 or Enter 99 to Back.***");
+                    System.out.println("Press enter to continue...");
+                    try {
+                        System.in.read();
+                    } catch (IOException ex) {
+                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+            }
+        } while (!option.equals("99"));
+    }
+
+    public void addProduct() {
+        ListInterface<Product> prodList = readProdDatList();
+        Product addProd = null;
+        String PID = "", PName = "", PDetail = "", PType = "", PPrice = "", Pstock = "", confirmation;
+        String PTypeOption;
+        Pstock = "0";
+        PID = generateID(prodList);
+
+        displayEdit(PID, PName, PType, PDetail, PPrice, Pstock);
+        System.out.print("Enter Product Name > ");
+        PName = input.nextLine();
+
+        do {
+            displayEdit(PID, PName, PType, PDetail, PPrice, Pstock);
+            System.out.println("1) Fresh Flowers");
+            System.out.println("2) Bouquets");
+            System.out.println("3) Floral Arrangement");
+            System.out.println("4) Accessory");
+            System.out.print("Choose Product Type > ");
+            PTypeOption = input.nextLine();
+
+            switch (PTypeOption) {
+                case "1":
+                    PType = "Fresh Flower";
+                    break;
+                case "2":
+                    PType = "Bouquet";
+                    break;
+                case "3":
+                    PType = "Floral Arrangement";
+                    break;
+                case "4":
+                    PType = "Accessory";
                     break;
                 default:
                     System.out.println("***Invalid input, please enter between 1 to 4.***");
@@ -126,21 +212,175 @@ public class CatalogMaintenance {
                         Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
                     }
             }
-        } while (!option.equals("6"));
+        } while (Integer.parseInt(PTypeOption) < 0 || Integer.parseInt(PTypeOption) > 4);
+
+        displayEdit(PID, PName, PType, PDetail, PPrice, Pstock);
+        System.out.print("Choose Product Detail > ");
+        PDetail = input.nextLine();
+        displayEdit(PID, PName, PType, PDetail, PPrice, Pstock);
+        do {
+            System.out.print("Enter Product Price > ");
+            PPrice = input.nextLine();
+        } while (isDouble(PPrice) != true);
+        System.out.print("Confirm to ADD New Product?(Y/N)>");
+        confirmation = input.nextLine();
+        confirmation = confirmation.toLowerCase();
+        if (confirmation.equals("yes") || confirmation.equals("ok") || confirmation.equals("y")) {
+            addProd = new Product(PID, PName, PType, PDetail, Double.parseDouble(PPrice), Integer.parseInt(Pstock));
+            prodList.add(addProd);
+            writeProdDatList(prodList);
+        }
+
     }
 
-    public void viewPromotions() {
-        System.out.println("Constructing...");
+    public void editProduct() {
+        ListInterface<Product> prodList = readProdDatList();
+        Product modProd = null;
+        String prodToMod; //find prod
+        String PID = "", PName = "", PDetail = "", PType = "", PPrice = "", Pstock = "";
+        String confirmation;
+        String editMenuOption;
+        String PTypeOption; // choose product type option
+        boolean recordFound = false;
+        int prodPosition = 0;
+        Pstock = "0";
 
-    }
-
-    public void maintainCatalog() {
+        header();
+        for (int i = 0; i < prodList.size(); i++) {
+            getProductListFromDat(prodList, i);
+        }
+        tailer();
         System.out.println();
-        System.out.println("Maintain Catalog");
-        System.out.println("1) Add");
-        System.out.println("2) Edit");
-        System.out.println("3) Delete");
-        System.out.println("4) Back");
+        do {
+            System.out.print("Enter Product ID to Edit>");
+            prodToMod = input.nextLine();
+            for (int i = 0; i < prodList.size(); i++) {
+                prodToMod = prodToMod.toLowerCase();
+                if (prodList.get(i).getprodName().toLowerCase().contains(prodToMod) || prodList.get(i).getprodDetail().toLowerCase().contains(prodToMod) || prodList.get(i).getProdID().toLowerCase().contains(prodToMod)) {
+                    prodPosition = i;
+                    modProd = prodList.get(i);
+                    PID = modProd.getProdID();
+                    PName = modProd.getprodName();
+                    PDetail = modProd.getprodDetail();
+                    PType = modProd.getprodType();
+                    PPrice = modProd.getprodPrice() + "";
+                    recordFound = true;
+                }
+            }
+        } while (recordFound != true);
+        do {
+//            prodList = readProdDatList();
+            header();
+            getProductListFromDat(prodList, prodPosition);
+            tailer();
+            System.out.println();
+            System.out.println("1) Product Name");
+            System.out.println("2) Product Type");
+            System.out.println("3) Product Detail");
+            System.out.println("4) Product Price");
+            System.out.println("5) Confirm Changes");
+            System.out.println("99) Back");
+
+            System.out.print("Enter Your Option >");
+            editMenuOption = input.nextLine();
+
+            switch (editMenuOption) {
+                case "1":
+                    System.out.print("Enter Product Name > ");
+                    PName = input.nextLine();
+                    modProd.setprodName(PName);
+                    break;
+                case "2":
+                    do {
+                        System.out.println("1) Fresh Flowers");
+                        System.out.println("2) Bouquets");
+                        System.out.println("3) Floral Arrangement");
+                        System.out.println("4) Accessory");
+                        System.out.print("Choose Product Type > ");
+                        PTypeOption = input.nextLine();
+
+                        switch (PTypeOption) {
+                            case "1":
+                                PType = "Fresh Flower";
+                                break;
+                            case "2":
+                                PType = "Bouquet";
+                                break;
+                            case "3":
+                                PType = "Floral Arrangement";
+                                break;
+                            case "4":
+                                PType = "Accessory";
+                                break;
+                            default:
+                                System.out.println("***Invalid input, please enter between 1 to 4.***");
+                                System.out.println("Press enter to continue...");
+                                try {
+                                    System.in.read();
+                                } catch (IOException ex) {
+                                    Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                        }
+                    } while (Integer.parseInt(PTypeOption) < 0 || Integer.parseInt(PTypeOption) > 4);
+                    modProd.setprodType(PType);
+                    break;
+                case "3":
+                    System.out.print("Enter Product Detail > ");
+                    PDetail = input.nextLine();
+                    modProd.setprodDetail(PDetail);
+                    break;
+                case "4":
+                    do {
+                        System.out.print("Enter Product Price > ");
+                        PPrice = input.nextLine();
+                        modProd.setprodPrice(Double.parseDouble(PPrice));
+                    } while (isDouble(PPrice) != true);
+
+                    break;
+                case "5":
+                    System.out.print("Confirm to Modify New Product?(Y/N)>");
+                    confirmation = input.nextLine();
+                    confirmation = confirmation.toLowerCase();
+                    if (confirmation.equals("yes") || confirmation.equals("ok") || confirmation.equals("y")) {
+                        prodList.update(prodPosition, modProd);
+                        writeProdDatList(prodList);
+                    }
+                    editMenuOption = "99";
+                    break;
+                case "99":
+                    break;
+                default:
+                    System.out.println("***Invalid input, please enter between 1 to 5 or Enter 99 to Back.***");
+                    System.out.println("Press enter to continue...");
+                    try {
+                        System.in.read();
+                    } catch (IOException ex) {
+                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+            }
+        } while (!editMenuOption.equals("99"));
+
+    }
+    
+    public void removeProduct(){
+        
+    }
+
+    public void displayEdit(String PID, String PName, String PType, String PDetail, String PPrice, String Pstock) {
+        System.out.printf("\n|%-15s|%-25s|", "---------------", "-------------------------");
+        System.out.printf("\n|%14s | %-24s|", "Product ID", PID);
+        System.out.printf("\n|%14s | %-24s|", "Product Name", PName);
+        System.out.printf("\n|%14s | %-24s|", "Product Type", PType);
+        System.out.printf("\n|%14s | %-24s|", "Product Detail", PDetail);
+        System.out.printf("\n|%14s | %-24s|", "Product Price", PPrice);
+        System.out.printf("\n|%14s | %-24s|", "Product Stock", Pstock);
+        System.out.printf("\n|%15s|%-25s|\n", "---------------", "-------------------------");
+    }
+
+    public String generateID(ListInterface<Product> prodList) {
+
+        String ID = String.format("p%04d", prodList.size() + 1);;
+        return ID;
     }
 
     public void searchProduct() {
@@ -150,7 +390,7 @@ public class CatalogMaintenance {
             System.out.println("Search Products");
             System.out.println("1) By Price");
             System.out.println("2) By Name");
-            System.out.println("3) Back");
+            System.out.println("99) Back");
             System.out.print("Please enter your option>");
             option = input.nextLine();
 
@@ -161,10 +401,10 @@ public class CatalogMaintenance {
                 case "2":
                     searchByProduct();
                     break;
-                case "3":
+                case "99":
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 4.***");
+                    System.out.println("***Invalid input, please enter between 1 to 2 or Enter 99 to Back.***");
                     System.out.println("Press enter to continue...");
                     try {
                         System.in.read();
@@ -172,7 +412,7 @@ public class CatalogMaintenance {
                         Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
                     }
             }
-        } while (!option.equals("3"));
+        } while (!option.equals("99"));
     }
 
     public void searchByPrice() {
@@ -184,7 +424,7 @@ public class CatalogMaintenance {
             System.out.println("1) More Than");
             System.out.println("2) Less Than");
             System.out.println("3) Between");
-            System.out.println("4) Back");
+            System.out.println("99) Back");
             System.out.print("Please enter your option>");
             option = input.nextLine();
 
@@ -198,10 +438,10 @@ public class CatalogMaintenance {
                 case "3":
                     searchPriceOption("3");
                     break;
-                case "4":
+                case "99":
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 4.***");
+                    System.out.println("***Invalid input, please enter between 1 to 3 or Enter 99 to Back.***");
                     System.out.println("Press enter to continue...");
                     try {
                         System.in.read();
@@ -209,7 +449,7 @@ public class CatalogMaintenance {
                         Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
                     }
             }
-        } while (!option.equals("4"));
+        } while (!option.equals("99"));
     }
 
     public void searchByProduct() {
@@ -346,7 +586,7 @@ public class CatalogMaintenance {
             System.out.println("1) Add Stock");
             System.out.println("2) Edit Stock");
             System.out.println("3) Remove Stock");
-            System.out.println("4) Back");
+            System.out.println("99) Back");
             System.out.print("Please enter your option>");
             option = input.nextLine();
 
@@ -360,10 +600,10 @@ public class CatalogMaintenance {
                 case "3":
                     removeStock(prodList, prodPosition, modProd);
                     break;
-                case "4":
+                case "99":
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 4.***");
+                    System.out.println("***Invalid input, please enter between 1 to 3 or Enter 99 to Back.***");
                     System.out.println("Press enter to continue...");
                     try {
                         System.in.read();
@@ -371,7 +611,7 @@ public class CatalogMaintenance {
                         Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
                     }
             }
-        } while (!option.equals("4"));
+        } while (!option.equals("99"));
     }
 
     public void addStock(ListInterface<Product> prodList, int prodPosition, Product modProd) {
