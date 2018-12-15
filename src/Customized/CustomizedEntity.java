@@ -11,11 +11,13 @@ package Customized;
  */
 public class CustomizedEntity implements Comparable<CustomizedEntity>{
 
-    private String OrderNo, custID, style, size, type1, type2, type3, acc1, acc2, acc3, itemCode, itemName, itemStatus;
+    private String OrderNo, dateTime, collectionDate, custID, style, size, type1, type2, type3, acc1, acc2, acc3, itemCode, itemName, itemStatus;
     int prior, price, status, itemPrice;
     
-    public CustomizedEntity(String OrderNo, String custID, String style, String size, String type1, String type2, String type3, String acc1, String acc2, String acc3, int prior, int price, int status) {
+    public CustomizedEntity(String OrderNo, String dateTime, String collectionDate, String custID, String style, String size, String type1, String type2, String type3, String acc1, String acc2, String acc3, int prior, int price, int status) {
         this.OrderNo = OrderNo;
+        this.dateTime = dateTime;
+        this.collectionDate = collectionDate;
         this.custID = custID;
         this.style = style;
         this.size = size;
@@ -36,6 +38,22 @@ public class CustomizedEntity implements Comparable<CustomizedEntity>{
 
     public void setOrderNo(String OrderNo) {
         this.OrderNo = OrderNo;
+    }
+    
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
+    }
+    
+    public String getCollectionDate() {
+        return collectionDate;
+    }
+
+    public void setCollectionDate(String collectionDate) {
+        this.collectionDate = collectionDate;
     }
     
     public String getCustID() {
