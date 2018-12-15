@@ -8,6 +8,7 @@ package lltgh.rsd2g2;
 import Customized.CustomizedFloralArrangements;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class LLTGHRSD2G2 { 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
         LLTGHRSD2G2 mainMenu = new LLTGHRSD2G2();//mainMenu
         String option = null;
         
