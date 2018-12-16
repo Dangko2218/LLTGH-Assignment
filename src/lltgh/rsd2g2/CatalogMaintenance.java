@@ -73,8 +73,8 @@ public class CatalogMaintenance {
                 case "99":
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 5 or Enter 99 to Back.***");
-                    System.out.println("Press enter to continue...");
+                    System.err.println("***Invalid input, please enter between 1 to 5 or Enter 99 to Back.***");
+                    System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
                     } catch (IOException ex) {
@@ -118,8 +118,8 @@ public class CatalogMaintenance {
                 case "99":
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 5 or Enter 99 to Back.***");
-                    System.out.println("Press enter to continue...");
+                    System.err.println("***Invalid input, please enter between 1 to 5 or Enter 99 to Back.***");
+                    System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
                     } catch (IOException ex) {
@@ -141,7 +141,6 @@ public class CatalogMaintenance {
             System.out.println("Maintain Catalog");
             System.out.println("1) Add");
             System.out.println("2) Edit");
-            System.out.println("3) Delete");
             System.out.println("99) Back");
             System.out.print("Please enter your option>");
             option = input.nextLine();
@@ -153,13 +152,11 @@ public class CatalogMaintenance {
                 case "2":
                     editProduct();
                     break;
-                case "3":
-                    break;
                 case "99":
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 3 or Enter 99 to Back.***");
-                    System.out.println("Press enter to continue...");
+                    System.err.println("***Invalid input, please enter between 1 to 2 or Enter 99 to Back.***");
+                    System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
                     } catch (IOException ex) {
@@ -172,17 +169,18 @@ public class CatalogMaintenance {
     public void addProduct() {
         ListInterface<Product> prodList = readProdDatList();
         Product addProd = null;
-        String PID = "", PName = "", PDetail = "", PType = "", PPrice = "", Pstock = "", confirmation;
+        String PID = "", PName = "", PDetail = "", PType = "", PPrice = "", Pstock = "", PAvaialble, confirmation;
         String PTypeOption;
         Pstock = "0";
         PID = generateID(prodList);
+        PAvaialble = "Available";
 
-        displayEdit(PID, PName, PType, PDetail, PPrice, Pstock);
+        displayEdit(PID, PName, PType, PDetail, PPrice, Pstock, PAvaialble);
         System.out.print("Enter Product Name > ");
         PName = input.nextLine();
 
         do {
-            displayEdit(PID, PName, PType, PDetail, PPrice, Pstock);
+            displayEdit(PID, PName, PType, PDetail, PPrice, Pstock, PAvaialble);
             System.out.println("1) Fresh Flowers");
             System.out.println("2) Bouquets");
             System.out.println("3) Floral Arrangement");
@@ -204,8 +202,8 @@ public class CatalogMaintenance {
                     PType = "Accessory";
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 4.***");
-                    System.out.println("Press enter to continue...");
+                    System.err.println("***Invalid input, please enter between 1 to 4.***");
+                    System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
                     } catch (IOException ex) {
@@ -214,10 +212,10 @@ public class CatalogMaintenance {
             }
         } while (Integer.parseInt(PTypeOption) < 0 || Integer.parseInt(PTypeOption) > 4);
 
-        displayEdit(PID, PName, PType, PDetail, PPrice, Pstock);
+        displayEdit(PID, PName, PType, PDetail, PPrice, Pstock, PAvaialble);
         System.out.print("Choose Product Detail > ");
         PDetail = input.nextLine();
-        displayEdit(PID, PName, PType, PDetail, PPrice, Pstock);
+        displayEdit(PID, PName, PType, PDetail, PPrice, Pstock, PAvaialble);
         do {
             System.out.print("Enter Product Price > ");
             PPrice = input.nextLine();
@@ -226,7 +224,7 @@ public class CatalogMaintenance {
         confirmation = input.nextLine();
         confirmation = confirmation.toLowerCase();
         if (confirmation.equals("yes") || confirmation.equals("ok") || confirmation.equals("y")) {
-            addProd = new Product(PID, PName, PType, PDetail, Double.parseDouble(PPrice), Integer.parseInt(Pstock));
+            addProd = new Product(PID, PName, PType, PDetail, Double.parseDouble(PPrice), Integer.parseInt(Pstock), PAvaialble);
             prodList.add(addProd);
             writeProdDatList(prodList);
         }
@@ -237,10 +235,10 @@ public class CatalogMaintenance {
         ListInterface<Product> prodList = readProdDatList();
         Product modProd = null;
         String prodToMod; //find prod
-        String PID = "", PName = "", PDetail = "", PType = "", PPrice = "", Pstock = "";
+        String PID = "", PName = "", PDetail = "", PType = "", PPrice = "", Pstock = "", PAvailable = "";
         String confirmation;
         String editMenuOption;
-        String PTypeOption; // choose product type option
+        String PTypeOption, PAvailableOption; // choose product option
         boolean recordFound = false;
         int prodPosition = 0;
         Pstock = "0";
@@ -267,9 +265,11 @@ public class CatalogMaintenance {
                     recordFound = true;
                 }
             }
+            if (recordFound == false) {
+                System.err.println("No Such Product");
+            }
         } while (recordFound != true);
         do {
-//            prodList = readProdDatList();
             header();
             getProductListFromDat(prodList, prodPosition);
             tailer();
@@ -278,7 +278,8 @@ public class CatalogMaintenance {
             System.out.println("2) Product Type");
             System.out.println("3) Product Detail");
             System.out.println("4) Product Price");
-            System.out.println("5) Confirm Changes");
+            System.out.println("5) Product Availability");
+            System.out.println("6) Confirm Changes");
             System.out.println("99) Back");
 
             System.out.print("Enter Your Option >");
@@ -313,8 +314,8 @@ public class CatalogMaintenance {
                                 PType = "Accessory";
                                 break;
                             default:
-                                System.out.println("***Invalid input, please enter between 1 to 4.***");
-                                System.out.println("Press enter to continue...");
+                                System.err.println("***Invalid input, please enter between 1 to 4.***");
+                                System.err.println("Press enter to continue...");
                                 try {
                                     System.in.read();
                                 } catch (IOException ex) {
@@ -338,6 +339,32 @@ public class CatalogMaintenance {
 
                     break;
                 case "5":
+                    do {
+
+                        System.out.println("1)Available");
+                        System.out.println("2)Unavailable");
+                        System.out.print("Enter your Option >");
+                        PAvailableOption = input.nextLine();
+                        switch (PAvailableOption) {
+                            case "1":
+                                PAvailable = "Available";
+                                break;
+                            case "2":
+                                PAvailable = "Unavailable";
+                                break;
+                            default:
+                                System.err.println("***Invalid input, please enter between 1 to 2.***");
+                                System.err.println("Press enter to continue...");
+                                try {
+                                    System.in.read();
+                                } catch (IOException ex) {
+                                    Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                        }
+                    } while (Integer.parseInt(PAvailableOption) < 0 || Integer.parseInt(PAvailableOption) > 2);
+                    modProd.setprodStatus(PAvailable);
+                    break;
+                case "6":
                     System.out.print("Confirm to Modify New Product?(Y/N)>");
                     confirmation = input.nextLine();
                     confirmation = confirmation.toLowerCase();
@@ -350,8 +377,8 @@ public class CatalogMaintenance {
                 case "99":
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 5 or Enter 99 to Back.***");
-                    System.out.println("Press enter to continue...");
+                    System.err.println("***Invalid input, please enter between 1 to 5 or Enter 99 to Back.***");
+                    System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
                     } catch (IOException ex) {
@@ -361,12 +388,8 @@ public class CatalogMaintenance {
         } while (!editMenuOption.equals("99"));
 
     }
-    
-    public void removeProduct(){
-        
-    }
 
-    public void displayEdit(String PID, String PName, String PType, String PDetail, String PPrice, String Pstock) {
+    public void displayEdit(String PID, String PName, String PType, String PDetail, String PPrice, String Pstock, String PAvailable) {
         System.out.printf("\n|%-15s|%-25s|", "---------------", "-------------------------");
         System.out.printf("\n|%14s | %-24s|", "Product ID", PID);
         System.out.printf("\n|%14s | %-24s|", "Product Name", PName);
@@ -374,6 +397,7 @@ public class CatalogMaintenance {
         System.out.printf("\n|%14s | %-24s|", "Product Detail", PDetail);
         System.out.printf("\n|%14s | %-24s|", "Product Price", PPrice);
         System.out.printf("\n|%14s | %-24s|", "Product Stock", Pstock);
+        System.out.printf("\n|%14s | %-24s|", "Product Available", Pstock);
         System.out.printf("\n|%15s|%-25s|\n", "---------------", "-------------------------");
     }
 
@@ -404,8 +428,8 @@ public class CatalogMaintenance {
                 case "99":
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 2 or Enter 99 to Back.***");
-                    System.out.println("Press enter to continue...");
+                    System.err.println("***Invalid input, please enter between 1 to 2 or Enter 99 to Back.***");
+                    System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
                     } catch (IOException ex) {
@@ -441,8 +465,8 @@ public class CatalogMaintenance {
                 case "99":
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 3 or Enter 99 to Back.***");
-                    System.out.println("Press enter to continue...");
+                    System.err.println("***Invalid input, please enter between 1 to 3 or Enter 99 to Back.***");
+                    System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
                     } catch (IOException ex) {
@@ -477,7 +501,7 @@ public class CatalogMaintenance {
             } else if ("n".equals(nextSearch) || "no".equals(nextSearch) || "nope".equals(nextSearch)) {
                 isContinue = false;
             } else {
-                System.out.println("Invalid Input, Please Try Again!");
+                System.err.println("Invalid Input, Please Try Again!");
                 isContinue = false;
             }
         } while (isContinue == true);
@@ -525,7 +549,7 @@ public class CatalogMaintenance {
                     System.out.print("Enter Ending price>");
                     priceInput2 = input.nextLine();
                     if (Double.parseDouble(priceInput2) <= Double.parseDouble(priceInput)) {
-                        System.out.println("Ending Price must more than Starting Price!");
+                        System.err.println("Ending Price must more than Starting Price!");
                         isMoreThan = false;
                     } else {
                         isMoreThan = true;
@@ -603,8 +627,8 @@ public class CatalogMaintenance {
                 case "99":
                     break;
                 default:
-                    System.out.println("***Invalid input, please enter between 1 to 3 or Enter 99 to Back.***");
-                    System.out.println("Press enter to continue...");
+                    System.err.println("***Invalid input, please enter between 1 to 3 or Enter 99 to Back.***");
+                    System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
                     } catch (IOException ex) {
@@ -617,6 +641,7 @@ public class CatalogMaintenance {
     public void addStock(ListInterface<Product> prodList, int prodPosition, Product modProd) {
         boolean isCorrect = false;
         boolean isValid = false;
+        boolean isAvailable = false;
         String stockNum = null;
         String userInput = null;
         String confirmation = null;
@@ -628,22 +653,32 @@ public class CatalogMaintenance {
                 userInput = userInput.toLowerCase();
 
                 if (prodList.get(i).getProdID().toLowerCase().contains(userInput) || prodList.get(i).getprodName().toLowerCase().contains(userInput) || prodList.get(i).getprodDetail().toLowerCase().contains(userInput)) {
-                    header();
-                    getProductListFromDat(prodList, i);
-                    tailer();
                     isCorrect = true;
-                    prodPosition = i;
-                    modProd = prodList.get(i);
+                    if ("Available".equals(prodList.get(i).getprodStatus())) {
+                        header();
+                        getProductListFromDat(prodList, i);
+                        tailer();
+                        isAvailable = true;
+                        prodPosition = i;
+                        modProd = prodList.get(i);
+                        break;
+                    } else {
+                        isAvailable = false;
+                    }
                     break;
                 } else {
                     isCorrect = false;
                 }
             }
             if (isCorrect == false) {
-                System.out.println("Invalid Input!!!");
+                System.err.println("Invalid Input!!!");
 
             }
-        } while (isCorrect != true);
+            if (isAvailable == false) {
+                System.err.println("Product Unavaialble");
+
+            }
+        } while (isCorrect != true || isAvailable != true);
 
         System.out.println();
         do {
@@ -665,7 +700,7 @@ public class CatalogMaintenance {
                     }
                 } else {
                     isValid = false;
-                    System.out.println("Stock to add cannot be 0 or less than 0!");
+                    System.err.println("Stock to add cannot be 0 or less than 0!");
                 }
             } while (isValid != true);
         } while (isInteger(stockNum) != true);
@@ -673,6 +708,7 @@ public class CatalogMaintenance {
 
     public void editStock(ListInterface<Product> prodList, int prodPosition, Product modProd) {
         boolean isCorrect = false;
+        boolean isAvailable = false;
         String stockNum = null;
         String userInput = null;
         String confirmation = null;
@@ -683,22 +719,32 @@ public class CatalogMaintenance {
                 userInput = userInput.toLowerCase();
 
                 if (prodList.get(i).getProdID().toLowerCase().contains(userInput) || prodList.get(i).getprodName().toLowerCase().contains(userInput) || prodList.get(i).getprodDetail().toLowerCase().contains(userInput)) {
-                    header();
-                    getProductListFromDat(prodList, i);
-                    tailer();
                     isCorrect = true;
-                    prodPosition = i;
-                    modProd = prodList.get(i);
+                    if ("Available".equals(prodList.get(i).getprodStatus())) {
+                        isAvailable = true;
+                        header();
+                        getProductListFromDat(prodList, i);
+                        tailer();
+                        prodPosition = i;
+                        modProd = prodList.get(i);
+                        break;
+                    } else {
+                        isAvailable = false;
+                    }
                     break;
                 } else {
                     isCorrect = false;
                 }
             }
-            if (isCorrect == false) {
-                System.out.println("Invalid Input!!!");
 
+            if (isCorrect == false) {
+                System.err.println("Invalid Input!!!");
             }
-        } while (isCorrect != true);
+            if (isAvailable == false) {
+                System.err.println("Product Unavaialble");
+            }
+
+        } while (isCorrect != true || isAvailable != true);
 
         System.out.println();
         do {
@@ -722,6 +768,7 @@ public class CatalogMaintenance {
         boolean isCorrect = false;
         boolean isValid = false;
         boolean isNotZero = false;
+        boolean isAvailable = false;
         String stockNum = null;
         String userInput = null;
         String confirmation = null;
@@ -733,29 +780,41 @@ public class CatalogMaintenance {
                 userInput = userInput.toLowerCase();
 
                 if (prodList.get(i).getprodStock() != 0) {
+                    isNotZero = true;
                     if (prodList.get(i).getProdID().toLowerCase().contains(userInput) || prodList.get(i).getprodName().toLowerCase().contains(userInput) || prodList.get(i).getprodDetail().toLowerCase().contains(userInput)) {
-                        header();
-                        getProductListFromDat(prodList, i);
-                        tailer();
-                        isNotZero = true;
                         isCorrect = true;
-                        prodPosition = i;
-                        modProd = prodList.get(i);
+                        if ("Available".equals(prodList.get(i).getprodStatus())) {
+                            isAvailable = true;
+                            header();
+                            getProductListFromDat(prodList, i);
+                            tailer();
+                            isCorrect = true;
+                            prodPosition = i;
+                            modProd = prodList.get(i);
+                            break;
+                        } else {
+                            isAvailable = false;
+                        }
                         break;
                     } else {
                         isCorrect = false;
                     }
+                    break;
                 } else {
                     isNotZero = false;
                 }
             }
+            if (isAvailable == false) {
+                System.err.println("Product Unavaialble");
+
+            }
             if (isCorrect == false) {
-                System.out.println("Invalid Input!!!");
+                System.err.println("Invalid Input!!!");
             }
             if (isNotZero == false) {
-                System.out.println("You cannot remove product stock that is 0!!!");
+                System.err.println("You cannot remove product stock that is 0!!!");
             }
-        } while (isCorrect != true);
+        } while (isCorrect != true || isAvailable != true || isNotZero != true);
 
         System.out.println();
         do {
@@ -777,7 +836,7 @@ public class CatalogMaintenance {
                     }
                 } else {
                     isValid = false;
-                    System.out.println("Stock to remove cannot be 0 and must less than original Stock!");
+                    System.err.println("Stock to remove cannot be 0 and must less than original Stock!");
                 }
             } while (isValid != true);
         } while (isInteger(stockNum) != true);
@@ -847,12 +906,12 @@ public class CatalogMaintenance {
     }
 
     public static void getProductList(ArrayList<Product> al, int i) {
-        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock());
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock(), al.get(i).getprodStatus());
     }
 
     public void getProductListFromDat(ListInterface<Product> prodList, int i) {
 //        prodList = readProdDatList();
-        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock());
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock(), prodList.get(i).getprodStatus());
     }
 
     public boolean isDouble(String userInput) {
@@ -861,7 +920,7 @@ public class CatalogMaintenance {
             double doubleValue = Double.parseDouble(userInput);
             isDouble = true;
         } catch (NumberFormatException e) {
-            System.out.println("Input is not a valid integer");
+            System.err.println("Input is not a valid integer");
             isDouble = false;
         }
         return isDouble;
@@ -873,7 +932,7 @@ public class CatalogMaintenance {
             int intValue = Integer.parseInt(userInput);
             isInt = true;
         } catch (NumberFormatException e) {
-            System.out.println("Input is not a valid integer");
+            System.err.println("Input is not a valid integer");
             isInt = false;
         }
         return isInt;
@@ -893,7 +952,7 @@ public class CatalogMaintenance {
 
             while ((sCurrentLine = br.readLine()) != null) {
                 String[] s = sCurrentLine.split("\\|");
-                Product prodEn = new Product(s[0], s[1], s[2], s[3], Double.parseDouble(s[4]), Integer.parseInt(s[5]));
+                Product prodEn = new Product(s[0], s[1], s[2], s[3], Double.parseDouble(s[4]), Integer.parseInt(s[5]), s[6]);
                 prodDatList.add(prodEn);//add to list
             }
 
@@ -919,7 +978,7 @@ public class CatalogMaintenance {
         int size = prodList.size();
         for (int i = 0; i < size; i++) {
             Product prodEn = prodList.remove(0);
-            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
+            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "|" + prodEn.getprodStatus() + "\n";
         }
 
         BufferedWriter bw = null;
@@ -947,13 +1006,12 @@ public class CatalogMaintenance {
     }
 
     public static void header() {
-        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------");
-        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Price", "Stock");
-        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------");
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------", "---------------");
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "ID", "Name", "Type", "Detail", "Price", "Stock", "Status");
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------", "---------------");
     }
 
     public static void tailer() {
-        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------");
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------", "---------------");
     }
-
 }
