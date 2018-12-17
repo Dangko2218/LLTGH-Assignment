@@ -1,6 +1,9 @@
 package lltgh.rsd2g2;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,7 +55,7 @@ public class CustomerMaintenanceAndInvoicePayment {
                 case "5":
                     InitializeInv(invoice);
                     getUnpaidInvNo(invoice);
-                    //printInv(invoice);
+                    printInv(invoice);
                     break;
                 case "6":
                     break;
@@ -89,7 +92,7 @@ public class CustomerMaintenanceAndInvoicePayment {
             // hard code inv 2
             Invoice inv2 = new Invoice();
             inv2.setInvoiceNo(genInvID());
-            inv2.setDate("27 Nov 2018");
+            inv1.setDate("27 Nov 2018");
             inv2.setCustID("C1");
             inv2.setCustName("Timothy");
             inv2.setCustContact("0165769856");
@@ -105,7 +108,7 @@ public class CustomerMaintenanceAndInvoicePayment {
             // hard code inv 3
             Invoice inv3 = new Invoice();
             inv3.setInvoiceNo(genInvID());
-            inv3.setDate("29 Nov 2018");
+            inv1.setDate("29 Nov 2018");
             inv3.setCustID("C2");
             inv3.setCustName("Mou mou ren");
             inv3.setCustContact("0123456789");
@@ -121,7 +124,7 @@ public class CustomerMaintenanceAndInvoicePayment {
             // hard code inv 4
             Invoice inv4 = new Invoice();
             inv4.setInvoiceNo(genInvID());
-            inv4.setDate("29 Nov 2018");
+            inv1.setDate("29 Nov 2018");
             inv4.setCustID("C2");
             inv4.setCustName("Mou mou ren");
             inv4.setCustContact("0123456789");
@@ -157,10 +160,9 @@ public class CustomerMaintenanceAndInvoicePayment {
         String searchbyID = scan.nextLine();
         for (int i = 0; i < invoice.size(); i++) {
             if (invoice.get(i).getCustID().compareTo(searchbyID) == 0) {
-                System.out.printf("Unpaid invoice of customer: %s", invoice.get(i).getCustID() + "\n");
+                System.out.printf("Unpaid invoice of customer: %s", invoice.get(i).getInvoiceNo());
                 if (invoice.get(i).getInvoiceStatus().equals("Unpaid")) {
-                    System.out.printf("Unpaid invoice: %s", invoice.get(i).getInvoiceNo() + "\n");
-                    System.out.println("Invoice details: \n" +invoice.get(i).toString());
+                    System.out.printf("Unpaid invoice: %s", invoice.get(i).getInvoiceNo());
                     unpaidInvNo.add(invoice.get(i).getInvoiceNo());
                 }
             }
@@ -168,50 +170,32 @@ public class CustomerMaintenanceAndInvoicePayment {
     }
 
     // get unpaid invoice details
-    public void printInv(InvListInterface<Invoice> invoice) throws IOException {
+    public void printInv(InvListInterface<Invoice> invoice) {
         System.out.print("Print invoice? > ");
         String conf = scan.nextLine();
         for (int i = 0; i < unpaidInvNo.size(); i++) {
             for (int j = 0; j < invoice.size(); j++) {
                 if (invoice.get(j).getInvoiceNo().equals(unpaidInvNo.get(i))) {
-                    System.out.println(invoice.get(j).toString());
-                    //genFile(invoice.get(j).getCustID(), invoice.get(j).getInvoiceNo());
+                    System.out.println(invoice.get(j).getInvoiceNo());
+                    genFile(invoice.get(j).getCustID(), invoice.get(j).getInvoiceNo());
+
                 }
             }
             unpaidInvNo.set(i, null);
         }
     }
 
-    public void genFile(String custID, String invNo) throws IOException {
+    public void genFile(String custID, String invNo){
         // every invoice are store into different file
-        String filename = custID + "_" + invNo + ".dat";
+        String filename = custID + "_" + invNo;
+        try {
+            FileWriter fwrt = new FileWriter(filename);
+            BufferedWriter bwrt = new BufferedWriter(fwrt);
+        } catch(FileNotFoundException ex) {
+            
+        } catch (IOException e) {
 
-        for (int i = 0; i < invoice.size(); i++) {
-            if (invoice.get(i).getInvoiceNo().equals(invNo)) {
-                String name = invoice.get(i).getCustName();
-                String invNum = invNo;
-                String corporate = invoice.get(i).getCustCorp();
-                String address = invoice.get(i).getCorpAddr();
-                String contact = invoice.get(i).getCustContact();
-                String item = invoice.get(i).getItemName();
-                String date = invoice.get(i).getDate();
-                double price = invoice.get(i).getItemPrice();
-                double subtotal = invoice.get(i).getSubtotal();
-                double grandtotal = invoice.get(i).getGrandTotal();
-
-                FileWriter fw = new FileWriter(filename);
-                BufferedWriter bw = new BufferedWriter(fw);
-                bw.write("----------------------------------------------------------------------------------------------------\n");
-                bw.write("                                              INVOICE\n");
-                bw.write("----------------------------------------------------------------------------------------------------\n");
-                bw.write(" TO: " + name + "\n" 
-                        + "     " + corporate + "\n"
-                        + "     " + address + "\n");
-                bw.write("----------------------------------------------------------------------------------------------------\n");
-                bw.write(System.out.printf(" -50%s               | -12%s | -10%s | -10%s\n", "Item", "Unit Price", "Quantity", "Subtotal").toString());
-                bw.write("----------------------------------------------------------------------------------------------------\n");
-                
-            }
         }
+
     }
 }

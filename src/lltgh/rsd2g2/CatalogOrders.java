@@ -54,7 +54,6 @@ public class CatalogOrders {
 //            }
 //        } while ();
 //    }
-    
     public int orderItem() {
         int typeOpt, actOpt = 0;
         valid = true;
@@ -648,7 +647,7 @@ public class CatalogOrders {
 
         orderList.add(order);
         writeOrderDatList(orderList);
-        
+
         System.out.print("\nPress enter to continue...");
         try {
             System.in.read();
@@ -690,8 +689,8 @@ public class CatalogOrders {
             }
         }
     }
-    
-    public String writeOrderItem(String s,int size){
+
+    public String writeOrderItem(String s, int size) {
         for (int i = 0; i < size; i++) {
             s += order.getOrderItem().get(i);
             if (i != size - 1) {
@@ -700,8 +699,8 @@ public class CatalogOrders {
         }
         return s;
     }
-    
-    public String writeOrderQuantity(String s,int size){
+
+    public String writeOrderQuantity(String s, int size) {
         for (int i = 0; i < size; i++) {
             s += order.getQuantity().get(i);
             if (i != size - 1) {
@@ -752,7 +751,7 @@ public class CatalogOrders {
 
         for (int i = 0; i < size; i++) {
             Product prodEn = prodList.remove(0);
-            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
+            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "|" + prodEn.getprodStatus() + "\n";
         }
 
         BufferedWriter bw = null;
@@ -791,7 +790,7 @@ public class CatalogOrders {
 
             while ((sCurrentLine = br.readLine()) != null) {
                 String[] s = sCurrentLine.split("\\|");
-                Product prodEn = new Product(s[0], s[1], s[2], s[3], Double.parseDouble(s[4]), Integer.parseInt(s[5]));
+                Product prodEn = new Product(s[0], s[1], s[2], s[3], Double.parseDouble(s[4]), Integer.parseInt(s[5]), s[6]);
                 prodDatList.add(prodEn);
             }
 

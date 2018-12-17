@@ -9,7 +9,7 @@ package lltgh.rsd2g2;
  *
  * @author Desmond
  */
-public class Product implements Comparable<Product>{
+public class Product implements Comparable<Product> {
 
     private String prodID;
     private String prodName;
@@ -17,6 +17,7 @@ public class Product implements Comparable<Product>{
     private String prodDetail;
     private double prodPrice;
     private int prodStock;
+    private String prodStatus;
 
     public Product() {
         prodID = null;
@@ -25,15 +26,17 @@ public class Product implements Comparable<Product>{
         prodDetail = null;
         prodPrice = 0;
         prodStock = 0;
+        prodStatus = null;
     }
 
-    public Product(String prodID, String prodName, String prodType, String prodDetail, double prodPrice, int prodStock) {
+    public Product(String prodID, String prodName, String prodType, String prodDetail, double prodPrice, int prodStock, String prodStatus) {
         this.prodID = prodID;
         this.prodName = prodName;
         this.prodType = prodType;
         this.prodDetail = prodDetail;
         this.prodPrice = prodPrice;
         this.prodStock = prodStock;
+        this.prodStatus = prodStatus;
     }
 
     public String getProdID() {
@@ -60,25 +63,38 @@ public class Product implements Comparable<Product>{
         return prodStock;
     }
 
-    public void setProdID(String prodID){
+    public String getprodStatus() {
+        return prodStatus;
+    }
+
+    public void setProdID(String prodID) {
         this.prodID = prodID;
     }
-    public void setprodName(String prodName){
+
+    public void setprodName(String prodName) {
         this.prodName = prodName;
     }
-    public void setprodType(String prodType){
+
+    public void setprodType(String prodType) {
         this.prodType = prodType;
     }
-    public void setprodDetail(String prodDetail){
+
+    public void setprodDetail(String prodDetail) {
         this.prodDetail = prodDetail;
     }
-    public void setprodPrice(double prodPrice){
+
+    public void setprodPrice(double prodPrice) {
         this.prodPrice = prodPrice;
     }
-    public void setprodStock(int prodStock){
+
+    public void setprodStock(int prodStock) {
         this.prodStock = prodStock;
     }
-    
+
+    public void setprodStatus(String prodStatus) {
+        this.prodStatus = prodStatus;
+    }
+
     public String toString() {
         return "\nProduct ID: " + prodID
                 + "\nProduct Name: " + prodName
@@ -86,15 +102,17 @@ public class Product implements Comparable<Product>{
                 + "\nProduct Detail: " + prodDetail
                 + "\nProduct Price: " + prodPrice
                 + "\nProduct Stock: " + prodStock
+                + "\nProduct Status: " + prodStatus
                 + "\n";
     }
 
     @Override
     public int compareTo(Product prod) {
-        if(this.prodStock >= prod.prodStock){
+        if (this.prodStock >= prod.prodStock) {
             return 1;
-        }else   
+        } else {
             return -1;
+        }
     }
 
 }
