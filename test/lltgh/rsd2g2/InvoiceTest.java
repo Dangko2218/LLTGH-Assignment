@@ -229,7 +229,7 @@ public class InvoiceTest {
      */
     @Test
     public void testGetItemName() {
-        System.out.println("getItemName");
+        System.out.println("getItemName()");
         Invoice instance = new Invoice();
         String expResult = "Rose are red";
         String result = instance.getItemName();
@@ -243,7 +243,7 @@ public class InvoiceTest {
      */
     @Test
     public void testSetItemPrice() {
-        System.out.println("setItemPrice");
+        System.out.println("setItemPrice()");
         double itemPrice = 5.5;
         Invoice instance = new Invoice();
         instance.setItemPrice(itemPrice);
@@ -256,7 +256,7 @@ public class InvoiceTest {
      */
     @Test
     public void testGetItemPrice() {
-        System.out.println("getItemPrice");
+        System.out.println("getItemPrice()");
         Invoice instance = new Invoice();
         double expResult = 5.5;
         double result = instance.getItemPrice();
@@ -270,7 +270,7 @@ public class InvoiceTest {
      */
     @Test
     public void testSetItemQty() {
-        System.out.println("setItemQty");
+        System.out.println("setItemQty()");
         int qty = 99;
         Invoice instance = new Invoice();
         instance.setItemQty(qty);
@@ -283,7 +283,7 @@ public class InvoiceTest {
      */
     @Test
     public void testGetQty() {
-        System.out.println("getQty");
+        System.out.println("getQty()");
         Invoice instance = new Invoice();
         int expResult = 99;
         int result = instance.getQty();
@@ -297,7 +297,7 @@ public class InvoiceTest {
      */
     @Test
     public void testSetSubtotal() {
-        System.out.println("setSubtotal");
+        System.out.println("setSubtotal()");
         double subtotal = 544.5;
         Invoice instance = new Invoice();
         instance.setSubtotal(subtotal);
@@ -310,7 +310,7 @@ public class InvoiceTest {
      */
     @Test
     public void testGetSubtotal() {
-        System.out.println("getSubtotal");
+        System.out.println("getSubtotal()");
         Invoice instance = new Invoice();
         double expResult = 544.5;
         double result = instance.getSubtotal();
@@ -324,7 +324,7 @@ public class InvoiceTest {
      */
     @Test
     public void testSetGrandTotal() {
-        System.out.println("setGrandTotal");
+        System.out.println("setGrandTotal()");
         double grandTotal = 544.5;
         Invoice instance = new Invoice();
         instance.setGrandTotal(grandTotal);
@@ -337,7 +337,7 @@ public class InvoiceTest {
      */
     @Test
     public void testGetGrandTotal() {
-        System.out.println("getGrandTotal");
+        System.out.println("getGrandTotal()");
         Invoice instance = new Invoice();
         double expResult = 544.5;
         double result = instance.getGrandTotal();
@@ -351,7 +351,7 @@ public class InvoiceTest {
      */
     @Test
     public void testSetInvoiceStatus() {
-        System.out.println("setInvoiceStatus");
+        System.out.println("setInvoiceStatus()");
         String invoiceStatus = "Paid";
         Invoice instance = new Invoice();
         instance.setInvoiceStatus(invoiceStatus);
@@ -364,7 +364,7 @@ public class InvoiceTest {
      */
     @Test
     public void testGetInvoiceStatus() {
-        System.out.println("getInvoiceStatus");
+        System.out.println("getInvoiceStatus()");
         Invoice instance = new Invoice();
         String expResult = "Paid";
         String result = instance.getInvoiceStatus();
@@ -378,7 +378,7 @@ public class InvoiceTest {
      */
     @Test
     public void testToString() {
-        System.out.println("toString");
+        System.out.println("toString()");
         Invoice instance = new Invoice();
         String expResult = "Invoice Printed";
         String result = instance.toString();
