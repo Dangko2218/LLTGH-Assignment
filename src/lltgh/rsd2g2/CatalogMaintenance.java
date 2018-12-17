@@ -130,8 +130,12 @@ public class CatalogMaintenance {
     }
 
     public void viewPromotions() {
-        System.out.println("Constructing...");
 
+        System.out.println("Catalog Promotion");
+        System.out.println("1) View Monthly Promotion");
+        System.out.println("2) ADD Monthly Promotion");
+        System.out.println("3) Remove Monthly Promotion");
+        System.out.println("99) Back");
     }
 
     public void maintainCatalog() {
@@ -910,8 +914,11 @@ public class CatalogMaintenance {
     }
 
     public void getProductListFromDat(ListInterface<Product> prodList, int i) {
-//        prodList = readProdDatList();
         System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock(), prodList.get(i).getprodStatus());
+    }
+
+    public void getPromoListFromDat(ListInterface<Promotion> promoList, int i, ListInterface<Product> prodList, int j) {
+        System.out.printf("\n|%-10s|%-15|%-25s|%-15s|", promoList.get(i).getpromoMonth(), promoList.get(i).getProdID(), prodList.get(j).getprodName(), promoList.get(i).getdiscountRate());
     }
 
     public boolean isDouble(String userInput) {
@@ -973,6 +980,41 @@ public class CatalogMaintenance {
         return prodDatList;
     }
 
+    public ListInterface<Promotion> readPromoDatList() {//get orderData from dat file with list
+        ListInterface<Promotion> promoDatList = new List<>();
+        //read data from CustomizedOrderData.dat
+        BufferedReader br = null;
+        FileReader fr = null;
+
+        try {
+            fr = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/promotion.dat");
+            br = new BufferedReader(fr);
+
+            String sCurrentLine;
+
+            while ((sCurrentLine = br.readLine()) != null) {
+                String[] s = sCurrentLine.split("\\|");
+                Promotion promoEn = new Promotion(Integer.parseInt(s[0]), s[1], Integer.parseInt(s[2]));
+                promoDatList.add(promoEn);//add to list
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+                if (fr != null) {
+                    fr.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return promoDatList;
+    }
+
     public void writeProdDatList(ListInterface<Product> prodList) {//Rewrite dat file
         String s = "";
         int size = prodList.size();
@@ -1005,10 +1047,52 @@ public class CatalogMaintenance {
         }
     }
 
+    public void writePromoDatList(ListInterface<Promotion> promo) {//Rewrite dat file
+        String s = "";
+        int size = promo.size();
+        for (int i = 0; i < size; i++) {
+            Promotion promoEn = promo.remove(0);
+            s += Integer.toString(promoEn.getpromoMonth()) + "|" + promoEn.getProdID() + "|" + Integer.toString(promoEn.getdiscountRate()) + "\n";
+        }
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+
+        try {
+            fw = new FileWriter("../LLTGH-Assignment/src/lltgh/rsd2g2/promotion.dat");
+            bw = new BufferedWriter(fw);
+            bw.write(s);
+            System.out.println("Process Completed.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+                if (fw != null) {
+                    fw.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     public static void header() {
         System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------", "---------------");
         System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "ID", "Name", "Type", "Detail", "Price", "Stock", "Status");
         System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------", "---------------");
+    }
+
+    public static void header1() {
+        System.out.printf("\n|%-10s|%-15|%-25s|%-15s|", "----------", "---------------", "-------------------------", "---------------");
+        System.out.printf("\n|%-10s|%-15|%-25s|%-15s|", "Month", "Product ID", "Product Name", "Discount Rate");
+        System.out.printf("\n|%-10s|%-15|%-25s|%-15s|", "----------", "---------------", "-------------------------", "---------------");
+    }
+
+    public static void tailer2() {
+        System.out.printf("\n|%-10s|%-15|%-25s|%-15s|", "----------", "---------------", "-------------------------", "---------------");
     }
 
     public static void tailer() {
