@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  */
 public class InvoiceTest {
     
-    Invoice instance = new Invoice();
+    Invoice instance = new Invoice("PINV0004", "12/12/2018", "C3", "Merlin", "0103472369", "Line Corp", "idk where's line corp", "Rose are red", 5.5, 99, 544.5, 544.5, "Paid");
     
     public InvoiceTest() {
     }
@@ -182,7 +182,7 @@ public class InvoiceTest {
     // @Test
     // public void testSetCorpAddr() {
     //     System.out.println("setCorpAddr");
-    //     String corpAddr = "idk where is line corp";
+    //     String corpAddr = "idk where's line corp";
     //     instance.setCorpAddr(corpAddr);
     //     // TODO review the generated test code and remove the default call to fail.
     //     //fail("The test case is a prototype.");
@@ -194,7 +194,7 @@ public class InvoiceTest {
     // @Test
     // public void testGetCorpAddr() {
     //     System.out.println("getCorpAddr");
-    //     String expResult = "idk where is line corp";
+    //     String expResult = "idk where's line corp";
     //     String result = instance.getCorpAddr();
     //     assertEquals(expResult, result);
     //     // TODO review the generated test code and remove the default call to fail.
