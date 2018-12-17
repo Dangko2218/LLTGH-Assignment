@@ -30,7 +30,7 @@ public class CatalogMaintenance {
 
     public void printTest() {
         String option = null;
-
+//try commit
 //        prod.add(new Product("p0001", "Red Rose", "Fresh Flower", "Rose in Red Color", 2, 30));
 //        prod.add(new Product("p0002", "I Love You", "Bouquet", "520 Rose", 520, 5));
 //        prod.add(new Product("p0003", "LWY Pack", "Floral Arrangement", "Made by Low Wei Yin", 200, 5));
