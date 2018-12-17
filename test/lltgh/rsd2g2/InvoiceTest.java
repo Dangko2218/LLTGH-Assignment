@@ -28,7 +28,7 @@ public class InvoiceTest {
     @Test
     public void testSetInvoiceNo() {
         System.out.println("setInvoiceNo");
-        String invoiceNo = "";
+        String invoiceNo = "PINV0004";
         Invoice instance = new Invoice();
         instance.setInvoiceNo(invoiceNo);
         // TODO review the generated test code and remove the default call to fail.
@@ -42,7 +42,7 @@ public class InvoiceTest {
     public void testGetInvoiceNo() {
         System.out.println("getInvoiceNo");
         Invoice instance = new Invoice();
-        String expResult = "";
+        String expResult = "PINV0004";
         String result = instance.getInvoiceNo();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -55,7 +55,7 @@ public class InvoiceTest {
     @Test
     public void testSetDate() {
         System.out.println("setDate");
-        String date = "";
+        String date = "12/12/2018";
         Invoice instance = new Invoice();
         instance.setDate(date);
         // TODO review the generated test code and remove the default call to fail.
@@ -69,7 +69,7 @@ public class InvoiceTest {
     public void testGetDate() {
         System.out.println("getDate");
         Invoice instance = new Invoice();
-        String expResult = "";
+        String expResult = "12/12/2018";
         String result = instance.getDate();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -82,7 +82,7 @@ public class InvoiceTest {
     @Test
     public void testSetCustID() {
         System.out.println("setCustID");
-        String custID = "";
+        String custID = "C3";
         Invoice instance = new Invoice();
         instance.setCustID(custID);
         // TODO review the generated test code and remove the default call to fail.
@@ -96,7 +96,7 @@ public class InvoiceTest {
     public void testGetCustID() {
         System.out.println("getCustID");
         Invoice instance = new Invoice();
-        String expResult = "";
+        String expResult = "C3";
         String result = instance.getCustID();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -109,7 +109,7 @@ public class InvoiceTest {
     @Test
     public void testSetCustName() {
         System.out.println("setCustName");
-        String custName = "";
+        String custName = "Merlin";
         Invoice instance = new Invoice();
         instance.setCustName(custName);
         // TODO review the generated test code and remove the default call to fail.
@@ -123,7 +123,7 @@ public class InvoiceTest {
     public void testGetCustName() {
         System.out.println("getCustName");
         Invoice instance = new Invoice();
-        String expResult = "";
+        String expResult = "Merlin";
         String result = instance.getCustName();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -136,7 +136,7 @@ public class InvoiceTest {
     @Test
     public void testSetCustContact() {
         System.out.println("setCustContact");
-        String custContact = "";
+        String custContact = "0102883211";
         Invoice instance = new Invoice();
         instance.setCustContact(custContact);
         // TODO review the generated test code and remove the default call to fail.
@@ -150,7 +150,7 @@ public class InvoiceTest {
     public void testGetCustContact() {
         System.out.println("getCustContact");
         Invoice instance = new Invoice();
-        String expResult = "";
+        String expResult = "0102883211";
         String result = instance.getCustContact();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -163,7 +163,7 @@ public class InvoiceTest {
     @Test
     public void testSetCustCorp() {
         System.out.println("setCustCorp");
-        String custCorp = "";
+        String custCorp = "Line Corp";
         Invoice instance = new Invoice();
         instance.setCustCorp(custCorp);
         // TODO review the generated test code and remove the default call to fail.
@@ -177,7 +177,7 @@ public class InvoiceTest {
     public void testGetCustCorp() {
         System.out.println("getCustCorp");
         Invoice instance = new Invoice();
-        String expResult = "";
+        String expResult = "Line Corp";
         String result = instance.getCustCorp();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -190,7 +190,7 @@ public class InvoiceTest {
     @Test
     public void testSetCorpAddr() {
         System.out.println("setCorpAddr");
-        String corpAddr = "";
+        String corpAddr = "idk where is line corp";
         Invoice instance = new Invoice();
         instance.setCorpAddr(corpAddr);
         // TODO review the generated test code and remove the default call to fail.
@@ -204,7 +204,7 @@ public class InvoiceTest {
     public void testGetCorpAddr() {
         System.out.println("getCorpAddr");
         Invoice instance = new Invoice();
-        String expResult = "";
+        String expResult = "idk where is line corp";
         String result = instance.getCorpAddr();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -217,7 +217,7 @@ public class InvoiceTest {
     @Test
     public void testSetItemName() {
         System.out.println("setItemName");
-        String itemName = "";
+        String itemName = "Rose are red";
         Invoice instance = new Invoice();
         instance.setItemName(itemName);
         // TODO review the generated test code and remove the default call to fail.
@@ -231,7 +231,7 @@ public class InvoiceTest {
     public void testGetItemName() {
         System.out.println("getItemName");
         Invoice instance = new Invoice();
-        String expResult = "";
+        String expResult = "Rose are red";
         String result = instance.getItemName();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -244,7 +244,7 @@ public class InvoiceTest {
     @Test
     public void testSetItemPrice() {
         System.out.println("setItemPrice");
-        double itemPrice = 0.0;
+        double itemPrice = 5.5;
         Invoice instance = new Invoice();
         instance.setItemPrice(itemPrice);
         // TODO review the generated test code and remove the default call to fail.
@@ -258,9 +258,9 @@ public class InvoiceTest {
     public void testGetItemPrice() {
         System.out.println("getItemPrice");
         Invoice instance = new Invoice();
-        double expResult = 0.0;
+        double expResult = 5.5;
         double result = instance.getItemPrice();
-        assertEquals(expResult, result, 0.0);
+        assertEquals(expResult, result, 0.00);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
     }
@@ -271,7 +271,7 @@ public class InvoiceTest {
     @Test
     public void testSetItemQty() {
         System.out.println("setItemQty");
-        int qty = 0;
+        int qty = 99;
         Invoice instance = new Invoice();
         instance.setItemQty(qty);
         // TODO review the generated test code and remove the default call to fail.
@@ -285,7 +285,7 @@ public class InvoiceTest {
     public void testGetQty() {
         System.out.println("getQty");
         Invoice instance = new Invoice();
-        int expResult = 0;
+        int expResult = 99;
         int result = instance.getQty();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -298,7 +298,7 @@ public class InvoiceTest {
     @Test
     public void testSetSubtotal() {
         System.out.println("setSubtotal");
-        double subtotal = 0.0;
+        double subtotal = 544.5;
         Invoice instance = new Invoice();
         instance.setSubtotal(subtotal);
         // TODO review the generated test code and remove the default call to fail.
@@ -312,9 +312,9 @@ public class InvoiceTest {
     public void testGetSubtotal() {
         System.out.println("getSubtotal");
         Invoice instance = new Invoice();
-        double expResult = 0.0;
+        double expResult = 544.5;
         double result = instance.getSubtotal();
-        assertEquals(expResult, result, 0.0);
+        assertEquals(expResult, result, 0.00);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
     }
@@ -325,7 +325,7 @@ public class InvoiceTest {
     @Test
     public void testSetGrandTotal() {
         System.out.println("setGrandTotal");
-        double grandTotal = 0.0;
+        double grandTotal = 544.5;
         Invoice instance = new Invoice();
         instance.setGrandTotal(grandTotal);
         // TODO review the generated test code and remove the default call to fail.
@@ -339,9 +339,9 @@ public class InvoiceTest {
     public void testGetGrandTotal() {
         System.out.println("getGrandTotal");
         Invoice instance = new Invoice();
-        double expResult = 0.0;
+        double expResult = 544.5;
         double result = instance.getGrandTotal();
-        assertEquals(expResult, result, 0.0);
+        assertEquals(expResult, result, 0.00);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
     }
@@ -352,7 +352,7 @@ public class InvoiceTest {
     @Test
     public void testSetInvoiceStatus() {
         System.out.println("setInvoiceStatus");
-        String invoiceStatus = "";
+        String invoiceStatus = "Paid";
         Invoice instance = new Invoice();
         instance.setInvoiceStatus(invoiceStatus);
         // TODO review the generated test code and remove the default call to fail.
@@ -366,7 +366,7 @@ public class InvoiceTest {
     public void testGetInvoiceStatus() {
         System.out.println("getInvoiceStatus");
         Invoice instance = new Invoice();
-        String expResult = "";
+        String expResult = "Paid";
         String result = instance.getInvoiceStatus();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -380,7 +380,7 @@ public class InvoiceTest {
     public void testToString() {
         System.out.println("toString");
         Invoice instance = new Invoice();
-        String expResult = "";
+        String expResult = "Invoice Printed";
         String result = instance.toString();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
