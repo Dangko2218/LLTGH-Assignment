@@ -8,6 +8,7 @@ package lltgh.rsd2g2;
 import Customized.ListInterface;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -54,7 +55,6 @@ public class CatalogOrders {
 //            }
 //        } while ();
 //    }
-    
     public int orderItem() {
         int typeOpt, actOpt = 0;
         valid = true;
@@ -619,7 +619,7 @@ public class CatalogOrders {
     public void generateSO() {
         double price = 0;
         ListInterface<Product> prodList = readProdDatList();
-        InvListInterface<Order> orderList = readOrderDatList();
+//        InvListInterface<Order> orderList = readOrderDatList();
 
         System.out.println("\n|---------------------------------|");
         System.out.println("|           Sales  Order          |");
@@ -646,9 +646,9 @@ public class CatalogOrders {
         System.out.printf("\n|Time       : %-20s|", order.getPTime());
         System.out.println("\n|---------------------------------|");
 
-        orderList.add(order);
-        writeOrderDatList(orderList);
-        
+//        orderList.add(order);
+//        writeOrderDatList(orderList);
+
         System.out.print("\nPress enter to continue...");
         try {
             System.in.read();
@@ -690,8 +690,8 @@ public class CatalogOrders {
             }
         }
     }
-    
-    public String writeOrderItem(String s,int size){
+
+    public String writeOrderItem(String s, int size) {
         for (int i = 0; i < size; i++) {
             s += order.getOrderItem().get(i);
             if (i != size - 1) {
@@ -700,8 +700,8 @@ public class CatalogOrders {
         }
         return s;
     }
-    
-    public String writeOrderQuantity(String s,int size){
+
+    public String writeOrderQuantity(String s, int size) {
         for (int i = 0; i < size; i++) {
             s += order.getQuantity().get(i);
             if (i != size - 1) {
@@ -713,19 +713,22 @@ public class CatalogOrders {
 
     public InvListInterface<Order> readOrderDatList() {
         InvListInterface<Order> orderList = new InvLinkedList<>();
-        BufferedReader br = null;
-        FileReader fr = null;
+        BufferedReader br = null, br2 = null;
+        FileReader fr = null, fr2 = null;
 
         try {
             fr = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/Order.dat");
+            fr2 = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/OrderItemQty.dat");
             br = new BufferedReader(fr);
+            br2 = new BufferedReader(fr2);
 
-            String sCurrentLine;
+            String sCurrentLine = br.readLine();
+            String sCurrentLine2=br2.readLine();
 
-            while ((sCurrentLine = br.readLine()) != null) {
+            while (sCurrentLine != null) {
                 String[] s = sCurrentLine.split("\\|");
-                Order orderEntry = new Order(s[0], s[1], Integer.parseInt(s[2]), Double.parseDouble(s[3]), s[4], s[5], s[6], s[7]);
-                orderList.add(orderEntry);
+                String[] s2=sCurrentLine2.split("\\|");
+                
             }
 
         } catch (IOException e) {
