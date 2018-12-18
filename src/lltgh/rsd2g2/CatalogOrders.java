@@ -86,7 +86,7 @@ public class CatalogOrders {
             System.out.println("1) Fresh Flowers");
             System.out.println("2) Bouquets");
             System.out.println("3) Floral Arrangement");
-            System.out.println("4) Back");
+            System.out.println("4) Back to Main Menu");
             System.out.print("Please select a product type: ");
 
             try {
@@ -94,7 +94,7 @@ public class CatalogOrders {
                 typeOpt = scanner.nextInt();
                 if (typeOpt >= 1 && typeOpt <= 3) {
                     showDetail(typeOpt);
-                    valid = getId(typeOpt);
+                    valid = getProdId(typeOpt);
                 } else if (typeOpt == 4) {
                     break;
                 } else {
@@ -131,7 +131,7 @@ public class CatalogOrders {
         System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|\n", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
     }
 
-    public boolean getId(int typeOpt) {
+    public boolean getProdId(int typeOpt) {
         String itemId;
 
         do {
@@ -619,7 +619,7 @@ public class CatalogOrders {
     public void generateSO() {
         double price = 0;
         ListInterface<Product> prodList = readProdDatList();
-//        InvListInterface<Order> orderList = readOrderDatList();
+        InvListInterface<Order> orderList=readOrderDatList();
 
         System.out.println("\n|---------------------------------|");
         System.out.println("|           Sales  Order          |");
@@ -646,8 +646,8 @@ public class CatalogOrders {
         System.out.printf("\n|Time       : %-20s|", order.getPTime());
         System.out.println("\n|---------------------------------|");
 
-//        orderList.add(order);
-//        writeOrderDatList(orderList);
+        orderList.add(order);
+        writeOrderDatList(orderList);
 
         System.out.print("\nPress enter to continue...");
         try {
@@ -661,13 +661,20 @@ public class CatalogOrders {
     //Order.dat
     public void writeOrderDatList(InvListInterface<Order> orderList) {
         String s = "";
-        int size = order.getOrderItem().size();
+        int size = orderList.size();
+        
+        for (int i = 0; i < size; i++) {
+            Order orderEntry=orderList.remove(0);
+//            orderList.get(i);
+            s += orderEntry.getOrderId() + "|";
+            s = writeOrderItem(s,orderEntry) + "|";
+            s = writeOrderQuantity(s,orderEntry) + "|";
+            s += orderEntry.getTotal() + "|" + orderEntry.getMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + orderEntry.getAddress() + "\n";
 
-        s += order.getOrderId() + "|";
-        s = writeOrderItem(s, size) + "|";
-        s = writeOrderQuantity(s, size) + "|";
-        s += order.getTotal() + "|" + order.getMethod() + "|" + order.getPDate() + "|" + order.getPTime() + "|" + order.getAddress() + "\n";
+//            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
+        }
 
+       
         BufferedWriter bw = null;
         FileWriter fw = null;
 
@@ -691,21 +698,23 @@ public class CatalogOrders {
         }
     }
 
-    public String writeOrderItem(String s, int size) {
+    public String writeOrderItem(String s,Order orderEntry) {
+        int size=order.getOrderItem().size();
         for (int i = 0; i < size; i++) {
-            s += order.getOrderItem().get(i);
+            s += orderEntry.getOrderItem().get(i);
             if (i != size - 1) {
-                s += " ";
+                s += ",";
             }
         }
         return s;
     }
 
-    public String writeOrderQuantity(String s, int size) {
+    public String writeOrderQuantity(String s,Order orderEntry) {
+        int size=order.getOrderItem().size();
         for (int i = 0; i < size; i++) {
-            s += order.getQuantity().get(i);
+            s += orderEntry.getQuantity().get(i);
             if (i != size - 1) {
-                s += " ";
+                s += ",";
             }
         }
         return s;
@@ -713,22 +722,25 @@ public class CatalogOrders {
 
     public InvListInterface<Order> readOrderDatList() {
         InvListInterface<Order> orderList = new InvLinkedList<>();
-        BufferedReader br = null, br2 = null;
-        FileReader fr = null, fr2 = null;
+        BufferedReader br = null;
+        FileReader fr = null;
+        List StringList=new ArrayList();
+        List IntList=new ArrayList();
 
         try {
             fr = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/Order.dat");
-            fr2 = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/OrderItemQty.dat");
             br = new BufferedReader(fr);
-            br2 = new BufferedReader(fr2);
 
-            String sCurrentLine = br.readLine();
-            String sCurrentLine2=br2.readLine();
+            String sCurrentLine;
 
-            while (sCurrentLine != null) {
+            while ((sCurrentLine = br.readLine()) != null) {
                 String[] s = sCurrentLine.split("\\|");
-                String[] s2=sCurrentLine2.split("\\|");
-                
+                StringList.add(s[1]);
+                System.out.println(StringList);
+                IntList=convertToList(s[2],IntList);
+                System.out.println(IntList);
+                Order orderEntry = new Order(s[0], StringList, IntList, Double.parseDouble(s[3]), s[4], s[5],s[6],s[7]);
+                orderList.add(orderEntry);
             }
 
         } catch (IOException e) {
@@ -746,6 +758,14 @@ public class CatalogOrders {
             }
         }
         return orderList;
+    }
+    
+    public List convertToList(String s2,List IntList){
+        String[] qty=s2.split("\\,");
+        for(int i=0;i<qty.length;i++){
+            IntList.add(qty[i]);
+        }
+        return IntList;
     }
 
     //Product.dat
