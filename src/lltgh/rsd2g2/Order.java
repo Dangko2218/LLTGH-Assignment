@@ -24,10 +24,10 @@ public class Order<T> implements OrderADT<T>{   //act as linked list?
         address=null;
     }
     
-    public Order(String orderId,String orderItem,int quantity,double total,String method,String pDate,String pTime,String address){
+    public Order(String orderId,List orderItem,List quantity,double total,String method,String pDate,String pTime,String address){
         this.orderId=orderId;
-        this.orderItem.add(orderItem);
-        this.quantity.add(quantity);
+        this.orderItem=orderItem;
+        this.quantity=quantity;
         this.total=total;
         this.method=method;
         this.pDate=pDate;
@@ -101,17 +101,13 @@ public class Order<T> implements OrderADT<T>{   //act as linked list?
         return address;
     }
     
-    public String toString(){
-        return "\nOrder ID: " + orderId +
-               "\nOrder Item: " + orderItem + 
-               "\nQuantity: " + quantity +
-               "\nTotal: RM" + String.format("%.2f",total) +
-               "\nMethod: " + method +
-               "\nDate: " + pDate +
-               "\nTime: " + pTime + "\n";
-    }
-
-    public void addOrder(T item) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    public String toString(){
+//        return "\nOrder ID: " + orderId +
+//               "\nOrder Item: " + orderItem + 
+//               "\nQuantity: " + quantity +
+//               "\nTotal: RM" + String.format("%.2f",total) +
+//               "\nMethod: " + method +
+//               "\nDate: " + pDate +
+//               "\nTime: " + pTime + "\n";
+//    } 
 }
