@@ -47,7 +47,7 @@ public class CatalogOrders {
 //
 //        do {
 //            System.out.print("Please enter customer ID: ");
-//            String custId = scanner.next();
+//            String custId = scanner.nextLine();
 //            if (!custId.equals()) {
 //                System.out.println("Invalid customer ID!");
 //                System.out.println("Press enter to continue...");
@@ -85,15 +85,16 @@ public class CatalogOrders {
             System.out.println("1) Fresh Flowers");
             System.out.println("2) Bouquets");
             System.out.println("3) Floral Arrangement");
-            System.out.println("4) Back");
+            System.out.println("4) Back to Main Menu");
             System.out.print("Please select a product type: ");
 
             try {
                 valid = true;
                 typeOpt = scanner.nextInt();
+                scanner.nextLine();
                 if (typeOpt >= 1 && typeOpt <= 3) {
                     showDetail(typeOpt);
-                    valid = getId(typeOpt);
+                    valid = getProdId(typeOpt);
                 } else if (typeOpt == 4) {
                     break;
                 } else {
@@ -130,12 +131,12 @@ public class CatalogOrders {
         System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|\n", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
     }
 
-    public boolean getId(int typeOpt) {
+    public boolean getProdId(int typeOpt) {
         String itemId;
 
         do {
             System.out.print("Please enter item ID(Enter -1 to back): ");
-            itemId = scanner.next();
+            itemId = scanner.nextLine();
             if (itemId.equals("-1")) {
                 valid = false;
                 break;
@@ -189,6 +190,7 @@ public class CatalogOrders {
             System.out.print("Please enter quantity: ");
             try {
                 quantity = scanner.nextInt();
+                scanner.nextLine();
                 if (quantity > 0) {
                     valid = chkStock(quantity);
                 } else {
@@ -239,6 +241,7 @@ public class CatalogOrders {
             try {
                 valid = true;
                 actOpt = scanner.nextInt();
+                scanner.nextLine();
                 if (actOpt == 1) {
                     break;
                 } else if (actOpt == 2) {
@@ -304,6 +307,7 @@ public class CatalogOrders {
             try {
                 valid = true;
                 methodOpt = scanner.nextInt();
+                scanner.nextLine();
                 if (methodOpt == 1) {
                     order.setMethod("Pick up");
                     String orderDate = pickUpDate();
@@ -354,6 +358,7 @@ public class CatalogOrders {
             try {
                 System.out.print("Year: ");
                 year = scanner.nextInt();
+                scanner.nextLine();
                 valid = chkYear(year);
             } catch (InputMismatchException ex) {
                 System.out.println("***Invalid input!Please enter again.***\n");
@@ -384,6 +389,7 @@ public class CatalogOrders {
             try {
                 System.out.print("Month: ");
                 month = scanner.nextInt();
+                scanner.nextLine();
                 valid = chkMonth(month);
             } catch (InputMismatchException ex) {
                 System.out.println("***Invalid input!Please enter again.***\n");
@@ -411,9 +417,11 @@ public class CatalogOrders {
             try {
                 System.out.print("Day: ");
                 day = scanner.nextInt();
+                scanner.nextLine();
                 valid = chkDay(day, month, year);
             } catch (InputMismatchException ex) {
                 System.out.println("***Invalid input!Please enter again.***\n");
+                System.out.println("Month entered is: " + month);
                 scanner.next();
                 valid = false;
             }
@@ -432,7 +440,8 @@ public class CatalogOrders {
             case 10:
             case 12:
                 if (day < 1 || day > 31) {
-                    System.out.println("***Invalid day!Please enter again.***\n");;
+                    System.out.println("***Invalid day!Please enter again.***\n");
+                    System.out.println("Month entered is: " + month);
                     valid = false;
                 }
                 break;
@@ -442,6 +451,7 @@ public class CatalogOrders {
             case 11:
                 if (day < 1 || day > 30) {
                     System.out.println("***Invalid day!Please enter again.***\n");
+                    System.out.println("Month entered is: " + month);
                     valid = false;
                 }
                 break;
@@ -508,6 +518,7 @@ public class CatalogOrders {
             try {
                 System.out.print("Hours(12-Hours form): ");
                 hours = scanner.nextInt();
+                scanner.nextLine();
                 valid = chkHours(hours);
             } catch (InputMismatchException ex) {
                 System.out.println("***Invalid input!Please enter again.***\n");
@@ -535,6 +546,7 @@ public class CatalogOrders {
             try {
                 System.out.print("Minutes: ");
                 minutes = scanner.nextInt();
+                scanner.nextLine();
                 valid = chkMinutes(minutes);
             } catch (InputMismatchException ex) {
                 System.out.println("***Invalid input!Please enter again.***\n");
@@ -560,7 +572,7 @@ public class CatalogOrders {
         do {
             valid = true;
             System.out.print("AM or PM: ");
-            meridiem = scanner.next();
+            meridiem = scanner.nextLine();
             meridiem = meridiem.toUpperCase();
             if (!"AM".equals(meridiem) && !"PM".equals(meridiem)) {
                 System.out.println("***Invalid input.Please enter again.***\n");
@@ -612,13 +624,23 @@ public class CatalogOrders {
     }
 
     public void getAddress() {
-
+        String address=null;
+        do{
+            valid=true;
+            System.out.println("\nPlease enter delivery address: ");
+            address=scanner.nextLine();
+            if(address.equals("") || address.equals(" ")){
+                System.out.println("***Please enter an address.***");
+                valid=false;
+            }
+        }while(valid==false);
+        order.setAddress(address);
     }
 
     public void generateSO() {
         double price = 0;
         ListInterface<Product> prodList = readProdDatList();
-        InvListInterface<Order> orderList = readOrderDatList();
+        InvListInterface<Order> orderList=readOrderDatList();
 
         System.out.println("\n|---------------------------------|");
         System.out.println("|           Sales  Order          |");
@@ -660,13 +682,20 @@ public class CatalogOrders {
     //Order.dat
     public void writeOrderDatList(InvListInterface<Order> orderList) {
         String s = "";
-        int size = order.getOrderItem().size();
+        int size = orderList.size();
+        
+        for (int i = 0; i < size; i++) {
+            Order orderEntry=orderList.get(i);
+//            orderList.get(i);
+            s += orderEntry.getOrderId() + "|";
+            s = writeOrderItem(s,orderEntry) + "|";
+            s = writeOrderQuantity(s,orderEntry) + "|";
+            s += orderEntry.getTotal() + "|" + orderEntry.getMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + orderEntry.getAddress() + "\n";
 
-        s += order.getOrderId() + "|";
-        s = writeOrderItem(s, size) + "|";
-        s = writeOrderQuantity(s, size) + "|";
-        s += order.getTotal() + "|" + order.getMethod() + "|" + order.getPDate() + "|" + order.getPTime() + "|" + order.getAddress() + "\n";
+//            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
+        }
 
+       
         BufferedWriter bw = null;
         FileWriter fw = null;
 
@@ -690,21 +719,23 @@ public class CatalogOrders {
         }
     }
 
-    public String writeOrderItem(String s, int size) {
+    public String writeOrderItem(String s,Order orderEntry) {
+        int size=orderEntry.getOrderItem().size();
         for (int i = 0; i < size; i++) {
-            s += order.getOrderItem().get(i);
+            s += orderEntry.getOrderItem().get(i);
             if (i != size - 1) {
-                s += " ";
+                s += ",";
             }
         }
         return s;
     }
 
-    public String writeOrderQuantity(String s, int size) {
+    public String writeOrderQuantity(String s,Order orderEntry) {
+        int size=orderEntry.getOrderItem().size();
         for (int i = 0; i < size; i++) {
-            s += order.getQuantity().get(i);
+            s += orderEntry.getQuantity().get(i);
             if (i != size - 1) {
-                s += " ";
+                s += ",";
             }
         }
         return s;
@@ -714,6 +745,8 @@ public class CatalogOrders {
         InvListInterface<Order> orderList = new InvLinkedList<>();
         BufferedReader br = null;
         FileReader fr = null;
+        List itemList=new ArrayList();
+        List qtyList=new ArrayList();
 
         try {
             fr = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/Order.dat");
@@ -723,7 +756,9 @@ public class CatalogOrders {
 
             while ((sCurrentLine = br.readLine()) != null) {
                 String[] s = sCurrentLine.split("\\|");
-                Order orderEntry = new Order(s[0], s[1], Integer.parseInt(s[2]), Double.parseDouble(s[3]), s[4], s[5], s[6], s[7]);
+                itemList=convertToItemList(s[1]);
+                qtyList=convertToQtyList(s[2]);
+                Order orderEntry = new Order(s[0], itemList, qtyList, Double.parseDouble(s[3]), s[4], s[5],s[6],s[7]);
                 orderList.add(orderEntry);
             }
 
@@ -742,6 +777,24 @@ public class CatalogOrders {
             }
         }
         return orderList;
+    }
+    
+    public List convertToItemList(String s1){
+        String[] item=s1.split(",");
+        List itemList=new ArrayList();
+        for(int i=0;i<item.length;i++){
+            itemList.add(item[i]);
+        }
+        return itemList;
+    }
+    
+    public List convertToQtyList(String s2){
+        String[] qty=s2.split(",");
+        List qtyList=new ArrayList();
+        for(int i=0;i<qty.length;i++){
+            qtyList.add(qty[i]);
+        }
+        return qtyList;
     }
 
     //Product.dat
