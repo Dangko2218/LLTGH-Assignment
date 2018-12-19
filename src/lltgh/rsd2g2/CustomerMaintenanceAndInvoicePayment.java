@@ -72,7 +72,7 @@ public class CustomerMaintenanceAndInvoicePayment {
 
     // just for initialization
     public void InitializeInv(InvListInterface<Invoice> invoice) {
-        if (invoice.size() == 0) {
+        //if (invoice.size() == 0) {
             // hard code inv 1
             Invoice inv1 = new Invoice();
             inv1.setInvoiceNo(genInvID());
@@ -92,7 +92,7 @@ public class CustomerMaintenanceAndInvoicePayment {
             // hard code inv 2
             Invoice inv2 = new Invoice();
             inv2.setInvoiceNo(genInvID());
-            inv1.setDate("27 Nov 2018");
+            inv2.setDate("27 Nov 2018");
             inv2.setCustID("C1");
             inv2.setCustName("Timothy");
             inv2.setCustContact("0165769856");
@@ -108,7 +108,7 @@ public class CustomerMaintenanceAndInvoicePayment {
             // hard code inv 3
             Invoice inv3 = new Invoice();
             inv3.setInvoiceNo(genInvID());
-            inv1.setDate("29 Nov 2018");
+            inv3.setDate("29 Nov 2018");
             inv3.setCustID("C2");
             inv3.setCustName("Mou mou ren");
             inv3.setCustContact("0123456789");
@@ -124,7 +124,7 @@ public class CustomerMaintenanceAndInvoicePayment {
             // hard code inv 4
             Invoice inv4 = new Invoice();
             inv4.setInvoiceNo(genInvID());
-            inv1.setDate("29 Nov 2018");
+            inv4.setDate("29 Nov 2018");
             inv4.setCustID("C2");
             inv4.setCustName("Mou mou ren");
             inv4.setCustContact("0123456789");
@@ -137,11 +137,11 @@ public class CustomerMaintenanceAndInvoicePayment {
             inv4.setGrandTotal(25.0);
             inv4.setInvoiceStatus("Paid");
 
-            invoice.add(inv1);
-            invoice.add(inv2);
-            invoice.add(inv3);
-            invoice.add(inv4);
-        }
+            //invoice.add(inv1);
+            //invoice.add(inv2);
+            //invoice.add(inv3);
+            //invoice.add(inv4);
+        //}
 
         //System.out.print(invoice.toString());
     }
@@ -157,7 +157,7 @@ public class CustomerMaintenanceAndInvoicePayment {
     //get the unpaid invoice no
     public void getUnpaidInvNo(InvListInterface<Invoice> invoice) {
         System.out.print("Customer ID > ");
-        String searchbyID = scan.nextLine();
+        String searchbyID = "C1";//scan.nextLine();
         for (int i = 0; i < invoice.size(); i++) {
             if (invoice.get(i).getCustID().compareTo(searchbyID) == 0) {
                 System.out.printf("Unpaid invoice of customer: %s", invoice.get(i).getInvoiceNo());
@@ -172,12 +172,12 @@ public class CustomerMaintenanceAndInvoicePayment {
     // get unpaid invoice details
     public void printInv(InvListInterface<Invoice> invoice) {
         System.out.print("Print invoice? > ");
-        String conf = scan.nextLine();
+        String conf = "Y";//scan.nextLine();
         for (int i = 0; i < unpaidInvNo.size(); i++) {
             for (int j = 0; j < invoice.size(); j++) {
                 if (invoice.get(j).getInvoiceNo().equals(unpaidInvNo.get(i))) {
                     System.out.println(invoice.get(j).getInvoiceNo());
-                    genFile(invoice.get(j).getCustID(), invoice.get(j).getInvoiceNo());
+                    //genFile(invoice.get(j).getCustID(), invoice.get(j).getInvoiceNo());
 
                 }
             }
@@ -185,17 +185,17 @@ public class CustomerMaintenanceAndInvoicePayment {
         }
     }
 
-    public void genFile(String custID, String invNo){
-        // every invoice are store into different file
-        String filename = custID + "_" + invNo;
-        try {
-            FileWriter fwrt = new FileWriter(filename);
-            BufferedWriter bwrt = new BufferedWriter(fwrt);
-        } catch(FileNotFoundException ex) {
-            
-        } catch (IOException e) {
-
-        }
-
-    }
+//    public void genFile(String custID, String invNo){
+//        // every invoice are store into different file
+//        String filename = custID + "_" + invNo;
+//        try {
+//            FileWriter fwrt = new FileWriter(filename);
+//            BufferedWriter bwrt = new BufferedWriter(fwrt);
+//        } catch(FileNotFoundException ex) {
+//            
+//        } catch (IOException e) {
+//
+//        }
+//
+//    }
 }

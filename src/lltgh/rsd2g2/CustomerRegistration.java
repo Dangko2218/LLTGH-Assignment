@@ -27,15 +27,15 @@ public class CustomerRegistration {
         
         // get customer name
         System.out.print("Customer name > ");
-        custName = input.nextLine();
+        custName = "acb"; //input.nextLine();
         
         // get ic no.
         System.out.print("Identity Card No./Passport no. > ");
-        custIC = input.nextLine();
+        custIC = "901221567789"; // input.nextLine();
         
         // get contact no.
         System.out.print("Contact no. > ");
-        contactNo = input.nextLine();        
+        contactNo = "0165769856" ;//input.nextLine();        
         
         
         // select customer type; loop if invalid selection
@@ -66,13 +66,13 @@ public class CustomerRegistration {
         else{
             // get customer company name
             System.out.print("Company/Corporate name > ");
-            custCorp = input.nextLine();
+            custCorp = "line";//input.nextLine();
             
             System.out.print("Company/Corporate address > ");
-            corpAddr = input.nextLine();
+            corpAddr = "line"; //input.nextLine();
             
             System.out.print("Credit limit > ");
-            creditLimit = input.nextDouble();
+            creditLimit = 5.0; //input.nextDouble();
         }
         
         // generate id for customer; to be updated
@@ -83,7 +83,7 @@ public class CustomerRegistration {
         customerList.add(newCust);
         System.out.println("Customer Successfully Saved.");
         CustomerMaintenanceAndInvoicePayment custMain = new CustomerMaintenanceAndInvoicePayment();
-        custMain.printTest();
+        //custMain.printTest();
     }
     
     public String selectType(){
@@ -93,7 +93,7 @@ public class CustomerRegistration {
         System.out.println("--------------------");
         
         System.out.print("Customer Type > ");
-        return custSelection = input.nextLine();
+        return custSelection = "2"; //input.nextLine();
     }
     
     public String generateCustID(String type){
