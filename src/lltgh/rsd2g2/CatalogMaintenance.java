@@ -147,8 +147,10 @@ public class CatalogMaintenance {
                     displayPromo();
                     break;
                 case "2":
+                    addPromo();
                     break;
                 case "3":
+                    removePromo();
                     break;
                 case "99":
                     break;
@@ -165,6 +167,177 @@ public class CatalogMaintenance {
 
     }
 
+    public void removePromo() {
+        boolean isCorrect = false, isMonth = false;
+        int promoPosition = 0, prodPosition = 0;
+        ListInterface<Promotion> promo = readPromoDatList();
+        ListInterface<Product> prod = readProdDatList();
+        String month = "", prodID = "";
+        do {
+            System.out.print("Enter a Month(1 - 12) > ");
+            month = input.nextLine();
+            if (isInteger(month) == true) {
+                if (Integer.parseInt(month) < 1 || Integer.parseInt(month) > 12) {
+                    isMonth = false;
+                } else {
+                    isMonth = true;
+                    header1();
+                    for (int i = 0; i < promo.size(); i++) {
+                        for (int j = 0; j < prod.size(); j++) {
+                            if (promo.get(i).getpromoMonth() == Integer.parseInt(month)) {
+                                if (promo.get(i).getProdID().equals(prod.get(j).getProdID())) {
+                                    getPromoListFromDat(promo, i, prod, j);
+                                }
+                            }
+                        }
+                    }
+
+                    tailer2();
+                }
+            }
+
+            if (isMonth == false) {
+                System.err.println("Invalid Month");
+            }
+        } while (isMonth = false && isInteger(month) == false);
+
+        do {
+            System.out.println();
+            System.out.print("Enter Product ID to Remove>");
+            prodID = input.nextLine();
+            for (int i = 0; i < promo.size(); i++) {
+                prodID = prodID.toLowerCase();
+
+                if (promo.get(i).getpromoMonth() == Integer.parseInt(month)) {
+                    if (promo.get(i).getProdID().toLowerCase().contains(prodID)) {
+                        promoPosition = i;
+                        isCorrect = true;
+                        break;
+                    } else {
+                        isCorrect = false;
+                    }
+                }
+
+            }
+
+            if (isCorrect == false) {
+                System.err.println("Invalid Input!!!");
+
+            } else {
+                for (int i = 0; i < prod.size(); i++) {
+                    if (prod.get(i).getProdID().contains(prodID)) {
+                        prodPosition = i;
+                    }
+                }
+                header1();
+                getPromoListFromDat(promo, promoPosition, prod, prodPosition);
+                tailer2();
+                System.out.println();
+                promo.remove(promoPosition);
+                writePromoDatList(promo);
+            }
+
+        } while (isCorrect != true);
+    }
+
+    public void addPromo() {
+        boolean isMonth = false, isCorrect = false, isAvailable = false, isDiscount = false, isExist = false;
+        int prodPosition = 0;
+        ListInterface<Promotion> promo = readPromoDatList();
+        ListInterface<Product> prod = readProdDatList();
+        Promotion promoToADD = new Promotion();
+        String month = "", prodID = "", disRate = "";
+        do {
+            System.out.print("Enter a Month(1 - 12) > ");
+            month = input.nextLine();
+            if (isInteger(month) == true) {
+                if (Integer.parseInt(month) < 1 || Integer.parseInt(month) > 12) {
+                    isMonth = false;
+                } else {
+                    isMonth = true;
+                    promoToADD.setpromoMonth(Integer.parseInt(month));
+                }
+            }
+            if (isMonth == false) {
+                System.err.println("Invalid Month");
+            }
+        } while (isMonth = false && isInteger(month) == false);
+        header();
+        for (int i = 0; i < prod.size(); i++) {
+            getProductListFromDat(prod, i);
+        }
+        tailer();
+        do {
+            System.out.println();
+            System.out.print("Enter Product ID>");
+            prodID = input.nextLine();
+            for (int i = 0; i < prod.size(); i++) {
+                prodID = prodID.toLowerCase();
+
+                if (prod.get(i).getProdID().toLowerCase().contains(prodID) || prod.get(i).getprodName().toLowerCase().contains(prodID) || prod.get(i).getprodDetail().toLowerCase().contains(prodID)) {
+                    isCorrect = true;
+                    if ("Available".equals(prod.get(i).getprodStatus())) {
+
+                        isAvailable = true;
+                        prodPosition = i;
+                        prodID = prod.get(i).getProdID();
+                        for (int j = 0; j < promo.size(); j++) {
+                            if (promo.get(j).getpromoMonth() == Integer.parseInt(month) && promo.get(j).getProdID().equals(prodID)) {
+                                isExist = false;
+                                break;
+                            } else {
+                                isExist = true;
+
+                            }
+                        }
+                        break;
+                    } else {
+                        isAvailable = false;
+                    }
+                    break;
+                } else {
+                    isCorrect = false;
+                }
+            }
+
+            if (isCorrect == false) {
+                System.err.println("Invalid Input!!!");
+
+            } else if (isAvailable == false) {
+                System.err.println("Product Unavaialble");
+
+            } else if (isExist == false) {
+                System.err.println("Product Already in Promo List");
+
+            } else {
+                header();
+                getProductListFromDat(prod, prodPosition);
+                tailer();
+                promoToADD.setProdID(prodID);
+            }
+        } while (isCorrect != true || isAvailable != true || isExist != true);
+
+        do {
+            System.out.println();
+            System.out.print("Enter Discount Rate(1 - 100) > ");
+            disRate = input.nextLine();
+            if (isInteger(disRate) == true) {
+                if (Integer.parseInt(disRate) < 1 || Integer.parseInt(disRate) > 100) {
+                    isDiscount = false;
+                } else {
+                    isDiscount = true;
+                    promoToADD.setdiscountRate(Integer.parseInt(disRate));
+                }
+            }
+            if (isDiscount == false) {
+                System.err.println("Invalid Discount Rate");
+            }
+        } while (isDiscount = false && isInteger(disRate) == false);
+
+        promo.add(promoToADD);
+        writePromoDatList(promo);
+    }
+
     public void displayPromo() {
         boolean isMonth = false;
         ListInterface<Promotion> promo = readPromoDatList();
@@ -173,25 +346,30 @@ public class CatalogMaintenance {
         do {
             System.out.print("Enter a Month(1 - 12) > ");
             month = input.nextLine();
-            if (Integer.parseInt(month) < 1 || Integer.parseInt(month) > 12) {
-                isMonth = false;
-                System.err.println("Invalid Month");
-            } else {
-                isMonth = true;
-                header1();
-                for (int i = 0; i < promo.size(); i++) {
-                    for (int j = 0; j < prod.size(); j++) {
-                        if (promo.get(i).getpromoMonth() == Integer.parseInt(month)) {
-                            if (promo.get(i).getProdID().equals(prod.get(j).getProdID())) {
-                                getPromoListFromDat(promo, i, prod, j);
+            if (isInteger(month) == true) {
+                if (Integer.parseInt(month) < 1 || Integer.parseInt(month) > 12) {
+                    isMonth = false;
+                } else {
+                    isMonth = true;
+                    header1();
+                    for (int i = 0; i < promo.size(); i++) {
+                        for (int j = 0; j < prod.size(); j++) {
+                            if (promo.get(i).getpromoMonth() == Integer.parseInt(month)) {
+                                if (promo.get(i).getProdID().equals(prod.get(j).getProdID())) {
+                                    getPromoListFromDat(promo, i, prod, j);
+                                }
                             }
                         }
                     }
-                }
 
-                tailer2();
+                    tailer2();
+                }
             }
-        } while (isMonth = false && !isInteger(month));
+
+            if (isMonth == false) {
+                System.err.println("Invalid Month");
+            }
+        } while (isMonth = false && isInteger(month) == false);
 
     }
 
