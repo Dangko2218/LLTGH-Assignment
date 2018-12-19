@@ -804,7 +804,7 @@ public class CatalogOrders {
 
         for (int i = 0; i < size; i++) {
             Product prodEn = prodList.remove(0);
-            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
+            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "|" + prodEn.getprodStatus() + "\n";
         }
 
         BufferedWriter bw = null;
@@ -843,7 +843,7 @@ public class CatalogOrders {
 
             while ((sCurrentLine = br.readLine()) != null) {
                 String[] s = sCurrentLine.split("\\|");
-                Product prodEn = new Product(s[0], s[1], s[2], s[3], Double.parseDouble(s[4]), Integer.parseInt(s[5]));
+                Product prodEn = new Product(s[0], s[1], s[2], s[3], Double.parseDouble(s[4]), Integer.parseInt(s[5]), s[6]);
                 prodDatList.add(prodEn);
             }
 
