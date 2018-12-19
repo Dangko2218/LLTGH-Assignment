@@ -131,11 +131,100 @@ public class CatalogMaintenance {
 
     public void viewPromotions() {
 
-        System.out.println("Catalog Promotion");
-        System.out.println("1) View Monthly Promotion");
-        System.out.println("2) ADD Monthly Promotion");
-        System.out.println("3) Remove Monthly Promotion");
-        System.out.println("99) Back");
+        String option = null;
+        do {
+            System.out.println();
+            System.out.println("Catalog Promotion");
+            System.out.println("1) View Monthly Promotion");
+            System.out.println("2) ADD Monthly Promotion");
+            System.out.println("3) Remove Monthly Promotion");
+            System.out.println("99) Back");
+            System.out.print("Please enter your option>");
+            option = input.nextLine();
+
+            switch (option) {
+                case "1":
+                    displayPromo();
+                    break;
+                case "2":
+                    break;
+                case "3":
+                    break;
+                case "99":
+                    break;
+                default:
+                    System.err.println("***Invalid input, please enter between 1 to 5 or Enter 99 to Back.***");
+                    System.err.println("Press enter to continue...");
+                    try {
+                        System.in.read();
+                    } catch (IOException ex) {
+                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+            }
+        } while (!option.equals("99"));
+
+    }
+
+    public void displayPromo() {
+        boolean isMonth = false;
+        ListInterface<Promotion> promo = readPromoDatList();
+        ListInterface<Product> prod = readProdDatList();
+        String month = "";
+        do {
+            System.out.print("Enter a Month(1 - 12) > ");
+            month = input.nextLine();
+            if (Integer.parseInt(month) < 1 || Integer.parseInt(month) > 12) {
+                isMonth = false;
+                System.err.println("Invalid Month");
+            } else {
+                isMonth = true;
+                header1();
+                for (int i = 0; i < promo.size(); i++) {
+                    for (int j = 0; j < prod.size(); j++) {
+                        if (promo.get(i).getpromoMonth() == Integer.parseInt(month)) {
+                            if (promo.get(i).getProdID().equals(prod.get(j).getProdID())) {
+                                getPromoListFromDat(promo, i, prod, j);
+                            }
+                        }
+                    }
+                }
+
+                tailer2();
+            }
+        } while (isMonth = false && !isInteger(month));
+
+    }
+
+    public String generateMonth(int i) {
+        String month = "";
+        if (i == 1) {
+            month = "January";
+        } else if (i == 2) {
+            month = "February";
+        } else if (i == 3) {
+            month = "March";
+        } else if (i == 4) {
+            month = "April";
+        } else if (i == 5) {
+            month = "May";
+        } else if (i == 6) {
+            month = "June";
+        } else if (i == 7) {
+            month = "July";
+        } else if (i == 8) {
+            month = "August";
+        } else if (i == 9) {
+            month = "September";
+        } else if (i == 10) {
+            month = "October";
+        } else if (i == 11) {
+            month = "November";
+        } else if (i == 12) {
+            month = "December";
+        } else {
+            System.out.println(i + " is invalid!");
+        }
+        return month;
     }
 
     public void maintainCatalog() {
@@ -163,8 +252,10 @@ public class CatalogMaintenance {
                     System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
+
                     } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LLTGHRSD2G2.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
             }
         } while (!option.equals("99"));
@@ -210,8 +301,10 @@ public class CatalogMaintenance {
                     System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
+
                     } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LLTGHRSD2G2.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
             }
         } while (Integer.parseInt(PTypeOption) < 0 || Integer.parseInt(PTypeOption) > 4);
@@ -322,8 +415,10 @@ public class CatalogMaintenance {
                                 System.err.println("Press enter to continue...");
                                 try {
                                     System.in.read();
+
                                 } catch (IOException ex) {
-                                    Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(LLTGHRSD2G2.class
+                                            .getName()).log(Level.SEVERE, null, ex);
                                 }
                         }
                     } while (Integer.parseInt(PTypeOption) < 0 || Integer.parseInt(PTypeOption) > 4);
@@ -361,8 +456,10 @@ public class CatalogMaintenance {
                                 System.err.println("Press enter to continue...");
                                 try {
                                     System.in.read();
+
                                 } catch (IOException ex) {
-                                    Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(LLTGHRSD2G2.class
+                                            .getName()).log(Level.SEVERE, null, ex);
                                 }
                         }
                     } while (Integer.parseInt(PAvailableOption) < 0 || Integer.parseInt(PAvailableOption) > 2);
@@ -385,8 +482,10 @@ public class CatalogMaintenance {
                     System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
+
                     } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LLTGHRSD2G2.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
             }
         } while (!editMenuOption.equals("99"));
@@ -436,8 +535,10 @@ public class CatalogMaintenance {
                     System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
+
                     } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LLTGHRSD2G2.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
             }
         } while (!option.equals("99"));
@@ -473,8 +574,10 @@ public class CatalogMaintenance {
                     System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
+
                     } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LLTGHRSD2G2.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
             }
         } while (!option.equals("99"));
@@ -635,8 +738,10 @@ public class CatalogMaintenance {
                     System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
+
                     } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LLTGHRSD2G2.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
             }
         } while (!option.equals("99"));
@@ -918,7 +1023,11 @@ public class CatalogMaintenance {
     }
 
     public void getPromoListFromDat(ListInterface<Promotion> promoList, int i, ListInterface<Product> prodList, int j) {
-        System.out.printf("\n|%-10s|%-15|%-25s|%-15s|", promoList.get(i).getpromoMonth(), promoList.get(i).getProdID(), prodList.get(j).getprodName(), promoList.get(i).getdiscountRate());
+        double discountPrice = 0;
+        double oriPrice = prodList.get(j).getprodPrice();
+        double discountRate = promoList.get(i).getdiscountRate();
+        discountPrice = oriPrice - (oriPrice * (discountRate / 100));
+        System.out.printf("\n|%-10s|%-15s|%-25s|%-15s|%-20s|", generateMonth(promoList.get(i).getpromoMonth()), promoList.get(i).getProdID(), prodList.get(j).getprodName(), promoList.get(i).getdiscountRate(), discountPrice);
     }
 
     public boolean isDouble(String userInput) {
@@ -1086,13 +1195,13 @@ public class CatalogMaintenance {
     }
 
     public static void header1() {
-        System.out.printf("\n|%-10s|%-15|%-25s|%-15s|", "----------", "---------------", "-------------------------", "---------------");
-        System.out.printf("\n|%-10s|%-15|%-25s|%-15s|", "Month", "Product ID", "Product Name", "Discount Rate");
-        System.out.printf("\n|%-10s|%-15|%-25s|%-15s|", "----------", "---------------", "-------------------------", "---------------");
+        System.out.printf("\n|%-10s|%-15s|%-25s|%-15s|%-20s|", "----------", "---------------", "-------------------------", "---------------", "--------------------");
+        System.out.printf("\n|%-10s|%-15s|%-25s|%-15s|%-20s|", "Month", "Product ID", "Product Name", "Discount Rate", "Price After DIscount");
+        System.out.printf("\n|%-10s|%-15s|%-25s|%-15s|%-20s|", "----------", "---------------", "-------------------------", "---------------", "--------------------");
     }
 
     public static void tailer2() {
-        System.out.printf("\n|%-10s|%-15|%-25s|%-15s|", "----------", "---------------", "-------------------------", "---------------");
+        System.out.printf("\n|%-10s|%-15s|%-25s|%-15s|%-20s|", "----------", "---------------", "-------------------------", "---------------", "--------------------");
     }
 
     public static void tailer() {
