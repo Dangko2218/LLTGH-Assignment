@@ -664,12 +664,12 @@ public class CatalogOrders {
         int size = orderList.size();
         
         for (int i = 0; i < size; i++) {
-            Order orderEntry=orderList.remove(0);
+            Order orderEntry=orderList.get(i);
 //            orderList.get(i);
             s += orderEntry.getOrderId() + "|";
             s = writeOrderItem(s,orderEntry) + "|";
             s = writeOrderQuantity(s,orderEntry) + "|";
-            s += orderEntry.getTotal() + "|" + orderEntry.getMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + orderEntry.getAddress() + "\n";
+            s += orderEntry.getTotal() + "|" + orderEntry.getMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + order.getAddress() + "\n";
 
 //            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
         }
@@ -736,7 +736,6 @@ public class CatalogOrders {
             while ((sCurrentLine = br.readLine()) != null) {
                 String[] s = sCurrentLine.split("\\|");
                 StringList.add(s[1]);
-                System.out.println(StringList);
                 IntList=convertToList(s[2],IntList);
                 System.out.println(IntList);
                 Order orderEntry = new Order(s[0], StringList, IntList, Double.parseDouble(s[3]), s[4], s[5],s[6],s[7]);
