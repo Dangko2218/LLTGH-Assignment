@@ -55,7 +55,7 @@ public class DisplayCustomerList {
         System.out.printf("|%-4s |%-30s |%-14s |%-11s |%-9s |%-20s |%-30s |%-12s |\n", "ID", "Name", "IC", "Contact", "Type", "Corporate", "Address", "Credit Limit");
         System.out.printf("-%-4s--%-30s--%-14s--%-11s--%-9s--%-20s--%-30s--%-12s--\n", "----", "------------------------------", "--------------", "-----------", "---------", "--------------------", "------------------------------", "------------");
         for (int i = 0; i < regCust.customerList.size(); i++) 
-            System.out.printf("|%-4s |%-30s |%-14s |%-11s |%-9s |%-20s |%-30s |RM %5.2f|\n", regCust.customerList.get(i).getCustID(), regCust.customerList.get(i).getName(), regCust.customerList.get(i).getCustIC(), regCust.customerList.get(i).getContactNo(), regCust.customerList.get(i).getType(), regCust.customerList.get(i).getCustCorp(), regCust.customerList.get(i).getCorpAddr(), regCust.customerList.get(i).getCreditLimit());
+            System.out.printf("|%-4s |%-30s |%-14s |%-11s |%-9s |%-20s |%-30s |RM %10.2f|\n", regCust.customerList.get(i).getCustID(), regCust.customerList.get(i).getName(), regCust.customerList.get(i).getCustIC(), regCust.customerList.get(i).getContactNo(), regCust.customerList.get(i).getType(), regCust.customerList.get(i).getCustCorp(), regCust.customerList.get(i).getCorpAddr(), regCust.customerList.get(i).getCreditLimit());
         System.out.printf("-%-4s--%-30s--%-14s--%-11s--%-9s--%-20s--%-30s--%-12s--\n", "----", "------------------------------", "--------------", "-----------", "---------", "--------------------", "------------------------------", "------------");
     }
 
@@ -79,7 +79,7 @@ public class DisplayCustomerList {
         System.out.printf("-%-4s--%-30s--%-14s--%-11s--%-9s--%-20s--%-30s--%-12s--\n", "----", "------------------------------", "--------------", "-----------", "---------", "--------------------", "------------------------------", "------------");
         for (int i = 0; i < regCust.customerList.size(); i++)
             if (regCust.customerList.get(i).getType().equals("Corporate"))
-                System.out.printf("|%-4s |%-30s |%-14s |%-11s |%-9s |%-20s |%-30s |RM %5.2f|\n", regCust.customerList.get(i).getCustID(), regCust.customerList.get(i).getName(), regCust.customerList.get(i).getCustIC(), regCust.customerList.get(i).getContactNo(), regCust.customerList.get(i).getType(), regCust.customerList.get(i).getCustCorp(), regCust.customerList.get(i).getCorpAddr(), regCust.customerList.get(i).getCreditLimit());
+                System.out.printf("|%-4s |%-30s |%-14s |%-11s |%-9s |%-20s |%-30s |RM %10.2f|\n", regCust.customerList.get(i).getCustID(), regCust.customerList.get(i).getName(), regCust.customerList.get(i).getCustIC(), regCust.customerList.get(i).getContactNo(), regCust.customerList.get(i).getType(), regCust.customerList.get(i).getCustCorp(), regCust.customerList.get(i).getCorpAddr(), regCust.customerList.get(i).getCreditLimit());
         System.out.printf("-%-4s--%-30s--%-14s--%-11s--%-9s--%-20s--%-30s--%-12s--\n", "----", "------------------------------", "--------------", "-----------", "---------", "--------------------", "------------------------------", "------------");
     }
 }
