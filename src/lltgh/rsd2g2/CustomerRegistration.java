@@ -27,15 +27,15 @@ public class CustomerRegistration {
         
         // get customer name
         System.out.print("Customer name > ");
-        custName = "acb"; //input.nextLine();
+        custName = input.nextLine();
         
         // get ic no.
         System.out.print("Identity Card No./Passport no. > ");
-        custIC = "901221567789"; // input.nextLine();
+        custIC = input.nextLine();
         
         // get contact no.
         System.out.print("Contact no. > ");
-        contactNo = "0165769856" ;//input.nextLine();        
+        contactNo = input.nextLine();        
         
         
         // select customer type; loop if invalid selection
@@ -66,13 +66,13 @@ public class CustomerRegistration {
         else{
             // get customer company name
             System.out.print("Company/Corporate name > ");
-            custCorp = "line";//input.nextLine();
+            custCorp = input.nextLine();
             
             System.out.print("Company/Corporate address > ");
-            corpAddr = "line"; //input.nextLine();
+            corpAddr = input.nextLine();
             
             System.out.print("Credit limit > ");
-            creditLimit = 5.0; //input.nextDouble();
+            creditLimit = input.nextDouble();
         }
         
         // generate id for customer; to be updated
@@ -93,7 +93,7 @@ public class CustomerRegistration {
         System.out.println("--------------------");
         
         System.out.print("Customer Type > ");
-        return custSelection = "2"; //input.nextLine();
+        return custSelection = input.nextLine();
     }
     
     public String generateCustID(String type){
@@ -110,13 +110,12 @@ public class CustomerRegistration {
         
         if (type.equals("Normal")){
             nCounter++;
-            ID = "N" + nCounter;
+            ID = "N" + String.format("%03d", nCounter);
         }
         else{
             cCounter++;
-            ID = "C" + cCounter;
-        }
-     
+            ID = "C" + String.format("%03d", cCounter);
+        }  
         return ID;
     }
 }

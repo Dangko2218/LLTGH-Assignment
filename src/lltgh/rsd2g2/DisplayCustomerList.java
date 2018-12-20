@@ -96,4 +96,13 @@ public class DisplayCustomerList {
                     + "Credit Liimit : " + regCust.customerList.get(i).getCreditLimit() + "\n\n");
         }
     }
+    
+    private void formatter(){
+        System.out.println("----------------------------------------------------------------------------");
+        System.out.println("|  ID   |             Name              |         IC        |    Contact   |");
+        System.out.println("----------------------------------------------------------------------------");
+        System.out.printf("| " + custID + " | " + custName + " | " + custIC + " | " + custContact + " |");
+        System.out.println("----------------------------------------------------------------------------");
+        
+    }
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package lltgh.rsd2g2;
 
 import org.junit.Before;
@@ -11,7 +6,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author ACER
+ * @author TG
  */
 public class CustomerMaintenanceAndInvoicePaymentTest {
 
@@ -22,101 +17,72 @@ public class CustomerMaintenanceAndInvoicePaymentTest {
     public void setUp() {
     }
 
-    /**
-     * Test of InitializeInv method, of class
-     * CustomerMaintenanceAndInvoicePayment.
-     */
     @Test
     public void testInitializeInv() {
         System.out.println("InitializeInv");
         CustomerMaintenanceAndInvoicePayment instance = new CustomerMaintenanceAndInvoicePayment();
         InvListInterface<Invoice> invoice = new InvLinkedList<>();
         instance.InitializeInv(invoice);
-        Invoice inv1 = new Invoice();
-        inv1.setInvoiceNo("INV0009");
-        inv1.setDate("27 Nov 2018");
-        inv1.setCustID("C1");
-        inv1.setCustName("Timothy");
-        inv1.setCustContact("0165769856");
-        inv1.setCustCorp("ABC Co.");
-        inv1.setCorpAddr("IDK the place");
-        inv1.setItemName("Rose");
-        inv1.setItemPrice(5.0);
-        inv1.setItemQty(5);
-        inv1.setSubtotal(25.0);
-        inv1.setGrandTotal(25.0);
-        inv1.setInvoiceStatus("Unpaid");
-
-        instance.InitializeInv(invoice);
-        
-
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
     }
 
-    /**
-     * Test of genInvID method, of class CustomerMaintenanceAndInvoicePayment.
-     */
     @Test
     public void testGenInvID() {
         System.out.println("genInvID");
         CustomerMaintenanceAndInvoicePayment instance = new CustomerMaintenanceAndInvoicePayment();
-        String expResult = "INV0009";
+        String expResult = "INV0005";
         String result = instance.genInvID();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
     }
-
-    /**
-     * Test of getUnpaidInvNo method, of class
-     * CustomerMaintenanceAndInvoicePayment.
-     */
-    @Test
-    public void testGetUnpaidInvNo() {
-        System.out.println("getUnpaidInvNo");
-        InvListInterface<Invoice> invoice = new InvLinkedList<>();
-        CustomerMaintenanceAndInvoicePayment instance = new CustomerMaintenanceAndInvoicePayment();
-        instance.getUnpaidInvNo(invoice);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of printInv method, of class CustomerMaintenanceAndInvoicePayment.
-     */
+    
     @Test
     public void testPrintInv() {
         System.out.println("printInv");
         InvListInterface<Invoice> invoice = new InvLinkedList<>();
+        // expected result
+        String invoiceNo = "INV0005";
+        String date = "27 Nov 2018";
+        String custID = "C1";
+        String custName = "Timothy";
+        String custContact = "0165769856";
+        String custCorp = "ABC Co.";
+        String corpAddr = "IDK the place";
+        String itemName = "Rose";
+        double itemPrice = 5.0;
+        int itemQty = 5;
+        double subtotal = 25.0;
+        double grandTotal = 25.0;
+        String invoiceStatus = "Unpaid";
+        Invoice inv = new Invoice();
+        inv.setInvoiceNo(invoiceNo);
+        inv.setCorpAddr(corpAddr);
+        inv.setCustID(custID);
+        inv.setCustContact(custContact);
+        inv.setCustCorp(custCorp);
+        inv.setCustName(custName);
+        inv.setDate(date);
+        inv.setGrandTotal(grandTotal);
+        inv.setInvoiceStatus(invoiceStatus);
+        inv.setItemName(itemName);
+        inv.setItemPrice(itemPrice);
+        inv.setItemQty(itemQty);
+        inv.setSubtotal(subtotal);
+        invoice.add(inv);  
+        
+        // compare
         CustomerMaintenanceAndInvoicePayment instance = new CustomerMaintenanceAndInvoicePayment();
         instance.printInv(invoice);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
+        assertEquals(invoiceNo, invoice.get(0).getInvoiceNo());
+        assertEquals(date, invoice.get(0).getDate());
+        assertEquals(custID, invoice.get(0).getCustID());
+        assertEquals(custName, invoice.get(0).getCustName());
+        assertEquals(custContact, invoice.get(0).getCustContact());
+        assertEquals(custCorp, invoice.get(0).getCustCorp());
+        assertEquals(corpAddr, invoice.get(0).getCorpAddr());
+        assertEquals(itemName, invoice.get(0).getItemName());
+        assertEquals(itemPrice, invoice.get(0).getItemPrice(), 0.0);
+        assertEquals(itemQty, invoice.get(0).getQty());
+        assertEquals(subtotal, invoice.get(0).getSubtotal(), 0.0);
+        assertEquals(grandTotal, invoice.get(0).getGrandTotal(), 0.0);
+        assertEquals(invoiceStatus, invoice.get(0).getInvoiceStatus());
     }
-
-    /**
-     * Test of genFile method, of class CustomerMaintenanceAndInvoicePayment.
-     */
-//    @Test
-//    public void testGenFile() {
-//        System.out.println("genFile");
-//        String custID = "";
-//        String invNo = "";
-//        CustomerMaintenanceAndInvoicePayment instance = new CustomerMaintenanceAndInvoicePayment();
-//        instance.genFile(custID, invNo);
-//        // TODO review the generated test code and remove the default call to fail.
-//        //fail("The test case is a prototype.");
-//    }
-    /**
-     * Test of printTest method, of class CustomerMaintenanceAndInvoicePayment.
-     */
-//    @Test
-//    public void testPrintTest() throws Exception {
-//        System.out.println("printTest");
-//        CustomerMaintenanceAndInvoicePayment instance = new CustomerMaintenanceAndInvoicePayment();
-//        instance.printTest();
-//        // TODO review the generated test code and remove the default call to fail.
-//        //fail("The test case is a prototype.");
-//    }
 }
