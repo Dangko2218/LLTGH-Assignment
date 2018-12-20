@@ -73,12 +73,13 @@ public class DisplayCustomerList {
     private void nCustList(){
         System.out.println("List of normal customer :");
         for (int i = 0; i < regCust.customerList.size(); i++)
-            if (regCust.customerList.get(i).getType().equals("Normal"))
-                System.out.printf("ID : " + regCust.customerList.get(i).getCustID() + "\n"
-                    + "Name : " + regCust.customerList.get(i).getName() + "\n"
-                    + "IC : " + regCust.customerList.get(i).getCustIC() + "\n"
-                    + "Contact No. : " + regCust.customerList.get(i).getContactNo()+ "\n"
-                    + "Type : " + regCust.customerList.get(i).getType() + "\n\n");
+            if (regCust.customerList.get(i).getType().equals("Normal")){
+                System.out.printf("--%-4s--%-30s-%-14s-%-11s-", "----", "------------------------------", "--------------", "-----------");
+                System.out.printf("| %-4s |%-30s|%-14s|%-11s|", "ID", "Name", "IC", "Contact");
+                System.out.printf("--%-4s--%-30s-%-14s-%-11s-", "----", "------------------------------", "--------------", "-----------");
+                System.out.printf("--%-4s--%-30s-%-14s-%-11s-", regCust.customerList.get(i).getCustID(), regCust.customerList.get(i).getCustName(), regCust.customerList.get(i).getCustIC(), regCust.customerList.get(i).getContactNo);
+                System.out.printf("--%-4s--%-30s-%-14s-%-11s-", "----", "------------------------------", "--------------", "-----------");
+            }
     }
     
     // display corporate only
@@ -86,23 +87,16 @@ public class DisplayCustomerList {
         System.out.println("List of corporate customer :");
         for (int i = 0; i < regCust.customerList.size(); i++){
             if (regCust.customerList.get(i).getType().equals("Corporate"))
-                System.out.printf("ID : " + regCust.customerList.get(i).getCustID() + "\n"
-                    + "Name : " + regCust.customerList.get(i).getName() + "\n"
-                    + "IC : " + regCust.customerList.get(i).getCustIC() + "\n"
-                    + "Contact No. : " + regCust.customerList.get(i).getContactNo()+ "\n"
-                    + "Type : " + regCust.customerList.get(i).getType() + "\n"
-                    + "Corporation Name : " + regCust.customerList.get(i).getCustCorp()+ "\n"
-                    + "Corporation Addr : " + regCust.customerList.get(i).getCorpAddr()+ "\n"
-                    + "Credit Liimit : " + regCust.customerList.get(i).getCreditLimit() + "\n\n");
+                System.out.printf("");
         }
     }
     
     private void formatter(){
-        System.out.println("----------------------------------------------------------------------------");
-        System.out.println("|  ID   |             Name              |         IC        |    Contact   |");
-        System.out.println("----------------------------------------------------------------------------");
-        System.out.printf("| " + custID + " | " + custName + " | " + custIC + " | " + custContact + " |");
-        System.out.println("----------------------------------------------------------------------------");
+        System.out.printf("--%-4s--%-30s-%-14s-%-11s-", "----", "------------------------------", "--------------", "-----------");
+        System.out.printf("| %-4s |%-30s|%-14s|%-11s|", "ID", "Name", "IC", "Contact");
+        System.out.printf("--%-4s--%-30s-%-14s-%-11s-", "----", "------------------------------", "--------------", "-----------");
+        System.out.printf("--%-4s--%-30s-%-14s-%-11s-", regCust.customerList.get(i).getCustID(), regCust.customerList.get(i).getCustName(), regCust.customerList.get(i).getCustIC(), regCust.customerList.get(i).getContactNo);
+        System.out.printf("--%-4s--%-30s-%-14s-%-11s-", "----", "------------------------------", "--------------", "-----------");
         
     }
 }
