@@ -30,7 +30,7 @@ public class CatalogMaintenance {
 
     public void printTest() {
         String option = null;
-
+//try commit
 //        prod.add(new Product("p0001", "Red Rose", "Fresh Flower", "Rose in Red Color", 2, 30));
 //        prod.add(new Product("p0002", "I Love You", "Bouquet", "520 Rose", 520, 5));
 //        prod.add(new Product("p0003", "LWY Pack", "Floral Arrangement", "Made by Low Wei Yin", 200, 5));
@@ -130,8 +130,279 @@ public class CatalogMaintenance {
     }
 
     public void viewPromotions() {
-        System.out.println("Constructing...");
 
+        String option = null;
+        do {
+            System.out.println();
+            System.out.println("Catalog Promotion");
+            System.out.println("1) View Monthly Promotion");
+            System.out.println("2) ADD Monthly Promotion");
+            System.out.println("3) Remove Monthly Promotion");
+            System.out.println("99) Back");
+            System.out.print("Please enter your option>");
+            option = input.nextLine();
+
+            switch (option) {
+                case "1":
+                    displayPromo();
+                    break;
+                case "2":
+                    addPromo();
+                    break;
+                case "3":
+                    removePromo();
+                    break;
+                case "99":
+                    break;
+                default:
+                    System.err.println("***Invalid input, please enter between 1 to 5 or Enter 99 to Back.***");
+                    System.err.println("Press enter to continue...");
+                    try {
+                        System.in.read();
+                    } catch (IOException ex) {
+                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+            }
+        } while (!option.equals("99"));
+
+    }
+
+    public void removePromo() {
+        boolean isCorrect = false, isMonth = false;
+        int promoPosition = 0, prodPosition = 0;
+        ListInterface<Promotion> promo = readPromoDatList();
+        ListInterface<Product> prod = readProdDatList();
+        String month = "", prodID = "";
+        do {
+            System.out.print("Enter a Month(1 - 12) > ");
+            month = input.nextLine();
+            if (isInteger(month) == true) {
+                if (Integer.parseInt(month) < 1 || Integer.parseInt(month) > 12) {
+                    isMonth = false;
+                } else {
+                    isMonth = true;
+                    header1();
+                    for (int i = 0; i < promo.size(); i++) {
+                        for (int j = 0; j < prod.size(); j++) {
+                            if (promo.get(i).getpromoMonth() == Integer.parseInt(month)) {
+                                if (promo.get(i).getProdID().equals(prod.get(j).getProdID())) {
+                                    getPromoListFromDat(promo, i, prod, j);
+                                }
+                            }
+                        }
+                    }
+
+                    tailer2();
+                }
+            }
+
+            if (isMonth == false) {
+                System.err.println("Invalid Month");
+            }
+        } while (isMonth = false && isInteger(month) == false);
+
+        do {
+            System.out.println();
+            System.out.print("Enter Product ID to Remove>");
+            prodID = input.nextLine();
+            for (int i = 0; i < promo.size(); i++) {
+                prodID = prodID.toLowerCase();
+
+                if (promo.get(i).getpromoMonth() == Integer.parseInt(month)) {
+                    if (promo.get(i).getProdID().toLowerCase().contains(prodID)) {
+                        promoPosition = i;
+                        isCorrect = true;
+                        break;
+                    } else {
+                        isCorrect = false;
+                    }
+                }
+
+            }
+
+            if (isCorrect == false) {
+                System.err.println("Invalid Input!!!");
+
+            } else {
+                for (int i = 0; i < prod.size(); i++) {
+                    if (prod.get(i).getProdID().contains(prodID)) {
+                        prodPosition = i;
+                    }
+                }
+                header1();
+                getPromoListFromDat(promo, promoPosition, prod, prodPosition);
+                tailer2();
+                System.out.println();
+                promo.remove(promoPosition);
+                writePromoDatList(promo);
+            }
+
+        } while (isCorrect != true);
+    }
+
+    public void addPromo() {
+        boolean isMonth = false, isCorrect = false, isAvailable = false, isDiscount = false, isExist = false;
+        int prodPosition = 0;
+        ListInterface<Promotion> promo = readPromoDatList();
+        ListInterface<Product> prod = readProdDatList();
+        Promotion promoToADD = new Promotion();
+        String month = "", prodID = "", disRate = "";
+        do {
+            System.out.print("Enter a Month(1 - 12) > ");
+            month = input.nextLine();
+            if (isInteger(month) == true) {
+                if (Integer.parseInt(month) < 1 || Integer.parseInt(month) > 12) {
+                    isMonth = false;
+                } else {
+                    isMonth = true;
+                    promoToADD.setpromoMonth(Integer.parseInt(month));
+                }
+            }
+            if (isMonth == false) {
+                System.err.println("Invalid Month");
+            }
+        } while (isMonth = false && isInteger(month) == false);
+        header();
+        for (int i = 0; i < prod.size(); i++) {
+            getProductListFromDat(prod, i);
+        }
+        tailer();
+        do {
+            System.out.println();
+            System.out.print("Enter Product ID>");
+            prodID = input.nextLine();
+            for (int i = 0; i < prod.size(); i++) {
+                prodID = prodID.toLowerCase();
+
+                if (prod.get(i).getProdID().toLowerCase().contains(prodID) || prod.get(i).getprodName().toLowerCase().contains(prodID) || prod.get(i).getprodDetail().toLowerCase().contains(prodID)) {
+                    isCorrect = true;
+                    if ("Available".equals(prod.get(i).getprodStatus())) {
+
+                        isAvailable = true;
+                        prodPosition = i;
+                        prodID = prod.get(i).getProdID();
+                        for (int j = 0; j < promo.size(); j++) {
+                            if (promo.get(j).getpromoMonth() == Integer.parseInt(month) && promo.get(j).getProdID().equals(prodID)) {
+                                isExist = false;
+                                break;
+                            } else {
+                                isExist = true;
+
+                            }
+                        }
+                        break;
+                    } else {
+                        isAvailable = false;
+                    }
+                    break;
+                } else {
+                    isCorrect = false;
+                }
+            }
+
+            if (isCorrect == false) {
+                System.err.println("Invalid Input!!!");
+
+            } else if (isAvailable == false) {
+                System.err.println("Product Unavaialble");
+
+            } else if (isExist == false) {
+                System.err.println("Product Already in Promo List");
+
+            } else {
+                header();
+                getProductListFromDat(prod, prodPosition);
+                tailer();
+                promoToADD.setProdID(prodID);
+            }
+        } while (isCorrect != true || isAvailable != true || isExist != true);
+
+        do {
+            System.out.println();
+            System.out.print("Enter Discount Rate(1 - 100) > ");
+            disRate = input.nextLine();
+            if (isInteger(disRate) == true) {
+                if (Integer.parseInt(disRate) < 1 || Integer.parseInt(disRate) > 100) {
+                    isDiscount = false;
+                } else {
+                    isDiscount = true;
+                    promoToADD.setdiscountRate(Integer.parseInt(disRate));
+                }
+            }
+            if (isDiscount == false) {
+                System.err.println("Invalid Discount Rate");
+            }
+        } while (isDiscount = false && isInteger(disRate) == false);
+
+        promo.add(promoToADD);
+        writePromoDatList(promo);
+    }
+
+    public void displayPromo() {
+        boolean isMonth = false;
+        ListInterface<Promotion> promo = readPromoDatList();
+        ListInterface<Product> prod = readProdDatList();
+        String month = "";
+        do {
+            System.out.print("Enter a Month(1 - 12) > ");
+            month = input.nextLine();
+            if (isInteger(month) == true) {
+                if (Integer.parseInt(month) < 1 || Integer.parseInt(month) > 12) {
+                    isMonth = false;
+                } else {
+                    isMonth = true;
+                    header1();
+                    for (int i = 0; i < promo.size(); i++) {
+                        for (int j = 0; j < prod.size(); j++) {
+                            if (promo.get(i).getpromoMonth() == Integer.parseInt(month)) {
+                                if (promo.get(i).getProdID().equals(prod.get(j).getProdID())) {
+                                    getPromoListFromDat(promo, i, prod, j);
+                                }
+                            }
+                        }
+                    }
+
+                    tailer2();
+                }
+            }
+
+            if (isMonth == false) {
+                System.err.println("Invalid Month");
+            }
+        } while (isMonth = false && isInteger(month) == false);
+
+    }
+
+    public String generateMonth(int i) {
+        String month = "";
+        if (i == 1) {
+            month = "January";
+        } else if (i == 2) {
+            month = "February";
+        } else if (i == 3) {
+            month = "March";
+        } else if (i == 4) {
+            month = "April";
+        } else if (i == 5) {
+            month = "May";
+        } else if (i == 6) {
+            month = "June";
+        } else if (i == 7) {
+            month = "July";
+        } else if (i == 8) {
+            month = "August";
+        } else if (i == 9) {
+            month = "September";
+        } else if (i == 10) {
+            month = "October";
+        } else if (i == 11) {
+            month = "November";
+        } else if (i == 12) {
+            month = "December";
+        } else {
+            System.out.println(i + " is invalid!");
+        }
+        return month;
     }
 
     public void maintainCatalog() {
@@ -159,8 +430,10 @@ public class CatalogMaintenance {
                     System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
+
                     } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LLTGHRSD2G2.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
             }
         } while (!option.equals("99"));
@@ -206,8 +479,10 @@ public class CatalogMaintenance {
                     System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
+
                     } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LLTGHRSD2G2.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
             }
         } while (Integer.parseInt(PTypeOption) < 0 || Integer.parseInt(PTypeOption) > 4);
@@ -318,8 +593,10 @@ public class CatalogMaintenance {
                                 System.err.println("Press enter to continue...");
                                 try {
                                     System.in.read();
+
                                 } catch (IOException ex) {
-                                    Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(LLTGHRSD2G2.class
+                                            .getName()).log(Level.SEVERE, null, ex);
                                 }
                         }
                     } while (Integer.parseInt(PTypeOption) < 0 || Integer.parseInt(PTypeOption) > 4);
@@ -357,8 +634,10 @@ public class CatalogMaintenance {
                                 System.err.println("Press enter to continue...");
                                 try {
                                     System.in.read();
+
                                 } catch (IOException ex) {
-                                    Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(LLTGHRSD2G2.class
+                                            .getName()).log(Level.SEVERE, null, ex);
                                 }
                         }
                     } while (Integer.parseInt(PAvailableOption) < 0 || Integer.parseInt(PAvailableOption) > 2);
@@ -381,8 +660,10 @@ public class CatalogMaintenance {
                     System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
+
                     } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LLTGHRSD2G2.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
             }
         } while (!editMenuOption.equals("99"));
@@ -432,8 +713,10 @@ public class CatalogMaintenance {
                     System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
+
                     } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LLTGHRSD2G2.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
             }
         } while (!option.equals("99"));
@@ -469,8 +752,10 @@ public class CatalogMaintenance {
                     System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
+
                     } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LLTGHRSD2G2.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
             }
         } while (!option.equals("99"));
@@ -631,8 +916,10 @@ public class CatalogMaintenance {
                     System.err.println("Press enter to continue...");
                     try {
                         System.in.read();
+
                     } catch (IOException ex) {
-                        Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LLTGHRSD2G2.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
             }
         } while (!option.equals("99"));
@@ -910,8 +1197,15 @@ public class CatalogMaintenance {
     }
 
     public void getProductListFromDat(ListInterface<Product> prodList, int i) {
-//        prodList = readProdDatList();
         System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock(), prodList.get(i).getprodStatus());
+    }
+
+    public void getPromoListFromDat(ListInterface<Promotion> promoList, int i, ListInterface<Product> prodList, int j) {
+        double discountPrice = 0;
+        double oriPrice = prodList.get(j).getprodPrice();
+        double discountRate = promoList.get(i).getdiscountRate();
+        discountPrice = oriPrice - (oriPrice * (discountRate / 100));
+        System.out.printf("\n|%-10s|%-15s|%-25s|%-15s|%-20s|", generateMonth(promoList.get(i).getpromoMonth()), promoList.get(i).getProdID(), prodList.get(j).getprodName(), promoList.get(i).getdiscountRate(), discountPrice);
     }
 
     public boolean isDouble(String userInput) {
@@ -973,6 +1267,41 @@ public class CatalogMaintenance {
         return prodDatList;
     }
 
+    public ListInterface<Promotion> readPromoDatList() {//get orderData from dat file with list
+        ListInterface<Promotion> promoDatList = new List<>();
+        //read data from CustomizedOrderData.dat
+        BufferedReader br = null;
+        FileReader fr = null;
+
+        try {
+            fr = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/promotion.dat");
+            br = new BufferedReader(fr);
+
+            String sCurrentLine;
+
+            while ((sCurrentLine = br.readLine()) != null) {
+                String[] s = sCurrentLine.split("\\|");
+                Promotion promoEn = new Promotion(Integer.parseInt(s[0]), s[1], Integer.parseInt(s[2]));
+                promoDatList.add(promoEn);//add to list
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+                if (fr != null) {
+                    fr.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return promoDatList;
+    }
+
     public void writeProdDatList(ListInterface<Product> prodList) {//Rewrite dat file
         String s = "";
         int size = prodList.size();
@@ -1005,10 +1334,52 @@ public class CatalogMaintenance {
         }
     }
 
+    public void writePromoDatList(ListInterface<Promotion> promo) {//Rewrite dat file
+        String s = "";
+        int size = promo.size();
+        for (int i = 0; i < size; i++) {
+            Promotion promoEn = promo.remove(0);
+            s += Integer.toString(promoEn.getpromoMonth()) + "|" + promoEn.getProdID() + "|" + Integer.toString(promoEn.getdiscountRate()) + "\n";
+        }
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+
+        try {
+            fw = new FileWriter("../LLTGH-Assignment/src/lltgh/rsd2g2/promotion.dat");
+            bw = new BufferedWriter(fw);
+            bw.write(s);
+            System.out.println("Process Completed.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+                if (fw != null) {
+                    fw.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     public static void header() {
         System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------", "---------------");
         System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "ID", "Name", "Type", "Detail", "Price", "Stock", "Status");
         System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------", "---------------");
+    }
+
+    public static void header1() {
+        System.out.printf("\n|%-10s|%-15s|%-25s|%-15s|%-20s|", "----------", "---------------", "-------------------------", "---------------", "--------------------");
+        System.out.printf("\n|%-10s|%-15s|%-25s|%-15s|%-20s|", "Month", "Product ID", "Product Name", "Discount Rate", "Price After DIscount");
+        System.out.printf("\n|%-10s|%-15s|%-25s|%-15s|%-20s|", "----------", "---------------", "-------------------------", "---------------", "--------------------");
+    }
+
+    public static void tailer2() {
+        System.out.printf("\n|%-10s|%-15s|%-25s|%-15s|%-20s|", "----------", "---------------", "-------------------------", "---------------", "--------------------");
     }
 
     public static void tailer() {
