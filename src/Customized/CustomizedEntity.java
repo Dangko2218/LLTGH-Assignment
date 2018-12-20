@@ -14,7 +14,41 @@ public class CustomizedEntity implements Comparable<CustomizedEntity>{
     private String OrderNo, dateTime, collectionDate, custID, style, size, type1, type2, type3, acc1, acc2, acc3, itemCode, itemName, itemStatus;
     int prior, price, status, itemPrice;
     
+    public CustomizedEntity(){
+        this.OrderNo = null;
+        this.dateTime = null;
+        this.collectionDate = null;
+        this.custID = null;
+        this.style = null;
+        this.size = null;
+        this.type1 = null;
+        this.type2 = null;
+        this.type3 = null;
+        this.acc1 = null;
+        this.acc2 = null;
+        this.acc3 = null;
+        this.prior = 0;
+        this.price = 0;
+        this.status = 0;
+    }
+    
     public CustomizedEntity(String OrderNo, String dateTime, String collectionDate, String custID, String style, String size, String type1, String type2, String type3, String acc1, String acc2, String acc3, int prior, int price, int status) {
+        
+        this.OrderNo = OrderNo;
+        this.dateTime = dateTime;
+        this.collectionDate = collectionDate;
+        this.custID = custID;
+        this.style = style;
+        this.size = size;
+        this.type1 = type1;
+        this.type2 = type2;
+        this.type3 = type3;
+        this.acc1 = acc1;
+        this.acc2 = acc2;
+        this.acc3 = acc3;
+        this.prior = prior;
+        this.price = price;
+        this.status = status;
         this.OrderNo = OrderNo;
         this.dateTime = dateTime;
         this.collectionDate = collectionDate;

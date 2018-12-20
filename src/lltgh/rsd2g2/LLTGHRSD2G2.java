@@ -91,7 +91,7 @@ public class LLTGHRSD2G2 {
         System.out.print("Please enter your option > ");
         Scanner scan = new Scanner(System.in);
         String ans = scan.nextLine();
-        scan.close();
+        //scan.close();
         return ans;
     }  
 }

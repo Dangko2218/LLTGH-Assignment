@@ -828,7 +828,7 @@ public class CustomizedFloralArrangements {
     }
     
     public boolean modifyOrder(int item) throws ParseException{
-        ListInterface<CustomizedEntity> orderListL = readDataList("Co");
+        ListInterface<CustomizedEntity> orderListL = readDataList("CO");
         QueueInterface<CustomizedEntity> orderListQ = readCustDat();
         
         int tempCount=0, status=0;
