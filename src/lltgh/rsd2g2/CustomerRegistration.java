@@ -79,7 +79,7 @@ public class CustomerRegistration {
         custID = generateCustID(custType);
         
         // add customer details into list
-        Customer newCust = new Customer(custID, custName, custIC, contactNo, custType, custCorp, creditLimit);
+        Customer newCust = new Customer(custID, custName, custIC, contactNo, custType, custCorp, corpAddr, creditLimit);
         customerList.add(newCust);
         System.out.println("Customer Successfully Saved.");
         CustomerMaintenanceAndInvoicePayment custMain = new CustomerMaintenanceAndInvoicePayment();
