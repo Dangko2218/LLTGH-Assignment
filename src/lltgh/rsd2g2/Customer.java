@@ -103,13 +103,14 @@ public class Customer<T> implements CustomerListADT<T>{
         else return false;
     }
     
-    Customer(String custID, String name, String custIC, String contactNo, String type, String custCorp, double creditLimit) {
+    Customer(String custID, String name, String custIC, String contactNo, String type, String custCorp, String corpAddr, double creditLimit) {
         this.custID = custID;
         this.custName = name;
         this.custIC = custIC;
         this.contactNo = contactNo;
         this.custType = type;
         this.custCorp = custCorp;
+        this.corpAddr = corpAddr;
         this.creditLimit = creditLimit;
     }
 }

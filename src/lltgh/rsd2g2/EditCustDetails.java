@@ -20,11 +20,15 @@ public class EditCustDetails {
                     System.out.println("Current credit limit > RM " + regCust.customerList.get(i).getCreditLimit());
                     System.out.print("New credit limit > ");
                     newCredit = scan.nextDouble();
-                    regCust.customerList.get(i).setCreditLimit(newCredit);
                     do{
                         System.out.print("Confirm update? > ");
                         confirm = scan.nextLine();
-                    }while(!confirm.toUpperCase().equals("Y") && !confirm.toUpperCase().equals("YES"));
+                        if (confirm.toUpperCase().equals("Y") && !confirm.toUpperCase().equals("YES"))
+                            regCust.customerList.get(i).setCreditLimit(newCredit);
+                        else if (confirm.toUpperCase().equals("N") && !confirm.toUpperCase().equals("NO"))
+                            break;
+                    }while((!confirm.toUpperCase().equals("Y") && !confirm.toUpperCase().equals("YES"))
+                            || (!confirm.toUpperCase().equals("N") && !confirm.toUpperCase().equals("NO")));     
                 }
             }
         } else {

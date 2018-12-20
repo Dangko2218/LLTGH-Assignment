@@ -6,6 +6,22 @@ public class Invoice implements InvoiceADT{
     private String itemName = null, invoiceStatus = null, date = null;
     private double itemPrice = 0, subtotal = 0, grandTotal = 0;
     private int qty;
+
+//    Invoice(String invoiceNo, String date, String custID, String custName, String custContact, String custCorp, String corpAddr, String itemName, double itemPrice, int itemQty, double subtotal, double grandTotal, String invoiceStatus) {
+//        this.invoiceNo = invoiceNo;
+//        this.date = date;
+//        this.custID = custID;
+//        this.custName = custName;
+//        this.custContact = custContact;
+//        this.custCorp = custCorp;
+//        this.corpAddr = corpAddr;
+//        this.itemName = itemName;
+//        this.itemPrice = itemPrice;
+//        this.qty = itemQty;
+//        this.subtotal = subtotal;
+//        this.grandTotal = grandTotal;
+//        this.invoiceStatus = invoiceStatus;
+//    }
     
     @Override
     public void setInvoiceNo(String invoiceNo) {

@@ -1,5 +1,10 @@
 package lltgh.rsd2g2;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +22,7 @@ public class CustomerMaintenanceAndInvoicePayment {
     List<String> unpaidInvNo = new ArrayList<>();
 
     //testing?  // need all method do?
-    public void printTest() {
+    public void printTest() throws IOException {
         do {
             System.out.println("==========================================");
             System.out.println(" Customer Maintenance And Invoice Payment");
@@ -67,76 +72,75 @@ public class CustomerMaintenanceAndInvoicePayment {
 
     // just for initialization
     public void InitializeInv(InvListInterface<Invoice> invoice) {
-        if (invoice.size() == 0) {
-            // hard code inv 1
-            Invoice inv1 = new Invoice();
-            inv1.setInvoiceNo(genInvID());
-            inv1.setDate("27 Nov 2018");
-            inv1.setCustID("C1");
-            inv1.setCustName("Timothy");
-            inv1.setCustContact("0165769856");
-            inv1.setCustCorp("ABC Co.");
-            inv1.setCorpAddr("IDK the place");
-            inv1.setItemName("Rose");
-            inv1.setItemPrice(5.0);
-            inv1.setItemQty(5);
-            inv1.setSubtotal(25.0);
-            inv1.setGrandTotal(25.0);
-            inv1.setInvoiceStatus("Unpaid");
+        //if (invoice.size() == 0) {
+        // hard code inv 1
+        Invoice inv1 = new Invoice();
+        inv1.setInvoiceNo(genInvID());
+        inv1.setDate("27 Nov 2018");
+        inv1.setCustID("C1");
+        inv1.setCustName("Timothy");
+        inv1.setCustContact("0165769856");
+        inv1.setCustCorp("ABC Co.");
+        inv1.setCorpAddr("IDK the place");
+        inv1.setItemName("Rose");
+        inv1.setItemPrice(5.0);
+        inv1.setItemQty(5);
+        inv1.setSubtotal(25.0);
+        inv1.setGrandTotal(25.0);
+        inv1.setInvoiceStatus("Unpaid");
 
-            // hard code inv 2
-            Invoice inv2 = new Invoice();
-            inv2.setInvoiceNo(genInvID());
-            inv1.setDate("27 Nov 2018");
-            inv2.setCustID("C1");
-            inv2.setCustName("Timothy");
-            inv2.setCustContact("0165769856");
-            inv2.setCustCorp("ABC Co.");
-            inv2.setCorpAddr("IDK the place");
-            inv2.setItemName("Jasmine");
-            inv2.setItemPrice(3.0);
-            inv2.setItemQty(5);
-            inv2.setSubtotal(15.0);
-            inv2.setGrandTotal(15.0);
-            inv2.setInvoiceStatus("Unpaid");
+        // hard code inv 2
+        Invoice inv2 = new Invoice();
+        inv2.setInvoiceNo(genInvID());
+        inv2.setDate("27 Nov 2018");
+        inv2.setCustID("C1");
+        inv2.setCustName("Timothy");
+        inv2.setCustContact("0165769856");
+        inv2.setCustCorp("ABC Co.");
+        inv2.setCorpAddr("IDK the place");
+        inv2.setItemName("Jasmine");
+        inv2.setItemPrice(3.0);
+        inv2.setItemQty(5);
+        inv2.setSubtotal(15.0);
+        inv2.setGrandTotal(15.0);
+        inv2.setInvoiceStatus("Unpaid");
 
-            // hard code inv 3
-            Invoice inv3 = new Invoice();
-            inv3.setInvoiceNo(genInvID());
-            inv1.setDate("29 Nov 2018");
-            inv3.setCustID("C2");
-            inv3.setCustName("Mou mou ren");
-            inv3.setCustContact("0123456789");
-            inv3.setCustCorp("mmr");
-            inv3.setCorpAddr("Mars");
-            inv3.setItemName("Rose");
-            inv3.setItemPrice(5.0);
-            inv3.setItemQty(5);
-            inv3.setSubtotal(25.0);
-            inv3.setGrandTotal(25.0);
-            inv3.setInvoiceStatus("Unpaid");
+        // hard code inv 3
+        Invoice inv3 = new Invoice();
+        inv3.setInvoiceNo(genInvID());
+        inv3.setDate("29 Nov 2018");
+        inv3.setCustID("C2");
+        inv3.setCustName("Mou mou ren");
+        inv3.setCustContact("0123456789");
+        inv3.setCustCorp("mmr");
+        inv3.setCorpAddr("Mars");
+        inv3.setItemName("Rose");
+        inv3.setItemPrice(5.0);
+        inv3.setItemQty(5);
+        inv3.setSubtotal(25.0);
+        inv3.setGrandTotal(25.0);
+        inv3.setInvoiceStatus("Unpaid");
 
-            // hard code inv 4
-            Invoice inv4 = new Invoice();
-            inv4.setInvoiceNo(genInvID());
-            inv1.setDate("29 Nov 2018");
-            inv4.setCustID("C2");
-            inv4.setCustName("Mou mou ren");
-            inv4.setCustContact("0123456789");
-            inv4.setCustCorp("mmr");
-            inv4.setCorpAddr("Mars");
-            inv4.setItemName("Carnation");
-            inv4.setItemPrice(5.0);
-            inv4.setItemQty(5);
-            inv4.setSubtotal(25.0);
-            inv4.setGrandTotal(25.0);
-            inv4.setInvoiceStatus("Paid");
+        // hard code inv 4
+        Invoice inv4 = new Invoice();
+        inv4.setInvoiceNo(genInvID());
+        inv4.setDate("29 Nov 2018");
+        inv4.setCustID("C2");
+        inv4.setCustName("Mou mou ren");
+        inv4.setCustContact("0123456789");
+        inv4.setCustCorp("mmr");
+        inv4.setCorpAddr("Mars");
+        inv4.setItemName("Carnation");
+        inv4.setItemPrice(5.0);
+        inv4.setItemQty(5);
+        inv4.setSubtotal(25.0);
+        inv4.setGrandTotal(25.0);
+        inv4.setInvoiceStatus("Paid");
 
-            invoice.add(inv1);
-            invoice.add(inv2);
-            invoice.add(inv3);
-            invoice.add(inv4);
-        }
+        invoice.add(inv1);
+        invoice.add(inv2);
+        invoice.add(inv3);
+        invoice.add(inv4);
 
         //System.out.print(invoice.toString());
     }
@@ -155,7 +159,9 @@ public class CustomerMaintenanceAndInvoicePayment {
         String searchbyID = scan.nextLine();
         for (int i = 0; i < invoice.size(); i++) {
             if (invoice.get(i).getCustID().compareTo(searchbyID) == 0) {
+                System.out.printf("Unpaid invoice of customer: %s", invoice.get(i).getInvoiceNo());
                 if (invoice.get(i).getInvoiceStatus().equals("Unpaid")) {
+                    System.out.printf("Unpaid invoice: %s", invoice.get(i).getInvoiceNo());
                     unpaidInvNo.add(invoice.get(i).getInvoiceNo());
                 }
             }
@@ -164,13 +170,35 @@ public class CustomerMaintenanceAndInvoicePayment {
 
     // get unpaid invoice details
     public void printInv(InvListInterface<Invoice> invoice) {
-        for (int i = 0; i < unpaidInvNo.size(); i++) {
-            for (int j = 0; j < invoice.size(); j++) {
-                if (invoice.get(j).getInvoiceNo().equals(unpaidInvNo.get(i))) {
-                    System.out.println(invoice.get(j).toString());
+        String conf = null;
+        while ((!conf.equals("Y") || !conf.equals("YES")) && (!conf.equals("N") || !conf.equals("NO"))) {
+            System.out.print("Print invoice? > ");
+            conf = scan.nextLine();
+            if (conf.equals("Y") || conf.equals("YES")) {
+                for (int i = 0; i < unpaidInvNo.size(); i++) {
+                    for (int j = 0; j < invoice.size(); j++) {
+                        if (invoice.get(j).getInvoiceNo().equals(unpaidInvNo.get(i))) {
+                            System.out.println(invoice.get(j).getInvoiceNo());
+                            //genFile(invoice.get(j).getCustID(), invoice.get(j).getInvoiceNo());
+                        }
+                    }
                     unpaidInvNo.set(i, null);
                 }
             }
         }
     }
+
+//    public void genFile(String custID, String invNo){
+//        // every invoice are store into different file
+//        String filename = custID + "_" + invNo;
+//        try {
+//            FileWriter fwrt = new FileWriter(filename);
+//            BufferedWriter bwrt = new BufferedWriter(fwrt);
+//        } catch(FileNotFoundException ex) {
+//            
+//        } catch (IOException e) {
+//
+//        }
+//
+//    }
 }

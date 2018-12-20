@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class LLTGHRSD2G2 { 
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws ParseException, IOException {
         LLTGHRSD2G2 mainMenu = new LLTGHRSD2G2();//mainMenu
         String option = null;
         

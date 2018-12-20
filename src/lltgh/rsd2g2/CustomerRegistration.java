@@ -21,7 +21,7 @@ public class CustomerRegistration {
     Scanner input = new Scanner(System.in);
       
     // display registration form
-    public void custReg(){
+    public void custReg() throws IOException{
         System.out.println("  Customer Registration  ");
         System.out.println("=========================");
         
@@ -79,11 +79,11 @@ public class CustomerRegistration {
         custID = generateCustID(custType);
         
         // add customer details into list
-        Customer newCust = new Customer(custID, custName, custIC, contactNo, custType, custCorp, creditLimit);
+        Customer newCust = new Customer(custID, custName, custIC, contactNo, custType, custCorp, corpAddr, creditLimit);
         customerList.add(newCust);
         System.out.println("Customer Successfully Saved.");
         CustomerMaintenanceAndInvoicePayment custMain = new CustomerMaintenanceAndInvoicePayment();
-        custMain.printTest();
+        //custMain.printTest();
     }
     
     public String selectType(){
@@ -110,13 +110,12 @@ public class CustomerRegistration {
         
         if (type.equals("Normal")){
             nCounter++;
-            ID = "N" + nCounter;
+            ID = "N" + String.format("%03d", nCounter);
         }
         else{
             cCounter++;
-            ID = "C" + cCounter;
-        }
-     
+            ID = "C" + String.format("%03d", cCounter);
+        }  
         return ID;
     }
 }
