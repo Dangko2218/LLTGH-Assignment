@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import lltgh.rsd2g2.CatalogMaintenance;
 import lltgh.rsd2g2.Product;
+import lltgh.rsd2g2.Promotion;
 
 /**
  *
@@ -31,7 +32,7 @@ public class CustomizedFloralArrangements {
     Scanner scanner = new Scanner(System.in);
     String inputScanner, modifyStatus, itemCode, itemName, itemStatus, title, st, sz, ty1, ty2, ty3, ac1, ac2, ac3, custType1="-", custType2="-", custType3="-", custAcc1="-", custAcc2="-", custAcc3="-";
     Boolean chkModifyStatus, chkValid;
-    int itemPrice, tyCount, acCount, tyIndex1, tyIndex2, tyIndex3, acIndex1, acIndex2, acIndex3;
+    int itemPrice, tyCount, acCount, tyIndex1, tyIndex2, tyIndex3, acIndex1, acIndex2, acIndex3, tyDis1, tyDis2, tyDis3, acDis1, acDis2, acDis3, tyDisCount, acDisCount;
 
     public void printTest() throws ParseException{
         alertMsg();
@@ -109,7 +110,7 @@ public class CustomizedFloralArrangements {
 
     public boolean displayCustMenu() throws ParseException{
         title=""; st=""; sz=""; ty1=""; ty2=""; ty3=""; ac1=""; ac2=""; ac3=""; custType1="-"; custType2="-"; custType3="-"; custAcc1="-"; custAcc2="-"; custAcc3="-"; tyCount=0; acCount=0;
-        tyIndex1=0; tyIndex2=0; tyIndex3=0; acIndex1=0; acIndex2=0; acIndex3=0;
+        tyIndex1=0; tyIndex2=0; tyIndex3=0; acIndex1=0; acIndex2=0; acIndex3=0; tyDis1=0; tyDis2=0; tyDis3=0; acDis1=0; acDis2=0; acDis3=0; tyDisCount=0; acDisCount=0;
         String orderNo="", dateTime="", collectionDate="", tempDate="", consumer="", custStyle="", custSize="", pickupPrior="";
         int totalCust=0, status=0, prior=0, numOfDay=0;
         
@@ -373,9 +374,7 @@ public class CustomizedFloralArrangements {
                     System.out.println("Accessory 3 Code: " + custAcc3);
                 }
                 if(item.equals("TY")||item.equals("AC")){
-                    CatalogMaintenance cat = new CatalogMaintenance();
-                    ListInterface<Product> prod = cat.readProdDatList();
-                    printProdList(prod, item);
+                    printProdList(item);
                 }
                 else{
                     ListInterface<CustomizedEntity> custItem = readDataList(item);
@@ -394,27 +393,74 @@ public class CustomizedFloralArrangements {
         return inputScanner;  
     }
     
-    private void printProdList(ListInterface<Product> prodList, String item){//print Customized Order List
-        System.out.printf("|%-5s|%-25s|%-30s|%-8s|%-8s|\n", "Code", "Name", "Details", "Price", "Quantity");
-        System.out.println("----------------------------------------------------------------------------------");
+    private void printProdList(String item){//print Customized Order List
+        System.out.printf("|%-5s|%-25s|%-30s|%-8s|%-13s|%-14s|%-8s|\n", "Code", "Name", "Details", "Price", "Discount Rate", "Discount Price", "Quantity");
+        System.out.println("---------------------------------------------------------------------------------------------------------------");
 
+        String tempProdID = "", tempPromoRate = "", tempDiscPrice = "";
+        int discPrice=0;
+        Calendar cal = Calendar.getInstance();
+        int month = cal.get(Calendar.MONTH) + 1;
+        CatalogMaintenance cat = new CatalogMaintenance();
+        ListInterface<Product> prodList = cat.readProdDatList();
+        ListInterface<Promotion> promo = cat.readPromoDatList();
+        
+        
         int size = prodList.size();
+        int promoSize = promo.size();
         for(int i=0; i<size; i++){
+            promo = cat.readPromoDatList();
             Product prod = prodList.remove(0);
             if(item.equals("TY")){
+                tyDisCount++;
                 if(prod.getprodType().equals("Fresh Flower")){
-                    if(prod.getprodStock() != 0)
-                        System.out.printf("|%-5s|%-25s|%-30s|%-8s|%-8s|\n", prod.getProdID(), prod.getprodName(), prod.getprodDetail(), prod.getprodPrice(), prod.getprodStock());
+                    if(prod.getprodStock() != 0){
+                        tempProdID = prod.getProdID();
+                        for(int j=0; j<promoSize; j++){
+                            Promotion promoDat = promo.remove(0);
+                            if(promoDat.getpromoMonth() == month){
+                                if(promoDat.getProdID().equals(tempProdID)){
+                                    discPrice = (int)prod.getprodPrice() * (100-promoDat.getdiscountRate()) / 100;
+                                    tempDiscPrice = Integer.toString(discPrice);
+                                    tempPromoRate = Integer.toString(promoDat.getdiscountRate());
+                                    break;
+                                }
+                                else{
+                                    tempDiscPrice = "-";
+                                    tempPromoRate = "-";
+                                }  
+                            }
+                        }
+                        System.out.printf("|%-5s|%-25s|%-30s|%-8s|%-13s|%-14s|%-8s|\n", prod.getProdID(), prod.getprodName(), prod.getprodDetail(), prod.getprodPrice(), tempPromoRate, tempDiscPrice, prod.getprodStock());
+                    }
                 }            
             }
             else if(item.equals("AC")){
+                acDisCount++;
                 if(prod.getprodType().equals("Accessory")){
-                    if(prod.getprodStock() != 0)
-                        System.out.printf("|%-5s|%-25s|%-30s|%-8s|%-8s|\n", prod.getProdID(), prod.getprodName(), prod.getprodDetail(), prod.getprodPrice(), prod.getprodStock());
+                    if(prod.getprodStock() != 0){
+                        tempProdID = prod.getProdID();
+                        for(int j=0; j<promoSize; j++){
+                            Promotion promoDat = promo.remove(0);
+                            if(promoDat.getpromoMonth() == month){
+                                if(promoDat.getProdID().equals(tempProdID)){
+                                    discPrice = (int)prod.getprodPrice() * (100-promoDat.getdiscountRate()) / 100;
+                                    tempDiscPrice = Integer.toString(discPrice);
+                                    tempPromoRate = Integer.toString(promoDat.getdiscountRate());
+                                    break;
+                                }
+                                else{
+                                    tempDiscPrice = "-";
+                                    tempPromoRate = "-";
+                                } 
+                            }
+                        }
+                            System.out.printf("|%-5s|%-25s|%-30s|%-8s|%-13s|%-14s|%-8s|\n", prod.getProdID(), prod.getprodName(), prod.getprodDetail(), prod.getprodPrice(), tempPromoRate, tempDiscPrice, prod.getprodStock());
+                        }            
                 }    
             }
         }
-        System.out.println("----------------------------------------------------------------------------------");
+        System.out.println("---------------------------------------------------------------------------------------------------------------");
     } 
     
     public Boolean checkCodeInput(String codeInput, String item){
