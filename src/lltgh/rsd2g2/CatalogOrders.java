@@ -26,20 +26,33 @@ public class CatalogOrders {
     private boolean valid;
     private Scanner scanner = new Scanner(System.in);
     private String iName;
+    int discountRate;
+    List discountAmount=new ArrayList();
+    List DRList = new ArrayList();
 
     private Order order = new Order();
+    CatalogMaintenance CM = new CatalogMaintenance();
 
     public void printTest() {
-//        getCustId();
-        int typeOpt = orderItem();
-        switch (typeOpt) {
-            case -1:
-            case 4:
+        char nextCust = '\0';
+        do {
+//             getCustId();
+            int typeOpt = orderItem();
+            switch (typeOpt) {
+                case -1:
+                case 4:
+                    break;
+                default:
+                    pickUpMethod();
+                    generateSO();
+                    nextCust = nextCustomer();
+            }
+            if (nextCust == 'Y') {
+                order = new Order();
+            } else {
                 break;
-            default:
-                pickUpMethod();
-                generateSO();
-        }
+            }
+        } while (valid == true);
     }
 
 //    public void getCustId() {
@@ -111,10 +124,10 @@ public class CatalogOrders {
     }
 
     public void showDetail(int typeOpt) {
-        ListInterface<Product> prodList = readProdDatList();
+        ListInterface<Product> prodList = CM.readProdDatList();
 
         System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Price", "Stock");
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Stock", "Price");
         System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
 
         for (int i = 0; i < prodList.size(); i++) {
@@ -129,6 +142,11 @@ public class CatalogOrders {
         }
 
         System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|\n", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
+    }
+
+    public void getProductListFromDat(int i) {
+        ListInterface<Product> prodList = CM.readProdDatList();
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock());
     }
 
     public boolean getProdId(int typeOpt) {
@@ -153,7 +171,7 @@ public class CatalogOrders {
     public boolean chkItem(String itemId, int typeOpt) {
         valid = false;
         String prodId;
-        ListInterface<Product> prodList = readProdDatList();
+        ListInterface<Product> prodList = CM.readProdDatList();
 
         for (int i = 0; i < prodList.size(); i++) {
             String prodType = prodList.get(i).getprodType();
@@ -185,6 +203,7 @@ public class CatalogOrders {
 
     public void getQuantity() {
         int quantity = 0;
+        int validInt = 1;
 
         do {
             System.out.print("Please enter quantity: ");
@@ -192,7 +211,14 @@ public class CatalogOrders {
                 quantity = scanner.nextInt();
                 scanner.nextLine();
                 if (quantity > 0) {
-                    valid = chkStock(quantity);
+                    validInt = chkStock(quantity);
+                    if (validInt == 1) {
+                        valid = true;
+                    } else if (validInt == 0) {
+                        valid = false;
+                    } else if (validInt == -1) {
+                        break;
+                    }
                 } else {
                     System.out.println("***Invalid input.Please enter again.***\n");
                     valid = false;
@@ -210,19 +236,20 @@ public class CatalogOrders {
         } while (valid == false);
     }
 
-    public boolean chkStock(int quantity) {
-        valid = true;
+    public int chkStock(int quantity) {
+        int valid = 1;
         int numStock;
-        ListInterface<Product> prodList = readProdDatList();
+        ListInterface<Product> prodList = CM.readProdDatList();
 
         for (int j = 0; j < prodList.size(); j++) {
             if (iName.equals(prodList.get(j).getprodName())) {
                 numStock = prodList.get(j).getprodStock();
                 if (numStock == 0) {
                     System.out.println("***There is no more stock.***\n");
+                    valid = -1;
                 } else if (numStock - quantity < 0) {
                     System.out.println("***There is no enough stock.***\n");
-                    valid = false;
+                    valid = 0;
                 }
                 break;
             }
@@ -264,34 +291,74 @@ public class CatalogOrders {
 
     public void calTotal() {
         int size = order.getOrderItem().size();
-        double price, total = 0.0;
-        ListInterface<Product> prodList = readProdDatList();
+        double price, total = 0.0, sTotal;
+        String itemId;
+        ListInterface<Product> prodList = CM.readProdDatList();
 
         for (int i = 0; i < size; i++) {     //orderItem array
             String itemName = (String) order.getOrderItem().get(i);
             int quantity = (int) order.getQuantity().get(i);
             for (int j = 0; j < prodList.size(); j++) {    //product array
                 if (itemName.equals(prodList.get(j).getprodName())) {
-                    price = prodList.get(j).getprodPrice();
-                    total += (price * quantity);
-                    order.setTotal(total);
+                    itemId = prodList.get(j).getProdID();
+                    price = getPrice(itemId, quantity);
+                    sTotal = price * quantity;
+                    total += sTotal;
 
                     updateStock(itemName, quantity);
                     break;
                 }
             }
         }
+        order.setTotal(total);
     }
 
-    private void updateStock(String itemName, int quantity) {
-        ListInterface<Product> prodList = readProdDatList();
+    public double getPrice(String itemId, int quantity) {
+        double price = 0.0;
+        boolean hasDR = true;
+        int month = LocalDate.now().getMonth().getValue();
+        ListInterface<Promotion> promoList = CM.readPromoDatList();
+        int size = promoList.size();
+        ListInterface<Product> prodList = CM.readProdDatList();
+
+        for (int j = 0; j < prodList.size(); j++) {
+            if (itemId.equals(prodList.get(j).getProdID())) {
+                price = prodList.get(j).getprodPrice();
+                break;
+            }
+        }
+
+        for (int i = 0; i < size; i++) {
+            if ((promoList.get(i).getpromoMonth() == month) && (itemId.equals(promoList.get(i).getProdID()))) {
+                discountRate = promoList.get(i).getdiscountRate();
+                price = calDiscount(price, discountRate, quantity);
+                hasDR = true;
+                DRList.add(hasDR);
+                break;
+            } else if ((i == size - 1) && (!itemId.equals(promoList.get(i).getProdID()))) {
+                hasDR = false;
+                DRList.add(hasDR);
+            }
+        }
+        return price;
+    }
+
+    public double calDiscount(double oriPrice, int discountRate, int quantity) {
+        double discountPrice;
+        discountAmount.add(((oriPrice / 100) * discountRate) * quantity);
+        discountPrice = (oriPrice / 100) * (100 - discountRate);
+        return discountPrice;
+    }
+
+    public void updateStock(String itemName, int quantity) {
+        ListInterface<Product> prodList = CM.readProdDatList();
 
         for (int j = 0; j < prodList.size(); j++) {
             if (itemName.equals(prodList.get(j).getprodName())) {
                 int stock = prodList.get(j).getprodStock();
                 stock -= quantity;
                 prodList.get(j).setprodStock(stock);
-                writeProdDatList(prodList);
+                CM.writeProdDatList(prodList);
                 break;
             }
         }
@@ -624,44 +691,52 @@ public class CatalogOrders {
     }
 
     public void getAddress() {
-        String address=null;
-        do{
-            valid=true;
+        String address = null;
+        do {
+            valid = true;
             System.out.println("\nPlease enter delivery address: ");
-            address=scanner.nextLine();
-            if(address.equals("") || address.equals(" ")){
+            address = scanner.nextLine();
+            if (address.equals("") || address.equals(" ")) {
                 System.out.println("***Please enter an address.***");
-                valid=false;
+                valid = false;
             }
-        }while(valid==false);
+        } while (valid == false);
         order.setAddress(address);
     }
 
     public void generateSO() {
-        double price = 0;
-        ListInterface<Product> prodList = readProdDatList();
-        InvListInterface<Order> orderList=readOrderDatList();
+        double price = 0.0;
+        ListInterface<Product> prodList = CM.readProdDatList();
+        InvListInterface<Order> orderList = readOrderDatList();
 
         System.out.println("\n|---------------------------------|");
         System.out.println("|           Sales  Order          |");
         System.out.println("|---------------------------------|");
         System.out.printf("|Order ID   : %-20s|", order.getOrderId());
         System.out.printf("\n|%-33s|", " ");
-        System.out.printf("\n|Order Item : %-20s|", " ");
+        System.out.printf("\n|Order Item : %-20s|\n", " ");
 
         for (int i = 0; i < order.getOrderItem().size(); i++) {
             String itemName = (String) order.getOrderItem().get(i);
+            int orderQty = (int) order.getQuantity().get(i);
             for (int j = 0; j < prodList.size(); j++) {
                 if (itemName.equals(prodList.get(j).getprodName())) {
                     price = prodList.get(j).getprodPrice();
                     break;
                 }
             }
-            System.out.printf("\n|    %s%-18s%-8s|", order.getQuantity().get(i) + "x ", order.getOrderItem().get(i), String.format("%.2f", price));
+            
+            if ((boolean) DRList.get(i) == true) {
+                System.out.printf("|%7s%-18s%7s |", orderQty + "x ", order.getOrderItem().get(i), String.format("%.2f", price * orderQty));
+                System.out.printf("\n|%7s%-18s%7s |", " ", "Discount: " + discountRate + "%", "-" + String.format("%.2f", discountAmount.get(i)));
+                System.out.printf("\n|%-33s|\n", " ");
+            }else{
+                System.out.printf("|%7s%-18s%7s |", orderQty + "x ", order.getOrderItem().get(i), String.format("%.2f", price * orderQty));
+                System.out.printf("\n|%-33s|", " ");
+            }
         }
 
-        System.out.printf("\n|Total      : RM%-10s%-8s|", " ", String.format("%.2f", order.getTotal()));
-        System.out.printf("\n|%-33s|", " ");
+        System.out.printf("|Total      : RM%-18s|",String.format("%.2f", order.getTotal()));
         System.out.printf("\n|Method     : %-20s|", order.getMethod());
         System.out.printf("\n|Date       : %-20s|", order.getPDate());
         System.out.printf("\n|Time       : %-20s|", order.getPTime());
@@ -676,26 +751,39 @@ public class CatalogOrders {
         } catch (IOException ex) {
             Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //next customer please.......
+    }
+
+    public char nextCustomer() {
+        char nextCust;
+        do {
+            valid = true;
+            System.out.print("\nNext customer? (Y=Yes;N=No): ");
+            nextCust = scanner.next().charAt(0);
+            nextCust = Character.toUpperCase(nextCust);
+            if (nextCust != 'Y' && nextCust != 'N') {
+                System.out.println("***Only 'Y' or 'N'.Please enter again.***");
+                valid = false;
+            }
+        } while (valid == false);
+        return nextCust;
     }
 
     //Order.dat
     public void writeOrderDatList(InvListInterface<Order> orderList) {
         String s = "";
         int size = orderList.size();
-        
+
         for (int i = 0; i < size; i++) {
-            Order orderEntry=orderList.get(i);
+            Order orderEntry = orderList.get(i);
 //            orderList.get(i);
             s += orderEntry.getOrderId() + "|";
-            s = writeOrderItem(s,orderEntry) + "|";
-            s = writeOrderQuantity(s,orderEntry) + "|";
+            s = writeOrderItem(s, orderEntry) + "|";
+            s = writeOrderQuantity(s, orderEntry) + "|";
             s += orderEntry.getTotal() + "|" + orderEntry.getMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + orderEntry.getAddress() + "\n";
 
 //            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
         }
 
-       
         BufferedWriter bw = null;
         FileWriter fw = null;
 
@@ -719,8 +807,8 @@ public class CatalogOrders {
         }
     }
 
-    public String writeOrderItem(String s,Order orderEntry) {
-        int size=orderEntry.getOrderItem().size();
+    public String writeOrderItem(String s, Order orderEntry) {
+        int size = orderEntry.getOrderItem().size();
         for (int i = 0; i < size; i++) {
             s += orderEntry.getOrderItem().get(i);
             if (i != size - 1) {
@@ -730,8 +818,8 @@ public class CatalogOrders {
         return s;
     }
 
-    public String writeOrderQuantity(String s,Order orderEntry) {
-        int size=orderEntry.getOrderItem().size();
+    public String writeOrderQuantity(String s, Order orderEntry) {
+        int size = orderEntry.getOrderItem().size();
         for (int i = 0; i < size; i++) {
             s += orderEntry.getQuantity().get(i);
             if (i != size - 1) {
@@ -745,8 +833,8 @@ public class CatalogOrders {
         InvListInterface<Order> orderList = new InvLinkedList<>();
         BufferedReader br = null;
         FileReader fr = null;
-        List itemList=new ArrayList();
-        List qtyList=new ArrayList();
+        List itemList = new ArrayList();
+        List qtyList = new ArrayList();
 
         try {
             fr = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/Order.dat");
@@ -756,9 +844,9 @@ public class CatalogOrders {
 
             while ((sCurrentLine = br.readLine()) != null) {
                 String[] s = sCurrentLine.split("\\|");
-                itemList=convertToItemList(s[1]);
-                qtyList=convertToQtyList(s[2]);
-                Order orderEntry = new Order(s[0], itemList, qtyList, Double.parseDouble(s[3]), s[4], s[5],s[6],s[7]);
+                itemList = convertToItemList(s[1]);
+                qtyList = convertToQtyList(s[2]);
+                Order orderEntry = new Order(s[0], itemList, qtyList, Double.parseDouble(s[3]), s[4], s[5], s[6], s[7]);
                 orderList.add(orderEntry);
             }
 
@@ -778,95 +866,23 @@ public class CatalogOrders {
         }
         return orderList;
     }
-    
-    public List convertToItemList(String s1){
-        String[] item=s1.split(",");
-        List itemList=new ArrayList();
-        for(int i=0;i<item.length;i++){
+
+    public List convertToItemList(String s1) {
+        String[] item = s1.split(",");
+        List itemList = new ArrayList();
+        for (int i = 0; i < item.length; i++) {
             itemList.add(item[i]);
         }
         return itemList;
     }
-    
-    public List convertToQtyList(String s2){
-        String[] qty=s2.split(",");
-        List qtyList=new ArrayList();
-        for(int i=0;i<qty.length;i++){
+
+    public List convertToQtyList(String s2) {
+        String[] qty = s2.split(",");
+        List qtyList = new ArrayList();
+        for (int i = 0; i < qty.length; i++) {
             qtyList.add(qty[i]);
         }
         return qtyList;
-    }
-
-    //Product.dat
-    public void writeProdDatList(ListInterface<Product> prodList) {
-        String s = "";
-        int size = prodList.size();
-
-        for (int i = 0; i < size; i++) {
-            Product prodEn = prodList.remove(0);
-            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "|" + prodEn.getprodStatus() + "\n";
-        }
-
-        BufferedWriter bw = null;
-        FileWriter fw = null;
-
-        try {
-            fw = new FileWriter("../LLTGH-Assignment/src/lltgh/rsd2g2/Product.dat");
-            bw = new BufferedWriter(fw);
-            bw.write(s);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (bw != null) {
-                    bw.close();
-                }
-                if (fw != null) {
-                    fw.close();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    public ListInterface<Product> readProdDatList() {
-        ListInterface<Product> prodDatList = new Customized.List<>();
-        BufferedReader br = null;
-        FileReader fr = null;
-
-        try {
-            fr = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/Product.dat");
-            br = new BufferedReader(fr);
-
-            String sCurrentLine;
-
-            while ((sCurrentLine = br.readLine()) != null) {
-                String[] s = sCurrentLine.split("\\|");
-                Product prodEn = new Product(s[0], s[1], s[2], s[3], Double.parseDouble(s[4]), Integer.parseInt(s[5]), s[6]);
-                prodDatList.add(prodEn);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (br != null) {
-                    br.close();
-                }
-                if (fr != null) {
-                    fr.close();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return prodDatList;
-    }
-
-    public void getProductListFromDat(int i) {
-        ListInterface<Product> prodList = readProdDatList();
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock());
     }
 
 }
