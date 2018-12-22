@@ -1,6 +1,6 @@
 package lltgh.rsd2g2;
 
-public interface InvoiceADT {
+public interface InvoiceADT<T> {
     
     public void setInvoiceNo(String invoiceNo);
     public String getInvoiceNo();

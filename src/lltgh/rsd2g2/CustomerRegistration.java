@@ -3,10 +3,12 @@ package lltgh.rsd2g2;
 import java.io.IOException;
 import java.util.*;
 import java.util.Scanner;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 
 public class CustomerRegistration {
     
@@ -16,12 +18,15 @@ public class CustomerRegistration {
 
     // new object<?>
     // CustomerRegistration regCust = new CustomerRegistration();
-    public static List<Customer> customerList = new ArrayList<>();
+    public static InvListInterface<Customer> customerList = new InvLinkedList<>();
     
     Scanner input = new Scanner(System.in);
       
     // display registration form
     public void custReg() throws IOException{
+
+        customerList = readCustFile();
+
         System.out.println("  Customer Registration  ");
         System.out.println("=========================");
         
@@ -82,8 +87,7 @@ public class CustomerRegistration {
         Customer newCust = new Customer(custID, custName, custIC, contactNo, custType, custCorp, corpAddr, creditLimit);
         customerList.add(newCust);
         System.out.println("Customer Successfully Saved.");
-        CustomerMaintenanceAndInvoicePayment custMain = new CustomerMaintenanceAndInvoicePayment();
-        //custMain.printTest();
+        writeCustDat(customerList);
     }
     
     public String selectType(){
@@ -118,4 +122,70 @@ public class CustomerRegistration {
         }  
         return ID;
     }
+
+    public InvLinkedList<Customer> readCustFile() {
+        InvListInterface<Customer> custDat = new InvLinkedList<>();
+        BufferedReader br = null;
+        FileReader fr = null;
+
+        try {
+            fr = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/Customer.dat");
+            br = new BufferedReader(fr);
+
+            String sCurrentLine;
+
+            while ((sCurrentLine = br.readLine()) != null) {
+                String[] d = sCurrentLine.split("\\|");
+                Customer getData = new Customer(d[0], d[1], d[2], d[3], d[4], d[5], d[6], Double.parseDouble(d[7]));
+                custDat.add(getData);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+                if (fr != null) {
+                    fr.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return (InvLinkedList<Customer>) custDat;
+    }
+
+    public void writeCustDat(InvListInterface<Customer> customerList){
+        String s = "";
+        int size = customerList.size();
+        for (int i = 0; i < size; i++){
+            Customer cust = customerList.get(i);
+            s += cust.getCustID() + "|" +cust.getName() + "|" + cust.getCustIC() + "|" + cust.getContactNo() + "|" + cust.getType() + "|" + cust.getCustCorp() + "|" + cust.getCorpAddr() + "|" + cust.getCreditLimit() + "\n";
+        }
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+
+        try {
+            fw = new FileWriter("../LLTGH-Assignment/src/lltgh/rsd2g2/Customer.dat");
+            bw = new BufferedWriter(fw);
+            bw.write(s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null)
+                    bw.close();
+                if (fw != null)
+                    fw.close();
+            } catch (Exception ex) { ex.printStackTrace();}
+        }
+    }
 }
+
+/*
+C001|Timothy Goh|980506-13-6009|0165769856|Corporate|ABC|IDK the place|200.0
+C002|Joshua Mok|901209-56-7781|0172235644|Corporate|ABC|IDK the place|500.0
+N001|Arthur Pendragon|31195855|0172235644|Normal|N/A|N/A|0.0
+*/

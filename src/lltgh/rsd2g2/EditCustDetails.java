@@ -11,6 +11,8 @@ public class EditCustDetails {
     Scanner scan = new Scanner(System.in);
 
     public void modCreditLimit() {
+        InvLinkedList<Customer> cust = regCust.readCustFile();
+        
         System.out.print("Customer's ID > ");
         searchID = scan.nextLine();
 
@@ -23,8 +25,11 @@ public class EditCustDetails {
                     do{
                         System.out.print("Confirm update? > ");
                         confirm = scan.nextLine();
-                        if (confirm.toUpperCase().equals("Y") && !confirm.toUpperCase().equals("YES"))
+                        if (confirm.toUpperCase().equals("Y") && !confirm.toUpperCase().equals("YES")){
                             regCust.customerList.get(i).setCreditLimit(newCredit);
+//                            cust.update(i, newEntry)
+//                            regCust.writeCustDat(cust);
+                        }
                         else if (confirm.toUpperCase().equals("N") && !confirm.toUpperCase().equals("NO"))
                             break;
                     }while((!confirm.toUpperCase().equals("Y") && !confirm.toUpperCase().equals("YES"))

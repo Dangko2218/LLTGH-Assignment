@@ -25,18 +25,6 @@ public class InvLinkedList<T> implements InvListInterface<T> {
             currentNode.next = tempNode;
         }
         numOfEnt++;
-//        Node newNode = new Node(item);
-//
-//        if (isEmpty()){
-//            firstNode = newNode;
-//            lastNode = newNode;
-//            numOfEnt++;
-//        } else {
-//            lastNode.next = newNode;
-//            newNode.previous = lastNode;
-//            lastNode = newNode;
-//            numOfEnt++;
-//        }
     }
     
     @Override
@@ -52,6 +40,16 @@ public class InvLinkedList<T> implements InvListInterface<T> {
         }
         return item;
     }
+    
+    public boolean update (int index, T newEntry) {
+        if (!isEmpty() && index < numOfEnt){
+            Node currentNode = firstNode;
+            for (int i = 0; i < index; i++)
+                currentNode = currentNode.next;
+            currentNode.data = newEntry;
+            return true;
+        } else return false;
+    }
 
     @Override
     public int size() {
@@ -60,9 +58,7 @@ public class InvLinkedList<T> implements InvListInterface<T> {
 
     @Override
     public boolean isEmpty() {
-        if (lastNode == null)
-            return true;
-        else return false;
+        return (numOfEnt == 0);
     }
     
     public String print(Node showNode) {
@@ -104,25 +100,7 @@ public class InvLinkedList<T> implements InvListInterface<T> {
             return currentNode.data;
         }
         return currentNode.data;
-//        T item = null;
-//        
-//        if (isEmpty() && index < numOfEnt){
-//            Node currentNode = firstNode;
-//            for (int i = 0; i < index; i++){
-//                currentNode = currentNode.next;
-//            }
-//            item = currentNode.data;
-//        }
-//        return item;
     }
-
-//    @Override
-//    public boolean add(int index, T item) {
-//        if (index < 0 || index > size())
-//            return false;
-//        Node newNode = new Node(item);
-//        Node prev = null;
-//    }
 
     @Override
     public boolean contains(T item) {
@@ -147,23 +125,15 @@ public class InvLinkedList<T> implements InvListInterface<T> {
         Node next;
         Node previous;
         Invoice invoice = new Invoice();
+        
+        public Node(){
+            this.data = null;
+            this.next = null;
+        }
 
         public Node(T item){
             this.next = null;
             this.data = item;
-        }
-
-//        public Node(T item, Node next) {
-//            this.next = next;
-//            this.data = item;
-//        }
-//        
-//        public T get(){
-//            return data;
-//        }
-//        
-//        public Node next(){
-//            return next;
-//        }       
+        }  
     }
 }
