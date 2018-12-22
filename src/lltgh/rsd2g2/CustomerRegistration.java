@@ -18,14 +18,14 @@ public class CustomerRegistration {
 
     // new object<?>
     // CustomerRegistration regCust = new CustomerRegistration();
-    public static InvListInterface<Customer> customerList = new InvLinkedList<>();
+    public InvListInterface<Customer> cust = new InvLinkedList<>();
     
     Scanner input = new Scanner(System.in);
       
     // display registration form
     public void custReg() throws IOException{
 
-        customerList = readCustFile();
+        cust = readCustFile();
 
         System.out.println("  Customer Registration  ");
         System.out.println("=========================");
@@ -85,9 +85,9 @@ public class CustomerRegistration {
         
         // add customer details into list
         Customer newCust = new Customer(custID, custName, custIC, contactNo, custType, custCorp, corpAddr, creditLimit);
-        customerList.add(newCust);
+        cust.add(newCust);
         System.out.println("Customer Successfully Saved.");
-        writeCustDat(customerList);
+        writeCustDat(cust);
     }
     
     public String selectType(){
@@ -105,8 +105,8 @@ public class CustomerRegistration {
         int nCounter = 0;
         int cCounter = 0;
         
-        for (int i = 0; i < customerList.size(); i++) {
-            if (customerList.get(i).getType().equals("Normal"))
+        for (int i = 0; i < cust.size(); i++) {
+            if (cust.get(i).getType().equals("Normal"))
                 nCounter++;
             else
                 cCounter++;
@@ -161,7 +161,7 @@ public class CustomerRegistration {
         int size = customerList.size();
         for (int i = 0; i < size; i++){
             Customer cust = customerList.get(i);
-            s += cust.getCustID() + "|" +cust.getName() + "|" + cust.getCustIC() + "|" + cust.getContactNo() + "|" + cust.getType() + "|" + cust.getCustCorp() + "|" + cust.getCorpAddr() + "|" + cust.getCreditLimit() + "\n";
+            s += cust.getCustID() + "|" + cust.getName() + "|" + cust.getCustIC() + "|" + cust.getContactNo() + "|" + cust.getType() + "|" + cust.getCustCorp() + "|" + cust.getCorpAddr() + "|" + cust.getCreditLimit() + "\n";
         }
 
         BufferedWriter bw = null;

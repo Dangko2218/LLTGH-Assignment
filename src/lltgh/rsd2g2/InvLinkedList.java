@@ -41,6 +41,7 @@ public class InvLinkedList<T> implements InvListInterface<T> {
         return item;
     }
     
+    @Override
     public boolean update (int index, T newEntry) {
         if (!isEmpty() && index < numOfEnt){
             Node currentNode = firstNode;
