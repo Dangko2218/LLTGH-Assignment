@@ -10,12 +10,14 @@ import java.util.logging.Logger;
 public class DisplayCustomerList {
 
     CustomerRegistration regCust = new CustomerRegistration();
+    InvListInterface<Customer> cust = new InvLinkedList<>();
 
     Scanner scan = new Scanner(System.in);
 
     private String choice;
 
     public void displayMenu() {
+        cust = regCust.readCustFile();
         System.out.println("==================================");
         System.out.println("| 1. Display normal customer     |");
         System.out.println("| 2. Display corporate customer  |");

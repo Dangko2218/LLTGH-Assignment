@@ -6,11 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+//import Customized.ListInterface;
+//import Customized.List;
 
 public class CustomerMaintenanceAndInvoicePayment {
 
@@ -19,7 +21,7 @@ public class CustomerMaintenanceAndInvoicePayment {
     static int index = 1;
     boolean paid;
     InvListInterface<Invoice> invoice = new InvLinkedList();
-    List<String> unpaidInvNo = new ArrayList<>();
+    static List<String> unpaidInvNo = new ArrayList<>();
 
     //testing?  // need all method do?
     public void printTest() throws IOException {
@@ -31,9 +33,8 @@ public class CustomerMaintenanceAndInvoicePayment {
             System.out.println("1) Customer Registration");
             System.out.println("2) View Customer List");
             System.out.println("3) Modify credit limit");
-            System.out.println("4) Customer Payment Status");
-            System.out.println("5) Print Monthly Invoice");
-            System.out.println("6) Back to main menu");
+            System.out.println("4) Print Monthly Invoice");
+            System.out.println("5) Back to main menu");
             System.out.print("Please enter your option > ");
 
             cmipSelection = scan.nextLine();
@@ -51,16 +52,15 @@ public class CustomerMaintenanceAndInvoicePayment {
                     editCustDetail.modCreditLimit();
                     break;
                 case "4":
+                    if (invoice.size() == 0) {
+                        InitializeInv(invoice);
+                    }
+                    getUnpaidInvNo(invoice);
                     break;
                 case "5":
-                    InitializeInv(invoice);
-                    getUnpaidInvNo(invoice);
-                    printInv(invoice);
-                    break;
-                case "6":
                     break;
                 default:
-                    System.out.print("Invalid input. Press enter to continue...");
+                    System.err.print("Invalid input. Press enter to continue...");
                     try {
                         System.in.read();
                     } catch (IOException ex) {
@@ -74,75 +74,21 @@ public class CustomerMaintenanceAndInvoicePayment {
     public void InitializeInv(InvListInterface<Invoice> invoice) {
         //if (invoice.size() == 0) {
         // hard code inv 1
-        Invoice inv1 = new Invoice();
-        inv1.setInvoiceNo(genInvID());
-        inv1.setDate("27 Nov 2018");
-        inv1.setCustID("C1");
-        inv1.setCustName("Timothy");
-        inv1.setCustContact("0165769856");
-        inv1.setCustCorp("ABC Co.");
-        inv1.setCorpAddr("IDK the place");
-        inv1.setItemName("Rose");
-        inv1.setItemPrice(5.0);
-        inv1.setItemQty(5);
-        inv1.setSubtotal(25.0);
-        inv1.setGrandTotal(25.0);
-        inv1.setInvoiceStatus("Unpaid");
+        Invoice inv1 = new Invoice(genInvID(), "27 Nov 2018", "C1", "Timothy", "0165769856", "ABC", "IDK the place", "Rose", 5.0, 5, 25.0, 25.0, "Unpaid");
 
         // hard code inv 2
-        Invoice inv2 = new Invoice();
-        inv2.setInvoiceNo(genInvID());
-        inv2.setDate("27 Nov 2018");
-        inv2.setCustID("C1");
-        inv2.setCustName("Timothy");
-        inv2.setCustContact("0165769856");
-        inv2.setCustCorp("ABC Co.");
-        inv2.setCorpAddr("IDK the place");
-        inv2.setItemName("Jasmine");
-        inv2.setItemPrice(3.0);
-        inv2.setItemQty(5);
-        inv2.setSubtotal(15.0);
-        inv2.setGrandTotal(15.0);
-        inv2.setInvoiceStatus("Unpaid");
+        Invoice inv2 = new Invoice(genInvID(), "27 Nov 2018", "C1", "Timothy", "0165769856", "ABC", "IDK the place", "Jasmine", 5.0, 5, 25.0, 25.0, "Unpaid");
 
         // hard code inv 3
-        Invoice inv3 = new Invoice();
-        inv3.setInvoiceNo(genInvID());
-        inv3.setDate("29 Nov 2018");
-        inv3.setCustID("C2");
-        inv3.setCustName("Mou mou ren");
-        inv3.setCustContact("0123456789");
-        inv3.setCustCorp("mmr");
-        inv3.setCorpAddr("Mars");
-        inv3.setItemName("Rose");
-        inv3.setItemPrice(5.0);
-        inv3.setItemQty(5);
-        inv3.setSubtotal(25.0);
-        inv3.setGrandTotal(25.0);
-        inv3.setInvoiceStatus("Unpaid");
+        Invoice inv3 = new Invoice(genInvID(), "25 Nov 2018", "C2", "Joshua Mok", "0165769856", "ABC", "IDK the place", "Carnation", 5.0, 5, 25.0, 25.0, "Paid");
 
         // hard code inv 4
-        Invoice inv4 = new Invoice();
-        inv4.setInvoiceNo(genInvID());
-        inv4.setDate("29 Nov 2018");
-        inv4.setCustID("C2");
-        inv4.setCustName("Mou mou ren");
-        inv4.setCustContact("0123456789");
-        inv4.setCustCorp("mmr");
-        inv4.setCorpAddr("Mars");
-        inv4.setItemName("Carnation");
-        inv4.setItemPrice(5.0);
-        inv4.setItemQty(5);
-        inv4.setSubtotal(25.0);
-        inv4.setGrandTotal(25.0);
-        inv4.setInvoiceStatus("Paid");
+        Invoice inv4 = new Invoice(genInvID(), "29 Nov 2018", "C2", "Joshua Mok", "0165769856", "ABC", "IDK the place", "Rose", 5.0, 5, 25.0, 25.0, "Unpaid");
 
         invoice.add(inv1);
         invoice.add(inv2);
         invoice.add(inv3);
         invoice.add(inv4);
-
-        //System.out.print(invoice.toString());
     }
 
     // generate invoice no
@@ -158,11 +104,13 @@ public class CustomerMaintenanceAndInvoicePayment {
         System.out.print("Customer ID > ");
         String searchbyID = scan.nextLine();
         for (int i = 0; i < invoice.size(); i++) {
-            if (invoice.get(i).getCustID().compareTo(searchbyID) == 0) {
-                System.out.printf("Unpaid invoice of customer: %s", invoice.get(i).getInvoiceNo());
+            if (invoice.get(i).getCustID().toUpperCase().compareTo(searchbyID) == 0) {
                 if (invoice.get(i).getInvoiceStatus().equals("Unpaid")) {
-                    System.out.printf("Unpaid invoice: %s", invoice.get(i).getInvoiceNo());
+                    System.out.printf("Unpaid invoice of customer: %s\n", invoice.get(i).getInvoiceNo());
                     unpaidInvNo.add(invoice.get(i).getInvoiceNo());
+                    printInv(invoice);
+                } else {
+                    System.err.println("This customer has no unpaid invoice for now.");
                 }
             }
         }
@@ -170,35 +118,96 @@ public class CustomerMaintenanceAndInvoicePayment {
 
     // get unpaid invoice details
     public void printInv(InvListInterface<Invoice> invoice) {
-        String conf = null;
-        while ((!conf.equals("Y") || !conf.equals("YES")) && (!conf.equals("N") || !conf.equals("NO"))) {
+        String conf = "";
+        while (((!conf.toUpperCase().equals("Y")) && (!conf.toUpperCase().equals("YES"))) && ((!conf.toUpperCase().equals("N")) && (!conf.toUpperCase().equals("NO")))) {
             System.out.print("Print invoice? > ");
             conf = scan.nextLine();
-            if (conf.equals("Y") || conf.equals("YES")) {
-                for (int i = 0; i < unpaidInvNo.size(); i++) {
-                    for (int j = 0; j < invoice.size(); j++) {
-                        if (invoice.get(j).getInvoiceNo().equals(unpaidInvNo.get(i))) {
-                            System.out.println(invoice.get(j).getInvoiceNo());
-                            //genFile(invoice.get(j).getCustID(), invoice.get(j).getInvoiceNo());
-                        }
+        }
+
+        if (conf.toUpperCase().equals("Y") || conf.toUpperCase().equals("YES")) {
+            for (int i = 0; i < unpaidInvNo.size(); i++) {
+                for (int j = 0; j < invoice.size(); j++) {
+                    if (unpaidInvNo.get(i).equals(invoice.get(j).getInvoiceNo())) {
+                        // invoice display format
+                        System.out.printf("------------------------------------------------------------------------------------------------------\n");
+                        System.out.printf("|%53s%48s\n", "INVOICE", "|");
+                        System.out.printf("|                                                                                     ---------------|\n");
+                        System.out.printf("| To: %-20s%-60s|%13s||\n", invoice.get(j).getCustName(), " ", invoice.get(j).getInvoiceNo());
+                        System.out.printf("|     %-20s%-60s|%13s||\n", invoice.get(j).getCustCorp(), " ", invoice.get(j).getDate());
+                        System.out.printf("|     %-20s%-60s-%13s-|\n", invoice.get(j).getCorpAddr(), " ", "-------------");
+                        System.out.printf("|----------------------------------------------------------------------------------------------------|\n");
+                        System.out.printf("|%-3s|%-20s|%-12s|%-5s|%-10s|%-45s|\n", "No.", "Item", "Unit Price", "Qty", "Subtotal", "Description");
+                        System.out.printf("|----------------------------------------------------------------------------------------------------|\n");
+                        System.out.printf("|%-3d|%-20s|RM%10.2f|%5d|RM%8.2f|%-45s|\n", index, invoice.get(j).getItemName(), invoice.get(j).getItemPrice(),
+                            invoice.get(j).getQty(), invoice.get(j).getSubtotal(), " ");
+                        System.out.printf("|----------------------------------------------------------------------------------------------------|\n");
+                        System.out.printf("|%89s RM%8.2f|\n", "Grand Total: ", invoice.get(j).getGrandTotal());
+                        System.out.printf("|%89s ==========|\n", " ");
+                        System.out.printf("|                                                                                                    |\n");
+                        System.out.printf("|  %-5s%77s  |\n", "Customer Signature:", "Staff Signature:");
+                        System.out.printf("|                                                                                                    |\n");
+                        System.out.printf("|  %-5s%77s  |\n", "___________________", "________________");
+                        System.out.printf("------------------------------------------------------------------------------------------------------\n");
+                        genFile(invoice.get(j).getInvoiceNo(), invoice.get(j).getDate(), invoice.get(j).getCustID(), invoice.get(j).getCustName(),
+                            invoice.get(j).getCustCorp(), invoice.get(j).getCorpAddr(), invoice.get(j).getItemName(), invoice.get(j).getItemPrice(),
+                            invoice.get(j).getQty(), invoice.get(j).getSubtotal(), invoice.get(j).getGrandTotal());
                     }
-                    unpaidInvNo.set(i, null);
                 }
             }
         }
+        unpaidInvNo.clear();
     }
 
-//    public void genFile(String custID, String invNo){
-//        // every invoice are store into different file
-//        String filename = custID + "_" + invNo;
-//        try {
-//            FileWriter fwrt = new FileWriter(filename);
-//            BufferedWriter bwrt = new BufferedWriter(fwrt);
-//        } catch(FileNotFoundException ex) {
-//            
-//        } catch (IOException e) {
-//
-//        }
-//
-//    }
+    public void genFile(String invNo, String date, String custID, String name, String corp, String addr, String item, double price,
+        int qty, double subtotal, double grandTotal) {
+        // every invoice are store into different file
+        String filename = custID + "_" + invNo + ".dat";
+        try {
+            // to store invoice with layout format
+            FileWriter fwrt = new FileWriter("../LLTGH-Assignment/src/lltgh/rsd2g2/Invoice/" + filename);
+            BufferedWriter bwrt = new BufferedWriter(fwrt);
+            // to store invoice data
+            FileWriter fw = new FileWriter("../LLTGH-Assignment/src/lltgh/rsd2g2/Invoice/Invoice.dat");
+            BufferedWriter bw = new BufferedWriter(fw);
+        } catch (FileNotFoundException ex) {
+
+        } catch (IOException e) {
+
+        }
+
+    }
+
+    public InvLinkedList<Invoice> readInvoiceFile() {
+        InvListInterface<Invoice> invDat = new InvLinkedList<>();
+        BufferedReader br = null;
+        FileReader fr = null;
+
+        try {
+            fr = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/Invoice/Invoice.dat");
+            br = new BufferedReader(fr);
+
+            String currentLine;
+
+            while ((currentLine = br.readLine()) != null) {
+                String[] s = currentLine.split("\\|");
+                Invoice getInvDat = new Invoice(s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7], Double.parseDouble(s[8]),
+                    Integer.parseInt(s[9]), Double.parseDouble(s[10]), Double.parseDouble(s[11]), s[12]);
+                invDat.add(getInvDat);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+                if (fr != null) {
+                    fr.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return (InvLinkedList<Invoice>) invDat;
+    }
 }

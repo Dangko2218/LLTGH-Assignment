@@ -52,21 +52,21 @@ public class CustomerMaintenanceAndInvoicePaymentTest {
         double subtotal = 25.0;
         double grandTotal = 25.0;
         String invoiceStatus = "Unpaid";
-        Invoice inv = new Invoice();
-        inv.setInvoiceNo(invoiceNo);
-        inv.setCorpAddr(corpAddr);
-        inv.setCustID(custID);
-        inv.setCustContact(custContact);
-        inv.setCustCorp(custCorp);
-        inv.setCustName(custName);
-        inv.setDate(date);
-        inv.setGrandTotal(grandTotal);
-        inv.setInvoiceStatus(invoiceStatus);
-        inv.setItemName(itemName);
-        inv.setItemPrice(itemPrice);
-        inv.setItemQty(itemQty);
-        inv.setSubtotal(subtotal);
-        invoice.add(inv);  
+//        Invoice inv = new Invoice();
+//        inv.setInvoiceNo(invoiceNo);
+//        inv.setCorpAddr(corpAddr);
+//        inv.setCustID(custID);
+//        inv.setCustContact(custContact);
+//        inv.setCustCorp(custCorp);
+//        inv.setCustName(custName);
+//        inv.setDate(date);
+//        inv.setGrandTotal(grandTotal);
+//        inv.setInvoiceStatus(invoiceStatus);
+//        inv.setItemName(itemName);
+//        inv.setItemPrice(itemPrice);
+//        inv.setItemQty(itemQty);
+//        inv.setSubtotal(subtotal);
+//        invoice.add(inv);  
         
         // compare
         CustomerMaintenanceAndInvoicePayment instance = new CustomerMaintenanceAndInvoicePayment();
