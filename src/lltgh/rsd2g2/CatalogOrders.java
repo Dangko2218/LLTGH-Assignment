@@ -26,7 +26,9 @@ public class CatalogOrders {
     private boolean valid;
     private Scanner scanner = new Scanner(System.in);
     private String iName;
-    List subtotal=new ArrayList();
+    int discountRate;
+    List discountAmount=new ArrayList();
+    List DRList = new ArrayList();
 
     private Order order = new Order();
     CatalogMaintenance CM = new CatalogMaintenance();
@@ -286,10 +288,10 @@ public class CatalogOrders {
         } while (valid == false);
         return actOpt;
     }
-    
+
     public void calTotal() {
         int size = order.getOrderItem().size();
-        double price, total = 0.0,sTotal;
+        double price, total = 0.0, sTotal;
         String itemId;
         ListInterface<Product> prodList = CM.readProdDatList();
 
@@ -299,9 +301,8 @@ public class CatalogOrders {
             for (int j = 0; j < prodList.size(); j++) {    //product array
                 if (itemName.equals(prodList.get(j).getprodName())) {
                     itemId = prodList.get(j).getProdID();
-                    price = getPrice(itemId);
-                    sTotal=price * quantity;
-                    subtotal.add(sTotal);
+                    price = getPrice(itemId, quantity);
+                    sTotal = price * quantity;
                     total += sTotal;
 
                     updateStock(itemName, quantity);
@@ -312,10 +313,12 @@ public class CatalogOrders {
         order.setTotal(total);
     }
 
-    public double getPrice(String itemId) {
+    public double getPrice(String itemId, int quantity) {
         double price = 0.0;
+        boolean hasDR = true;
         int month = LocalDate.now().getMonth().getValue();
         ListInterface<Promotion> promoList = CM.readPromoDatList();
+        int size = promoList.size();
         ListInterface<Product> prodList = CM.readProdDatList();
 
         for (int j = 0; j < prodList.size(); j++) {
@@ -325,20 +328,24 @@ public class CatalogOrders {
             }
         }
 
-        for (int i = 0; i < promoList.size(); i++) {
-            if (promoList.get(i).getpromoMonth() == month) {
-                if (itemId.equals(promoList.get(i).getProdID())) {
-                    int discountRate = promoList.get(i).getdiscountRate();
-                    price = calDiscount(price, discountRate);
-                    break;
-                }
+        for (int i = 0; i < size; i++) {
+            if ((promoList.get(i).getpromoMonth() == month) && (itemId.equals(promoList.get(i).getProdID()))) {
+                discountRate = promoList.get(i).getdiscountRate();
+                price = calDiscount(price, discountRate, quantity);
+                hasDR = true;
+                DRList.add(hasDR);
+                break;
+            } else if ((i == size - 1) && (!itemId.equals(promoList.get(i).getProdID()))) {
+                hasDR = false;
+                DRList.add(hasDR);
             }
         }
         return price;
     }
 
-    public double calDiscount(double oriPrice, int discountRate) {
+    public double calDiscount(double oriPrice, int discountRate, int quantity) {
         double discountPrice;
+        discountAmount.add(((oriPrice / 100) * discountRate) * quantity);
         discountPrice = (oriPrice / 100) * (100 - discountRate);
         return discountPrice;
     }
@@ -698,7 +705,7 @@ public class CatalogOrders {
     }
 
     public void generateSO() {
-        double price;
+        double price = 0.0;
         ListInterface<Product> prodList = CM.readProdDatList();
         InvListInterface<Order> orderList = readOrderDatList();
 
@@ -707,21 +714,29 @@ public class CatalogOrders {
         System.out.println("|---------------------------------|");
         System.out.printf("|Order ID   : %-20s|", order.getOrderId());
         System.out.printf("\n|%-33s|", " ");
-        System.out.printf("\n|Order Item : %-20s|", " ");
+        System.out.printf("\n|Order Item : %-20s|\n", " ");
 
         for (int i = 0; i < order.getOrderItem().size(); i++) {
             String itemName = (String) order.getOrderItem().get(i);
+            int orderQty = (int) order.getQuantity().get(i);
             for (int j = 0; j < prodList.size(); j++) {
                 if (itemName.equals(prodList.get(j).getprodName())) {
                     price = prodList.get(j).getprodPrice();
                     break;
                 }
             }
-            System.out.printf("\n|    %-3s%-18s%-8s|", order.getQuantity().get(i) + "x ", order.getOrderItem().get(i), String.format("%.2f", subtotal.get(i)));
+            
+            if ((boolean) DRList.get(i) == true) {
+                System.out.printf("|%7s%-18s%7s |", orderQty + "x ", order.getOrderItem().get(i), String.format("%.2f", price * orderQty));
+                System.out.printf("\n|%7s%-18s%7s |", " ", "Discount: " + discountRate + "%", "-" + String.format("%.2f", discountAmount.get(i)));
+                System.out.printf("\n|%-33s|\n", " ");
+            }else{
+                System.out.printf("|%7s%-18s%7s |", orderQty + "x ", order.getOrderItem().get(i), String.format("%.2f", price * orderQty));
+                System.out.printf("\n|%-33s|", " ");
+            }
         }
 
-        System.out.printf("\n|Total      : RM%-10s%-8s|", " ", String.format("%.2f", order.getTotal()));
-        System.out.printf("\n|%-33s|", " ");
+        System.out.printf("|Total      : RM%-18s|",String.format("%.2f", order.getTotal()));
         System.out.printf("\n|Method     : %-20s|", order.getMethod());
         System.out.printf("\n|Date       : %-20s|", order.getPDate());
         System.out.printf("\n|Time       : %-20s|", order.getPTime());
