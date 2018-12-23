@@ -25,18 +25,19 @@ public class CatalogOrders {
 
     private boolean valid;
     private Scanner scanner = new Scanner(System.in);
-    private String iName;
+    String iName, custType;
     int discountRate;
-    List discountAmount=new ArrayList();
+    double creditLimit;
+    List discountAmount = new ArrayList();
     List DRList = new ArrayList();
 
-    private Order order = new Order();
+    Order order = new Order();
     CatalogMaintenance CM = new CatalogMaintenance();
+    CustomerRegistration CR = new CustomerRegistration();
 
     public void printTest() {
         char nextCust = '\0';
         do {
-//             getCustId();
             int typeOpt = orderItem();
             switch (typeOpt) {
                 case -1:
@@ -55,21 +56,8 @@ public class CatalogOrders {
         } while (valid == true);
     }
 
-//    public void getCustId() {
-//        valid=true;
-//
-//        do {
-//            System.out.print("Please enter customer ID: ");
-//            String custId = scanner.nextLine();
-//            if (!custId.equals()) {
-//                System.out.println("Invalid customer ID!");
-//                System.out.println("Press enter to continue...");
-//            }
-//        } while ();
-//    }
     public int orderItem() {
         int typeOpt, actOpt = 0;
-        valid = true;
 
         do {
             typeOpt = itemMenu();
@@ -291,7 +279,7 @@ public class CatalogOrders {
 
     public void calTotal() {
         int size = order.getOrderItem().size();
-        double price, total = 0.0, sTotal;
+        double price, total = 0.0;
         String itemId;
         ListInterface<Product> prodList = CM.readProdDatList();
 
@@ -302,8 +290,7 @@ public class CatalogOrders {
                 if (itemName.equals(prodList.get(j).getprodName())) {
                     itemId = prodList.get(j).getProdID();
                     price = getPrice(itemId, quantity);
-                    sTotal = price * quantity;
-                    total += sTotal;
+                    total += (price * quantity);
 
                     updateStock(itemName, quantity);
                     break;
@@ -315,7 +302,7 @@ public class CatalogOrders {
 
     public double getPrice(String itemId, int quantity) {
         double price = 0.0;
-        boolean hasDR = true;
+        boolean hasDR;
         int month = LocalDate.now().getMonth().getValue();
         ListInterface<Promotion> promoList = CM.readPromoDatList();
         int size = promoList.size();
@@ -376,11 +363,11 @@ public class CatalogOrders {
                 methodOpt = scanner.nextInt();
                 scanner.nextLine();
                 if (methodOpt == 1) {
-                    order.setMethod("Pick up");
+                    order.setPickUpMethod("Pick up");
                     String orderDate = pickUpDate();
                     pickUpTime(orderDate);
                 } else if (methodOpt == 2) {
-                    order.setMethod("Delivery");
+                    order.setPickUpMethod("Delivery");
                     String orderDate = pickUpDate();
                     pickUpTime(orderDate);
                     getAddress();
@@ -706,6 +693,7 @@ public class CatalogOrders {
 
     public void generateSO() {
         double price = 0.0;
+        double total = order.getTotal();
         ListInterface<Product> prodList = CM.readProdDatList();
         InvListInterface<Order> orderList = readOrderDatList();
 
@@ -725,23 +713,25 @@ public class CatalogOrders {
                     break;
                 }
             }
-            
+
             if ((boolean) DRList.get(i) == true) {
                 System.out.printf("|%7s%-18s%7s |", orderQty + "x ", order.getOrderItem().get(i), String.format("%.2f", price * orderQty));
                 System.out.printf("\n|%7s%-18s%7s |", " ", "Discount: " + discountRate + "%", "-" + String.format("%.2f", discountAmount.get(i)));
                 System.out.printf("\n|%-33s|\n", " ");
-            }else{
+            } else {
                 System.out.printf("|%7s%-18s%7s |", orderQty + "x ", order.getOrderItem().get(i), String.format("%.2f", price * orderQty));
-                System.out.printf("\n|%-33s|", " ");
+                System.out.printf("\n|%-33s|\n", " ");
             }
         }
 
-        System.out.printf("|Total      : RM%-18s|",String.format("%.2f", order.getTotal()));
-        System.out.printf("\n|Method     : %-20s|", order.getMethod());
+        System.out.printf("|Total      : RM%-18s|", String.format("%.2f", total));
+        System.out.printf("\n|Method     : %-20s|", order.getPickUpMethod());
         System.out.printf("\n|Date       : %-20s|", order.getPDate());
         System.out.printf("\n|Time       : %-20s|", order.getPTime());
         System.out.println("\n|---------------------------------|");
-
+        
+        haveId(total);
+        
         orderList.add(order);
         writeOrderDatList(orderList);
 
@@ -750,6 +740,114 @@ public class CatalogOrders {
             System.in.read();
         } catch (IOException ex) {
             Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void haveId(double total) {
+        do {
+            valid = true;
+            System.out.print("\nHave ID? (Y=Yes;N=No): ");
+            char haveId = scanner.next().charAt(0);
+            scanner.nextLine();
+            haveId=Character.toUpperCase(haveId);
+            if (haveId == 'Y') {
+                String custId = getCustId();
+                if (custType.equals("Corporate")) {
+                    getPaymentMethod(total, custId);
+                }
+            } else if (haveId == 'N') {
+                break;
+            } else {
+                System.out.println("***Invalid input.Please enter again.***");
+                valid = false;
+            }
+        } while (valid == false);
+    }
+
+    public String getCustId() {
+        String custId;
+        do {
+            System.out.print("Please enter customer ID: ");
+            custId = scanner.nextLine();
+            custId=custId.toUpperCase();
+
+            if (!chkCustId(custId)) {
+                System.out.println("***Invalid customer ID.Please enter again.***\n");
+            }
+        } while (valid == false);
+        return custId;
+    }
+
+    public boolean chkCustId(String custId) {
+        InvListInterface<Customer> custList = CR.readCustFile();
+
+        for (int i = 0; i < custList.size(); i++) {
+            valid = true;
+            if (custId.equals(custList.get(i).getCustID())) {
+                order.setCustId(custId);
+                if (custId.charAt(0) == 'C') {
+                    custType = "Corporate";
+                    creditLimit = custList.get(i).getCreditLimit();
+                }
+                break;
+            } else {
+                valid = false;
+            }
+        }
+        return valid;
+    }
+
+    public void getPaymentMethod(double total, String custId) {
+        do {
+            valid = true;
+            System.out.println("1) Credit Limit");
+            System.out.println("2) Cash");
+            System.out.print("Please select a payment method: ");
+
+            try {
+                int paymentOpt = scanner.nextInt();
+                scanner.nextLine();
+                if (paymentOpt == 1) {
+                    chkCreditLimit(total, custId);
+                } else if (paymentOpt == 2) {
+                    order.setPaymentMethod("Cash");
+                } else {
+                    System.out.println("***Invalid input!Please enter again.***\n");
+                    valid=false;
+                }
+            } catch (InputMismatchException ex) {
+                System.out.println("***Invalid input!Please enter again.***\n");
+                scanner.next();
+                valid = false;
+            }
+        } while (valid == false);
+    }
+
+    public boolean chkCreditLimit(double total, String custId) {
+        double limitLeft = creditLimit - total;
+        if (creditLimit >= total) {
+            System.out.printf("Order total: RM%s", String.format("%.2f", total));
+            System.out.printf("Your credit limit left: RM%s", String.format("%.2f", limitLeft));
+            order.setPaymentMethod("Credit Limit");
+            updateCreditLimit(custId,limitLeft);
+        } else {
+            System.out.printf("Order total: RM%s", String.format("%.2f", total));
+            System.out.printf("Your credit limit left: RM%s", String.format("%.2f", creditLimit));
+            System.out.println("***Credit limit left is not enough.***\n");
+            valid = false;
+        }
+        return valid;
+    }
+
+    public void updateCreditLimit(String custId,double limitLeft) {
+        InvListInterface<Customer> custList = CR.readCustFile();
+
+        for (int i = 0; i < custList.size(); i++) {
+            if (custId.equals(custList.get(i).getCustID())) {
+                custList.get(i).setCreditLimit(creditLimit);
+                CR.writeCustDat(custList);
+                break;
+            }
         }
     }
 
@@ -776,10 +874,10 @@ public class CatalogOrders {
         for (int i = 0; i < size; i++) {
             Order orderEntry = orderList.get(i);
 //            orderList.get(i);
-            s += orderEntry.getOrderId() + "|";
+            s += orderEntry.getOrderId() + "|" + orderEntry.getCustId() + "|";
             s = writeOrderItem(s, orderEntry) + "|";
             s = writeOrderQuantity(s, orderEntry) + "|";
-            s += orderEntry.getTotal() + "|" + orderEntry.getMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + orderEntry.getAddress() + "\n";
+            s += orderEntry.getTotal() + "|" + order.getPaymentMethod() + "|" + orderEntry.getPickUpMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + orderEntry.getAddress() + "\n";
 
 //            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
         }
@@ -844,9 +942,9 @@ public class CatalogOrders {
 
             while ((sCurrentLine = br.readLine()) != null) {
                 String[] s = sCurrentLine.split("\\|");
-                itemList = convertToItemList(s[1]);
-                qtyList = convertToQtyList(s[2]);
-                Order orderEntry = new Order(s[0], itemList, qtyList, Double.parseDouble(s[3]), s[4], s[5], s[6], s[7]);
+                itemList = convertToItemList(s[2]);
+                qtyList = convertToQtyList(s[3]);
+                Order orderEntry = new Order(s[0], s[1], itemList, qtyList, Double.parseDouble(s[4]), s[5], s[6], s[7], s[8], s[9]);
                 orderList.add(orderEntry);
             }
 
@@ -884,5 +982,4 @@ public class CatalogOrders {
         }
         return qtyList;
     }
-
 }

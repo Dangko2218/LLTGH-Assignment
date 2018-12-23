@@ -2,34 +2,40 @@ package lltgh.rsd2g2;
 
 import java.util.*;
 
-public class Order<T> implements OrderADT<T>{   //act as linked list?
+public class Order{
     
     private String orderId;
+    private String custId;
     private List<String> orderItem;
     private List<Integer> quantity;
     private double total;
-    private String method;
+    private String paymentMethod;
+    private String pickUpMethod;
     private String pDate;
     private String pTime;
     private String address;
     
     public Order(){
         orderId=null;
+        custId=null;
         orderItem=new ArrayList<>();
         quantity=new ArrayList<>();
         total=0;
-        method=null;
+        paymentMethod=null;
+        pickUpMethod=null;
         pDate=null;
         pTime=null;
         address=null;
     }
     
-    public Order(String orderId,List orderItem,List quantity,double total,String method,String pDate,String pTime,String address){
+    public Order(String orderId,String custId,List orderItem,List quantity,double total,String paymentMethod,String pickUpMethod,String pDate,String pTime,String address){
         this.orderId=orderId;
+        this.custId=custId;
         this.orderItem=orderItem;
         this.quantity=quantity;
         this.total=total;
-        this.method=method;
+        this.paymentMethod=paymentMethod;
+        this.pickUpMethod=pickUpMethod;
         this.pDate=pDate;
         this.pTime=pTime;
         this.address=address;
@@ -39,6 +45,10 @@ public class Order<T> implements OrderADT<T>{   //act as linked list?
         int rNum = (int) (Math.random() * 999 + 1);
         String orderId = "OR" + rNum;
         this.orderId=orderId;
+    }
+    
+    public void setCustId(String custId){
+        this.custId=custId;
     }
     
     public void setOrderItem(String orderItem){
@@ -53,8 +63,12 @@ public class Order<T> implements OrderADT<T>{   //act as linked list?
         this.total=total;
     }
     
-    public void setMethod(String method){
-        this.method=method;
+    public void setPaymentMethod(String paymentMethod){
+        this.paymentMethod=paymentMethod;
+    }
+    
+    public void setPickUpMethod(String pickUpMethod){
+        this.pickUpMethod=pickUpMethod;
     }
     
     public void setPDate(String pDate){  //dd/mm/yyyy
@@ -73,6 +87,10 @@ public class Order<T> implements OrderADT<T>{   //act as linked list?
         return orderId;
     }
     
+    public String getCustId(){
+        return custId;
+    }
+    
     public List<String> getOrderItem(){
         return orderItem;
     }
@@ -85,8 +103,12 @@ public class Order<T> implements OrderADT<T>{   //act as linked list?
         return total;
     }
     
-    public String getMethod(){
-        return method;
+    public String getPaymentMethod(){
+        return paymentMethod;
+    }
+    
+    public String getPickUpMethod(){
+        return pickUpMethod;
     }
     
     public String getPDate(){
@@ -100,14 +122,4 @@ public class Order<T> implements OrderADT<T>{   //act as linked list?
     public String getAddress(){
         return address;
     }
-    
-//    public String toString(){
-//        return "\nOrder ID: " + orderId +
-//               "\nOrder Item: " + orderItem + 
-//               "\nQuantity: " + quantity +
-//               "\nTotal: RM" + String.format("%.2f",total) +
-//               "\nMethod: " + method +
-//               "\nDate: " + pDate +
-//               "\nTime: " + pTime + "\n";
-//    } 
 }
