@@ -880,7 +880,7 @@ public class CatalogOrders {
             s += orderEntry.getOrderId() + "|" + orderEntry.getCustId() + "|";
             s = writeOrderItem(s, orderEntry) + "|";
             s = writeOrderQuantity(s, orderEntry) + "|";
-            s += orderEntry.getTotal() + "|" + orderEntry.getPaymentMethod() + "|" + orderEntry.getPickUpMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + orderEntry.getAddress() + "\n";
+            s += orderEntry.getTotal() + "|" + orderEntry.getPaymentMethod() + "|" + orderEntry.getPickUpMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + orderEntry.getAddress() + "|" + orderEntry.getPayment() + "|" + orderEntry.getStatus() + "\n";
 
 //            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
         }
@@ -947,7 +947,7 @@ public class CatalogOrders {
                 String[] s = sCurrentLine.split("\\|");
                 itemList = convertToItemList(s[2]);
                 qtyList = convertToQtyList(s[3]);
-                Order orderEntry = new Order(s[0], s[1], itemList, qtyList, Double.parseDouble(s[4]), s[5], s[6], s[7], s[8], s[9]);
+                Order orderEntry = new Order(s[0], s[1], itemList, qtyList, Double.parseDouble(s[4]), s[5], s[6], s[7], s[8], s[9],s[10],Integer.parseInt(s[11]));
                 orderList.add(orderEntry);
             }
 
