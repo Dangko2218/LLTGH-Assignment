@@ -41,6 +41,7 @@ public class CatalogOrders {
                     break;
                 default:
                     pickUpMethod();
+                    haveId(order.getTotal());
                     generateSO();
                     nextCust = nextCustomer();
                     if (nextCust == 'Y') {
@@ -700,7 +701,8 @@ public class CatalogOrders {
         System.out.println("\n|---------------------------------|");
         System.out.println("|           Sales  Order          |");
         System.out.println("|---------------------------------|");
-        System.out.printf("|Order ID   : %-20s|", order.getOrderId());
+        System.out.printf("|Order ID   : %-20s|\n", order.getOrderId());
+        System.out.printf("|Customer ID: %-20s|",order.getCustId());
         System.out.printf("\n|%-33s|", " ");
         System.out.printf("\n|Order Item : %-20s|\n", " ");
 
@@ -729,8 +731,6 @@ public class CatalogOrders {
         System.out.printf("\n|Date       : %-20s|", order.getPDate());
         System.out.printf("\n|Time       : %-20s|", order.getPTime());
         System.out.println("\n|---------------------------------|");
-
-        haveId(total);
 
         orderList.add(order);
         writeOrderDatList(orderList);
