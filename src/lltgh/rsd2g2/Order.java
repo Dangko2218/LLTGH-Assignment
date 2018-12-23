@@ -14,6 +14,8 @@ public class Order{
     private String pDate;
     private String pTime;
     private String address;
+    private String payment;
+    private int status;
     
     public Order(){
         orderId=null;
@@ -26,9 +28,11 @@ public class Order{
         pDate=null;
         pTime=null;
         address=null;
+        payment = null;
+        status = 0;
     }
     
-    public Order(String orderId,String custId,List orderItem,List quantity,double total,String paymentMethod,String pickUpMethod,String pDate,String pTime,String address){
+    public Order(String orderId,String custId,List orderItem,List quantity,double total,String paymentMethod,String pickUpMethod,String pDate,String pTime,String address,String payment,int status){
         this.orderId=orderId;
         this.custId=custId;
         this.orderItem=orderItem;
@@ -39,6 +43,8 @@ public class Order{
         this.pDate=pDate;
         this.pTime=pTime;
         this.address=address;
+        this.payment = payment;
+        this.status = status;
     }
     
     public void setOrderId(){
@@ -121,5 +127,21 @@ public class Order{
     
     public String getAddress(){
         return address;
+    }
+    
+    public String getPayment(){
+        return payment;
+    }
+    
+    public void setPayment(String payment){
+        this.payment = payment;
+    }
+    
+    public void setStatus(int status){
+        this.status = status;
+    }
+    
+    public int getStatus(){
+        return status;
     }
 }
