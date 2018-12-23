@@ -21,6 +21,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lltgh.rsd2g2.CatalogMaintenance;
+import lltgh.rsd2g2.Customer;
+import lltgh.rsd2g2.CustomerRegistration;
+import lltgh.rsd2g2.InvLinkedList;
+import lltgh.rsd2g2.InvListInterface;
 import lltgh.rsd2g2.Product;
 import lltgh.rsd2g2.Promotion;
 
@@ -126,27 +130,23 @@ public class CustomizedFloralArrangements {
         System.out.println("\n\n\n" + dateFormat.format(date)); 
         dateTime = dateFormat.format(date);
         
-        System.out.println("================================================");
-        System.out.println("             Customized for Consumer");
-        System.out.println("================================================");
-        System.out.println("|Customer ID    |Customer Name                 |");
-        System.out.println("------------------------------------------------");
-        System.out.println("|C0001          |Daniel                        |");
-        System.out.println("|C0002          |Jennie                        |");
-        System.out.println("|C0003          |Lisa                          |");
-        System.out.println("------------------------------------------------");
-        
-        //display consumer list
-//        do{
-//            System.out.println("\n\n\n========================================================");
-//            System.out.println("                        Consumer");
-//            System.out.println("========================================================");
-            System.out.print("Please Enter Consumer ID (Enter -1 to Exit) > ");
+        System.out.println("=====================================================================");
+        System.out.println("                       Customized for Consumer");
+        System.out.println("=====================================================================");
+        printConsumerList();
+//        System.out.println("|Customer ID    |Customer Name                 |");
+//        System.out.println("------------------------------------------------");
+//        System.out.println("|C0001          |Daniel                        |");
+//        System.out.println("|C0002          |Jennie                        |");
+//        System.out.println("|C0003          |Lisa                          |");
+        do{
+            System.out.print("Please Enter Consumer Code (Enter -1 to Exit) > ");
             inputScanner = scanner.nextLine();
             if(inputScanner.equals("-1"))
                 return false;
-//            chkConsumer = checkCustInput(consumer);
-//        }while(chkConsumer == false);
+            chkValid = checkCodeInput(inputScanner, "CS");
+        }while(chkValid == false);
+        
         consumer = inputScanner.toUpperCase();
         custStyle = printItemMenu("ST");
         if(custStyle.equals("false"))
@@ -360,6 +360,23 @@ public class CustomizedFloralArrangements {
         return true;
     }
     
+    public void printConsumerList(){
+        CustomerRegistration cons = new CustomerRegistration();
+        InvListInterface<Customer> customerList = cons.readCustFile();
+        int customerSize = customerList.size();
+        
+        System.out.printf("|%-5s|%-30s|%-15s|%-12s|\n", "Code", "Name", "IC", "Contact Number");
+        System.out.println("---------------------------------------------------------------------");
+        
+        for(int i=0;i<customerSize;i++){
+            if(customerList.get(i).getType().toUpperCase().equals("NORMAL")){
+                System.out.printf("|%-5s|%-30s|%-15s|%-12s|\n", customerList.get(i).getCustID(), customerList.get(i).getName(), customerList.get(i).getCustIC(), customerList.get(i).getContactNo());
+            }
+        }
+        
+        System.out.println("---------------------------------------------------------------------");
+    }
+    
     public String printItemMenu(String item){  
         String tempCode="";
         if(item.equals("ST"))
@@ -453,7 +470,7 @@ public class CustomizedFloralArrangements {
         return tempCode;  
     }
     
-    private void printProdList(String item){//print Customized Order List
+    public void printProdList(String item){//print Customized Order List
         System.out.printf("|%-5s|%-25s|%-30s|%-8s|%-13s|%-14s|%-8s|\n", "Code", "Name", "Details", "Price", "Discount Rate", "Discount Price", "Quantity");
         System.out.println("---------------------------------------------------------------------------------------------------------------");
 
@@ -558,8 +575,11 @@ public class CustomizedFloralArrangements {
         Boolean returnValue = true;
         CatalogMaintenance cat = new CatalogMaintenance();
         ListInterface<Product> prod = cat.readProdDatList();
-        ListInterface<CustomizedEntity> itemList = readDataList(item);
-        int prodSize=prod.size(), itemSize=itemList.size();
+        
+        CustomerRegistration cons = new CustomerRegistration();
+        InvListInterface<Customer> customerList = cons.readCustFile();
+        int customerSize = customerList.size();
+        int prodSize=prod.size();
         
         if(codeInput == null || codeInput.isEmpty()){
             System.out.println("***Do Not Leave Blank. Please enter again...");
@@ -584,7 +604,22 @@ public class CustomizedFloralArrangements {
                         }                      
                     }
                 }
+                else if(item.equals("CS")){
+                    for(int i=0;i<customerSize;i++){
+                        if(customerList.get(i).getCustID().toUpperCase().equals(codeInput.toUpperCase())){
+                            if(customerList.get(i).getType().toUpperCase().equals("NORMAL")){
+                                returnValue = true;
+                            }
+                            else
+                                returnValue = false;
+                        }
+                        else
+                            returnValue = false;
+                    }
+                }
                 else{
+                    ListInterface<CustomizedEntity> itemList = readDataList(item);
+                    int itemSize=itemList.size();
                     for(int i=0;i<itemSize;i++){
                         if(itemList.get(i).getItemCode().toUpperCase().equals(codeInput.toUpperCase())){
                             returnValue = true; 
@@ -1161,7 +1196,7 @@ public class CustomizedFloralArrangements {
     }
 
     
-    private ListInterface<CustomizedEntity> printCustOrderList(QueueInterface<CustomizedEntity> orderList, int input){//print Customized Order List
+    public ListInterface<CustomizedEntity> printCustOrderList(QueueInterface<CustomizedEntity> orderList, int input){//print Customized Order List
         ListInterface<CustomizedEntity> pendingList = new List();
         
         String prior="", status="";
@@ -1243,7 +1278,7 @@ public class CustomizedFloralArrangements {
         return pendingList;
     }
     
-    private void printCustOrderListList(ListInterface<CustomizedEntity> orderList){//print Customized Order List
+    public void printCustOrderListList(ListInterface<CustomizedEntity> orderList){//print Customized Order List
         String prior="", status="";
         System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-1s|%-15s|%-1s|%-15s|%-1s|%-25s|%-1s|%-25s|%-1s|%-25s|%-1s|%-15s|%-10s|%-10s|\n", "Order Number", "Date/Time", "Collection Date", "Customer ID","Style", "Size", "Flower Type 1", "Q", "Flower Type 2", "Q", "Flower Type 3", "Q", "Accessories 1", "Q", "Accessories 2", "Q", "Accessories 3", "Q", "Priority", "Price(RM)", "Status");
         System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
@@ -1663,7 +1698,7 @@ public class CustomizedFloralArrangements {
         return returnValue;
     }
     
-    private void printItem(ListInterface<CustomizedEntity> item, int status){//print Customized Order List
+    public void printItem(ListInterface<CustomizedEntity> item, int status){//print Customized Order List
         if(status == 1){
             System.out.printf("|%-5s|%-30s|%-10s|%-12s|\n", "Code", "Name", "Price(RM)", "Status");
             System.out.println("--------------------------------------------------------------");
