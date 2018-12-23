@@ -134,11 +134,6 @@ public class CustomizedFloralArrangements {
         System.out.println("                       Customized for Consumer");
         System.out.println("=====================================================================");
         printConsumerList();
-//        System.out.println("|Customer ID    |Customer Name                 |");
-//        System.out.println("------------------------------------------------");
-//        System.out.println("|C0001          |Daniel                        |");
-//        System.out.println("|C0002          |Jennie                        |");
-//        System.out.println("|C0003          |Lisa                          |");
         do{
             System.out.print("Please Enter Consumer Code (Enter -1 to Exit) > ");
             inputScanner = scanner.nextLine();
