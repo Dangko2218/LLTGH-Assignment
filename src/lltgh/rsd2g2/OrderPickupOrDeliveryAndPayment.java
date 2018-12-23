@@ -45,11 +45,6 @@ public class OrderPickupOrDeliveryAndPayment{
     
     public void printTest() throws ParseException{
         
-//        orderpickup.add(new OPDP("A0001","Nicole","981214-01-4728","88,jalan tipu,taman besar,53000,KL",88.50,"null","25/12/2018","null","no",3));
-//        orderpickup.add(new OPDP("A0002","James","870423-09-3824","32,jalan diam,taman kecil,53000,KL",53.90,"null","12/1/2019","null","no",5));
-//        orderpickup.add(new OPDP("A0003","Gray","890719-01-8864","43,jalan buahan,taman bunga,53000,KL",35.20,"null","12/1/2019","null","no",1));
-//        orderpickup.add(new OPDP("A0004","Jay","910312-03-5219","67,jalan gula,taman pokok,53000,KL",40.90,"null","25/12/2018","null","no",2.5));
-//        orderpickup.add(new OPDP("A0005","Young","860511-11-3612","3,jalan bola,taman nasi,53000,KL",20.20,"null","12/1/2019","null","no",7));
         OrderPickupOrDeliveryAndPayment opodap = new OrderPickupOrDeliveryAndPayment();
         
         String opt = null;
@@ -132,7 +127,7 @@ public class OrderPickupOrDeliveryAndPayment{
                updatePickup(checkOrderNo);
 
                 System.out.println("Successful!");
-         System.out.printf("\n|%-9s|%-25s|%-50s|RM%-10s|%-9s|",orderList.get(j).getOrderId(),orderList.get(j).getCustId(),orderList.get(j).getAddress(),orderList.get(j).getTotal(),orderList.get(j).getPayment());
+         
                 success = 1;
 
                 break;
