@@ -113,7 +113,7 @@ public class CatalogOrders {
         ListInterface<Product> prodList = CM.readProdDatList();
 
         System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
-        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Stock", "Price");
+        System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "ID", "Name", "Type", "Detail", "Price", "Stock");
         System.out.printf("\n|%-5s|%-20s|%-20s|%-30s|%-8s|%-6s|", "-----", "--------------------", "--------------------", "------------------------------", "--------", "------");
 
         for (int i = 0; i < prodList.size(); i++) {
@@ -876,13 +876,10 @@ public class CatalogOrders {
 
         for (int i = 0; i < size; i++) {
             Order orderEntry = orderList.get(i);
-//            orderList.get(i);
             s += orderEntry.getOrderId() + "|" + orderEntry.getCustId() + "|";
             s = writeOrderItem(s, orderEntry) + "|";
             s = writeOrderQuantity(s, orderEntry) + "|";
             s += orderEntry.getTotal() + "|" + orderEntry.getPaymentMethod() + "|" + orderEntry.getPickUpMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + orderEntry.getAddress() + "\n";
-
-//            s += prodEn.getProdID() + "|" + prodEn.getprodName() + "|" + prodEn.getprodType() + "|" + prodEn.getprodDetail() + "|" + Double.toString(prodEn.getprodPrice()) + "|" + Integer.toString(prodEn.getprodStock()) + "\n";
         }
 
         BufferedWriter bw = null;
