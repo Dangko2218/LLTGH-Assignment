@@ -494,7 +494,10 @@ public class CatalogMaintenance {
         do {
             System.out.print("Enter Product Price > ");
             PPrice = input.nextLine();
+
         } while (isDouble(PPrice) != true);
+        displayEdit(PID, PName, PType, PDetail, PPrice, Pstock, PAvaialble);
+
         System.out.print("Confirm to ADD New Product?(Y/N)>");
         confirmation = input.nextLine();
         confirmation = confirmation.toLowerCase();
@@ -671,15 +674,15 @@ public class CatalogMaintenance {
     }
 
     public void displayEdit(String PID, String PName, String PType, String PDetail, String PPrice, String Pstock, String PAvailable) {
-        System.out.printf("\n|%-15s|%-25s|", "---------------", "-------------------------");
-        System.out.printf("\n|%14s | %-24s|", "Product ID", PID);
-        System.out.printf("\n|%14s | %-24s|", "Product Name", PName);
-        System.out.printf("\n|%14s | %-24s|", "Product Type", PType);
-        System.out.printf("\n|%14s | %-24s|", "Product Detail", PDetail);
-        System.out.printf("\n|%14s | %-24s|", "Product Price", PPrice);
-        System.out.printf("\n|%14s | %-24s|", "Product Stock", Pstock);
-        System.out.printf("\n|%14s | %-24s|", "Product Available", Pstock);
-        System.out.printf("\n|%15s|%-25s|\n", "---------------", "-------------------------");
+        System.out.printf("\n|%-20s|%-25s|", "--------------------", "-------------------------");
+        System.out.printf("\n|%19s | %-24s|", "Product ID", PID);
+        System.out.printf("\n|%19s | %-24s|", "Product Name", PName);
+        System.out.printf("\n|%19s | %-24s|", "Product Type", PType);
+        System.out.printf("\n|%19s | %-24s|", "Product Detail", PDetail);
+        System.out.printf("\n|%19s | %-24s|", "Product Price", PPrice);
+        System.out.printf("\n|%19s | %-24s|", "Product Stock", Pstock);
+        System.out.printf("\n|%19s | %-24s|", "Product Available", PAvailable);
+        System.out.printf("\n|%20s|%-25s|\n", "--------------------", "-------------------------");
     }
 
     public String generateID(ListInterface<Product> prodList) {
@@ -1086,7 +1089,6 @@ public class CatalogMaintenance {
                     } else {
                         isCorrect = false;
                     }
-                    break;
                 } else {
                     isNotZero = false;
                 }
@@ -1193,11 +1195,11 @@ public class CatalogMaintenance {
     }
 
     public static void getProductList(ArrayList<Product> al, int i) {
-        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock(), al.get(i).getprodStatus());
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|RM%-11s|%-6s|%-15s|", al.get(i).getProdID(), al.get(i).getprodName(), al.get(i).getprodType(), al.get(i).getprodDetail(), al.get(i).getprodPrice(), al.get(i).getprodStock(), al.get(i).getprodStatus());
     }
 
     public void getProductListFromDat(ListInterface<Product> prodList, int i) {
-        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock(), prodList.get(i).getprodStatus());
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|RM%-11s|%-6s|%-15s|", prodList.get(i).getProdID(), prodList.get(i).getprodName(), prodList.get(i).getprodType(), prodList.get(i).getprodDetail(), prodList.get(i).getprodPrice(), prodList.get(i).getprodStock(), prodList.get(i).getprodStatus());
     }
 
     public void getPromoListFromDat(ListInterface<Promotion> promoList, int i, ListInterface<Product> prodList, int j) {
@@ -1205,7 +1207,7 @@ public class CatalogMaintenance {
         double oriPrice = prodList.get(j).getprodPrice();
         double discountRate = promoList.get(i).getdiscountRate();
         discountPrice = oriPrice - (oriPrice * (discountRate / 100));
-        System.out.printf("\n|%-10s|%-15s|%-25s|%-15s|%-20s|", generateMonth(promoList.get(i).getpromoMonth()), promoList.get(i).getProdID(), prodList.get(j).getprodName(), promoList.get(i).getdiscountRate(), discountPrice);
+        System.out.printf("\n|%-10s|%-15s|%-25s|%14s%%|RM%-18s|", generateMonth(promoList.get(i).getpromoMonth()), promoList.get(i).getProdID(), prodList.get(j).getprodName(), promoList.get(i).getdiscountRate(), discountPrice);
     }
 
     public boolean isDouble(String userInput) {
@@ -1367,9 +1369,9 @@ public class CatalogMaintenance {
     }
 
     public static void header() {
-        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------", "---------------");
-        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "ID", "Name", "Type", "Detail", "Price", "Stock", "Status");
-        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------", "---------------");
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-13s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "-------------", "------", "---------------");
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-13s|%-6s|%-15s|", "ID", "Name", "Type", "Detail", "Price", "Stock", "Status");
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-13s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "-------------", "------", "---------------");
     }
 
     public static void header1() {
@@ -1383,6 +1385,6 @@ public class CatalogMaintenance {
     }
 
     public static void tailer() {
-        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "--------", "------", "---------------");
+        System.out.printf("\n|%-5s|%-25s|%-20s|%-30s|%-8s|%-6s|%-15s|", "-----", "-------------------------", "--------------------", "------------------------------", "-------------", "------", "---------------");
     }
 }
