@@ -65,7 +65,7 @@ public class CustomerMaintenanceAndInvoicePayment {
                         Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
                     }
             }
-        } while (!cmipSelection.equals("6"));
+        } while (!cmipSelection.equals("5"));
     }
 
     // just for initialization
