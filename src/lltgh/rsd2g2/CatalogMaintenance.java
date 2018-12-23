@@ -1207,7 +1207,7 @@ public class CatalogMaintenance {
         double oriPrice = prodList.get(j).getprodPrice();
         double discountRate = promoList.get(i).getdiscountRate();
         discountPrice = oriPrice - (oriPrice * (discountRate / 100));
-        System.out.printf("\n|%-10s|%-15s|%-25s|%-15s|RM%-18s|", generateMonth(promoList.get(i).getpromoMonth()), promoList.get(i).getProdID(), prodList.get(j).getprodName(), promoList.get(i).getdiscountRate(), discountPrice);
+        System.out.printf("\n|%-10s|%-15s|%-25s|%14s%%|RM%-18s|", generateMonth(promoList.get(i).getpromoMonth()), promoList.get(i).getProdID(), prodList.get(j).getprodName(), promoList.get(i).getdiscountRate(), discountPrice);
     }
 
     public boolean isDouble(String userInput) {
