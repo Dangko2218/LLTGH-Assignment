@@ -32,7 +32,7 @@ public class CustomizedFloralArrangements {
     Scanner scanner = new Scanner(System.in);
     String inputScanner, modifyStatus, itemCode, itemName, itemStatus, title, st, sz, ty1, ty2, ty3, ac1, ac2, ac3, custType1="-", custType2="-", custType3="-", custAcc1="-", custAcc2="-", custAcc3="-";
     Boolean chkModifyStatus, chkValid;
-    int itemPrice, tyCount, acCount, tyIndex1, tyIndex2, tyIndex3, acIndex1, acIndex2, acIndex3, tyDis1, tyDis2, tyDis3, acDis1, acDis2, acDis3, tyDisCount, acDisCount;
+    int itemPrice, tyCount, acCount, tyIndex1, tyIndex2, tyIndex3, acIndex1, acIndex2, acIndex3, ty1Quan, ty2Quan, ty3Quan, ac1Quan, ac2Quan, ac3Quan;
 
     public void printTest() throws ParseException{
         alertMsg();
@@ -84,8 +84,9 @@ public class CustomizedFloralArrangements {
         c.setTime(dateFormat.parse(dateFormat.format(date)));
         c.add(Calendar.DATE, 1);  // number of days to add for collection date
         tempDate = dateFormat.format(c.getTime());
+        int custSize=custList.size();
         
-        for(int i=0; i<custList.size(); i++){
+        for(int i=0; i<custSize; i++){
             if(custList.get(i).getStatus() == 1){
                 if(tempDate.equals(custList.get(i).getCollectionDate())){
                     while(valid == true){
@@ -105,16 +106,17 @@ public class CustomizedFloralArrangements {
             } catch (IOException ex) {
                 Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }    
+        }
     }
 
     public boolean displayCustMenu() throws ParseException{
         title=""; st=""; sz=""; ty1=""; ty2=""; ty3=""; ac1=""; ac2=""; ac3=""; custType1="-"; custType2="-"; custType3="-"; custAcc1="-"; custAcc2="-"; custAcc3="-"; tyCount=0; acCount=0;
-        tyIndex1=0; tyIndex2=0; tyIndex3=0; acIndex1=0; acIndex2=0; acIndex3=0; tyDis1=0; tyDis2=0; tyDis3=0; acDis1=0; acDis2=0; acDis3=0; tyDisCount=0; acDisCount=0;
+        tyIndex1=0; tyIndex2=0; tyIndex3=0; acIndex1=0; acIndex2=0; acIndex3=0; ty1Quan=0; ty2Quan=0; ty3Quan=0; ac1Quan=0; ac2Quan=0; ac3Quan=0;
         String orderNo="", dateTime="", collectionDate="", tempDate="", consumer="", custStyle="", custSize="", pickupPrior="";
-        int totalCust=0, status=0, prior=0, numOfDay=0;
+        int status=0, prior=0, numOfDay=0;
+        double totalCust=0, ty1Price=0, ty2Price=0, ty3Price=0, ac1Price=0, ac2Price=0, ac3Price=0;
         
-        CustomizedEntity newCustOrder = new CustomizedEntity(orderNo, dateTime, collectionDate, consumer, st, sz, ty1, ty2, ty3, ac1, ac2, ac3, prior, totalCust, status);
+        CustomizedEntity newCustOrder = new CustomizedEntity(orderNo, dateTime, collectionDate, consumer, st, sz, ty1, ty1Quan, ty1Price, ty2, ty2Quan, ty2Price, ty3, ty3Quan, ty3Price, ac1, ac1Quan, ac1Price, ac2, ac2Quan, ac2Price, ac3, ac3Quan, ac3Price, prior, totalCust, status);
         ListInterface<CustomizedEntity> custList = readDataList("CO");
         String size=String.format("%03d", custList.size()+1);
         orderNo = "ON" + size;
@@ -153,8 +155,8 @@ public class CustomizedFloralArrangements {
         if(custSize.equals("false"))
             return false;
 
-        custType1 = printItemMenu("TY");
         tyCount++;
+        custType1 = printItemMenu("TY");
         if(custType1.equals("false"))
             return false;
         if(tyCount == 1){
@@ -164,8 +166,8 @@ public class CustomizedFloralArrangements {
                 chkValid = checkNext(inputScanner); 
             }while(chkValid == false);
             if(inputScanner.toUpperCase().equals("Y")){
-                custType2 = printItemMenu("TY");
                 tyCount++;
+                custType2 = printItemMenu("TY");          
                 if(custType2.equals("false"))
                     return false;
             } 
@@ -177,16 +179,15 @@ public class CustomizedFloralArrangements {
                 chkValid = checkNext(inputScanner); 
             }while(chkValid == false);
             if(inputScanner.toUpperCase().equals("Y")){
-                custType3 = printItemMenu("TY");
                 tyCount++;
+                custType3 = printItemMenu("TY");   
                 if(custType3.equals("false"))
                     return false;
             }
         }
         
-        //can choose maximum 3 type
-        custAcc1 = printItemMenu("AC");
         acCount++;
+        custAcc1 = printItemMenu("AC");
         if(custAcc1.equals("false"))
             return false;
         
@@ -197,8 +198,8 @@ public class CustomizedFloralArrangements {
                 chkValid = checkNext(inputScanner); 
             }while(chkValid == false);
             if(inputScanner.toUpperCase().equals("Y")){
-                custAcc2 = printItemMenu("AC");
                 acCount++;
+                custAcc2 = printItemMenu("AC");
                 if(custAcc2.equals("false"))
                     return false;
             } 
@@ -210,8 +211,8 @@ public class CustomizedFloralArrangements {
                 chkValid = checkNext(inputScanner); 
             }while(chkValid == false);
             if(inputScanner.toUpperCase().equals("Y")){
-                custAcc3 = printItemMenu("AC");
                 acCount++;
+                custAcc3 = printItemMenu("AC"); 
                 if(custAcc3.equals("false"))
                     return false;
             }
@@ -220,7 +221,13 @@ public class CustomizedFloralArrangements {
         pickupPrior = printItemMenu("PR");
         if(pickupPrior.equals("false"))
             return false;
-        totalCust = calcTotal(custStyle, custSize, custType1, custType2, custType3, custAcc1, custAcc2, custAcc3, pickupPrior);
+        ty1Price = getSinglePrice(custType1);
+        ty2Price = getSinglePrice(custType2);
+        ty3Price = getSinglePrice(custType3);
+        ac1Price = getSinglePrice(custAcc1);
+        ac2Price = getSinglePrice(custAcc2);
+        ac3Price = getSinglePrice(custAcc3);
+        totalCust = calcTotal(custStyle, custSize, custType1, ty1Quan, ty1Price, custType2, ty2Quan, ty2Price,  custType3, ty3Quan, ty3Price, custAcc1, ac1Quan, ac1Price, custAcc2, ac2Quan, ac2Price, custAcc3, ac3Quan, ac3Price, pickupPrior);
         status = 1;
         
         if(pickupPrior.equals("1"))
@@ -245,22 +252,46 @@ public class CustomizedFloralArrangements {
         newCustOrder.setType1(ty1);
         newCustOrder.setType2("-");
         newCustOrder.setType3("-");
+        newCustOrder.setTy1Quan(ty1Quan);
+        newCustOrder.setTy2Quan(0);
+        newCustOrder.setTy3Quan(0);
+        newCustOrder.setTy1Price(ty1Price);
+        newCustOrder.setTy2Price(0);
+        newCustOrder.setTy3Price(0);
         if(tyCount == 2){
             newCustOrder.setType2(ty2);
+            newCustOrder.setTy2Quan(ty2Quan);
+            newCustOrder.setTy2Price(ty2Price);
         }  
         if(tyCount == 3){
             newCustOrder.setType2(ty2);
+            newCustOrder.setTy2Quan(ty2Quan);
+            newCustOrder.setTy2Price(ty2Price);
             newCustOrder.setType3(ty3);
+            newCustOrder.setTy3Quan(ty3Quan);
+            newCustOrder.setTy3Price(ty3Price);
         }  
         newCustOrder.setAcc1(ac1);
         newCustOrder.setAcc2("-");
         newCustOrder.setAcc3("-");
+        newCustOrder.setAc1Quan(ac1Quan);
+        newCustOrder.setAc2Quan(0);
+        newCustOrder.setAc3Quan(0);
+        newCustOrder.setAc1Price(ac1Price);
+        newCustOrder.setAc2Price(0);
+        newCustOrder.setAc3Price(0);
         if(acCount == 2){
             newCustOrder.setAcc2(ac2);
+            newCustOrder.setAc2Quan(ac2Quan);
+            newCustOrder.setAc2Price(ac2Price);
         }    
         if(acCount == 3){
             newCustOrder.setAcc2(ac2);
-            newCustOrder.setAcc3(ac3);    
+            newCustOrder.setAc2Quan(ac2Quan);
+            newCustOrder.setAc2Price(ac2Price);
+            newCustOrder.setAcc3(ac3);
+            newCustOrder.setAc3Quan(ac3Quan);
+            newCustOrder.setAc3Price(ac3Price);
         }     
         newCustOrder.setPrior(Integer.parseInt(pickupPrior));
         newCustOrder.setPrice(totalCust);
@@ -282,30 +313,30 @@ public class CustomizedFloralArrangements {
             
             Product updateTY1=null, updateTY2=null, updateTY3=null, updateAC1=null, updateAC2=null, updateAC3=null;            
             updateTY1=prod.get(tyIndex1);
-            updateTY1.setprodStock(updateTY1.getprodStock()-1);
+            updateTY1.setprodStock(updateTY1.getprodStock()-ty1Quan);
             prod.update(tyIndex1, updateTY1);
             if(tyCount == 2 || tyCount == 3){
                 updateTY2=prod.get(tyIndex2);
-                updateTY2.setprodStock(updateTY2.getprodStock()-1);
+                updateTY2.setprodStock(updateTY2.getprodStock()-ty2Quan);
                 prod.update(tyIndex2, updateTY2);
             }
             if(tyCount == 3){
                 updateTY3=prod.get(tyIndex3);
-                updateTY3.setprodStock(updateTY3.getprodStock()-1);
+                updateTY3.setprodStock(updateTY3.getprodStock()-ty3Quan);
                 prod.update(tyIndex3, updateTY3);
             }
             
             updateAC1=prod.get(acIndex1);
-            updateAC1.setprodStock(updateAC1.getprodStock()-1);
+            updateAC1.setprodStock(updateAC1.getprodStock()-ac1Quan);
             prod.update(acIndex1, updateAC1);
             if(acCount == 2 || acCount == 3){
                 updateAC2=prod.get(acIndex2);
-                updateAC2.setprodStock(updateAC2.getprodStock()-1);
+                updateAC2.setprodStock(updateAC2.getprodStock()-ac2Quan);
                 prod.update(acIndex2, updateAC2);
             }
             if(acCount == 3){
                 updateAC3=prod.get(acIndex3);
-                updateAC3.setprodStock(updateAC3.getprodStock()-1);
+                updateAC3.setprodStock(updateAC3.getprodStock()-ac3Quan);
                 prod.update(acIndex3, updateAC3);
             }
 
@@ -319,7 +350,6 @@ public class CustomizedFloralArrangements {
             } catch (IOException ex) {
                  Logger.getLogger(LLTGHRSD2G2.class.getName()).log(Level.SEVERE, null, ex);
             }
-            //System.out.println(custList.size()-1);
         }
         else if(inputScanner.toUpperCase().equals("N")){
             custList = readDataList("CO");
@@ -330,7 +360,8 @@ public class CustomizedFloralArrangements {
         return true;
     }
     
-    public String printItemMenu(String item){   
+    public String printItemMenu(String item){  
+        String tempCode="";
         if(item.equals("ST"))
             title = "Flower Arrangement Style";
         else if(item.equals("SZ"))
@@ -359,6 +390,7 @@ public class CustomizedFloralArrangements {
                 if(inputScanner.equals("-1"))
                     return "false";
                 chkValid = checkPrior(inputScanner);
+                tempCode = inputScanner;
             }
             else{
                 if(item.equals("TY")){
@@ -386,11 +418,39 @@ public class CustomizedFloralArrangements {
                 if(inputScanner.equals("-1"))
                     return "false";
                 chkValid = checkCodeInput(inputScanner, item);
+                tempCode = inputScanner;
             }
-            
         }while(chkValid == false);
         
-        return inputScanner;  
+        
+        do{
+            if(item.equals("TY")||item.equals("AC")){
+                System.out.print("Please Enter Quantity (Enter -1 to Exit) > ");
+                inputScanner = scanner.nextLine();
+                if(inputScanner.equals("-1"))
+                    return "false";
+                chkValid = checkQuantity(inputScanner, tempCode);  
+            }
+        }while(chkValid == false);
+        
+        if(item.equals("TY")){
+            if(tyCount == 1)
+                ty1Quan = Integer.parseInt(inputScanner);
+            else if(tyCount == 2)
+                ty2Quan = Integer.parseInt(inputScanner);
+            else if(tyCount == 3)
+                ty3Quan = Integer.parseInt(inputScanner);
+        }
+        else if(item.equals("AC")){
+            if(acCount == 1)
+                ac1Quan = Integer.parseInt(inputScanner);
+            else if(acCount == 2)
+                ac2Quan = Integer.parseInt(inputScanner);
+            else if(acCount == 3)
+                ac3Quan = Integer.parseInt(inputScanner);
+        }
+        
+        return tempCode;  
     }
     
     private void printProdList(String item){//print Customized Order List
@@ -398,7 +458,7 @@ public class CustomizedFloralArrangements {
         System.out.println("---------------------------------------------------------------------------------------------------------------");
 
         String tempProdID = "", tempPromoRate = "", tempDiscPrice = "";
-        int discPrice=0;
+        double discPrice=0;
         Calendar cal = Calendar.getInstance();
         int month = cal.get(Calendar.MONTH) + 1;
         CatalogMaintenance cat = new CatalogMaintenance();
@@ -412,7 +472,6 @@ public class CustomizedFloralArrangements {
             promo = cat.readPromoDatList();
             Product prod = prodList.remove(0);
             if(item.equals("TY")){
-                tyDisCount++;
                 if(prod.getprodType().equals("Fresh Flower")){
                     if(prod.getprodStock() != 0){
                         tempProdID = prod.getProdID();
@@ -420,8 +479,8 @@ public class CustomizedFloralArrangements {
                             Promotion promoDat = promo.remove(0);
                             if(promoDat.getpromoMonth() == month){
                                 if(promoDat.getProdID().equals(tempProdID)){
-                                    discPrice = (int)prod.getprodPrice() * (100-promoDat.getdiscountRate()) / 100;
-                                    tempDiscPrice = Integer.toString(discPrice);
+                                    discPrice = prod.getprodPrice() * (100-promoDat.getdiscountRate()) / 100;
+                                    tempDiscPrice = Double.toString(discPrice);
                                     tempPromoRate = Integer.toString(promoDat.getdiscountRate());
                                     break;
                                 }
@@ -436,7 +495,6 @@ public class CustomizedFloralArrangements {
                 }            
             }
             else if(item.equals("AC")){
-                acDisCount++;
                 if(prod.getprodType().equals("Accessory")){
                     if(prod.getprodStock() != 0){
                         tempProdID = prod.getProdID();
@@ -444,8 +502,8 @@ public class CustomizedFloralArrangements {
                             Promotion promoDat = promo.remove(0);
                             if(promoDat.getpromoMonth() == month){
                                 if(promoDat.getProdID().equals(tempProdID)){
-                                    discPrice = (int)prod.getprodPrice() * (100-promoDat.getdiscountRate()) / 100;
-                                    tempDiscPrice = Integer.toString(discPrice);
+                                    discPrice = prod.getprodPrice() * (100-promoDat.getdiscountRate()) / 100;
+                                    tempDiscPrice = Double.toString(discPrice);
                                     tempPromoRate = Integer.toString(promoDat.getdiscountRate());
                                     break;
                                 }
@@ -461,10 +519,47 @@ public class CustomizedFloralArrangements {
             }
         }
         System.out.println("---------------------------------------------------------------------------------------------------------------");
-    } 
+    }
     
+    public double getSinglePrice(String prodID){
+        Calendar cal = Calendar.getInstance();
+        int month = cal.get(Calendar.MONTH) + 1;
+        CatalogMaintenance cat = new CatalogMaintenance();
+        ListInterface<Product> prodList = cat.readProdDatList();
+        ListInterface<Promotion> promoList = cat.readPromoDatList();
+        double tempPrice = 0;
+        int tempPromoSize = promoList.size();
+        int tempProdSize = prodList.size();
+        for(int i=0; i<tempProdSize; i++){
+            Product prod = prodList.remove(0);
+            if(prod.getProdID().toUpperCase().equals(prodID.toUpperCase())){
+                promoList = cat.readPromoDatList();
+                tempPrice = prod.getprodPrice();
+                
+                for(int j=0; j<tempPromoSize; j++){
+                    Promotion promo = promoList.remove(0);
+                    if(promo.getpromoMonth() == month){ 
+                        if(promo.getProdID().toUpperCase().equals(prodID.toUpperCase())){
+                            tempPrice = tempPrice * (100-(double)promo.getdiscountRate()) / 100;
+                            break;
+                        }
+                        else{
+                            tempPrice = prod.getprodPrice();
+                        }
+                    }
+                }
+            }
+        }
+
+        return tempPrice;
+    }
+
     public Boolean checkCodeInput(String codeInput, String item){
         Boolean returnValue = true;
+        CatalogMaintenance cat = new CatalogMaintenance();
+        ListInterface<Product> prod = cat.readProdDatList();
+        ListInterface<CustomizedEntity> itemList = readDataList(item);
+        int prodSize=prod.size(), itemSize=itemList.size();
         
         if(codeInput == null || codeInput.isEmpty()){
             System.out.println("***Do Not Leave Blank. Please enter again...");
@@ -474,9 +569,7 @@ public class CustomizedFloralArrangements {
             if(returnValue == true){
                 returnValue = false;
                 if(item.equals("TY")||item.equals("AC")){
-                    CatalogMaintenance cat = new CatalogMaintenance();
-                    ListInterface<Product> prod = cat.readProdDatList();
-                    for(int i=0;i<prod.size();i++){
+                    for(int i=0;i<prodSize;i++){
                         if(item.equals("TY")){
                             if(prod.get(i).getProdID().toUpperCase().equals(codeInput.toUpperCase()) && prod.get(i).getprodType().equals("Fresh Flower") && prod.get(i).getprodStock() != 0){
                                 returnValue = true; 
@@ -492,8 +585,7 @@ public class CustomizedFloralArrangements {
                     }
                 }
                 else{
-                    ListInterface<CustomizedEntity> itemList = readDataList(item);
-                    for(int i=0;i<itemList.size();i++){
+                    for(int i=0;i<itemSize;i++){
                         if(itemList.get(i).getItemCode().toUpperCase().equals(codeInput.toUpperCase())){
                             returnValue = true; 
                             break;
@@ -524,6 +616,46 @@ public class CustomizedFloralArrangements {
             }
         }
         
+        return returnValue;
+    }
+    
+    public boolean checkQuantity(String quantity, String code){
+        boolean returnValue = true;
+        CatalogMaintenance cat = new CatalogMaintenance();
+        ListInterface<Product> prodList = cat.readProdDatList();
+        int prodSize = prodList.size();
+        if(quantity == null || quantity.isEmpty()){
+            System.out.println("***Do Not Leave Blank. Please enter again...");
+            returnValue = false;
+        }
+        else{
+            
+            try { 
+                Integer.parseInt(quantity); 
+            } catch(NumberFormatException e) { 
+                System.out.println("***Please Enter Only Digit Number.");
+                returnValue = false;
+            }
+        
+            if(returnValue == true){
+                for(int i=0; i<prodSize; i++){
+                    Product prod = prodList.remove(0);
+                    if(prod.getProdID().equals(code)){
+                        if(Integer.parseInt(quantity) > prod.getprodStock()){
+                            System.out.println("***Not Enough Stock!! Please enter again...");
+                            returnValue = false;
+                        }
+                        else if(Integer.parseInt(quantity) <= 0){
+                            System.out.println("***Please enter at least 1 and more quantity.");
+                            returnValue = false;
+                        }
+                        else
+                            returnValue = true;
+                    }
+                }
+            }
+        }
+
         return returnValue;
     }
     
@@ -579,63 +711,64 @@ public class CustomizedFloralArrangements {
         return returnValue;
     }
     
-    public int calcTotal(String style, String size, String type1, String type2, String type3, String acc1, String acc2, String acc3, String prior){
+    public double calcTotal(String style, String size, String type1, int ty1Q, double ty1Pr, String type2, int ty2Q, double ty2Pr, String type3, int ty3Q, double ty3Pr, String acc1, int ac1Q, double ac1Pr, String acc2, int ac2Q, double ac2Pr, String acc3, int ac3Q, double ac3Pr, String prior){
         ListInterface<CustomizedEntity> styleList = readDataList("ST");
         ListInterface<CustomizedEntity> sizeList = readDataList("SZ");
         CatalogMaintenance cat = new CatalogMaintenance();
         ListInterface<Product> typeList = cat.readProdDatList();
         ListInterface<Product> accList = cat.readProdDatList();
-        int stPrice=0, szPrice=0, tyPrice1=0, tyPrice2=0, tyPrice3=0, accPrice1=0, accPrice2=0, accPrice3=0, prPrice=0, total=0;
-        
-        for(int i=0;i<styleList.size();i++){
+        double stPrice=0, szPrice=0, tyPrice1=0, tyPrice2=0, tyPrice3=0, accPrice1=0, accPrice2=0, accPrice3=0, prPrice=0, total=0;
+        int styleSize=styleList.size(), sizeSize=sizeList.size(), typeSize=typeList.size(), accSize=accList.size();
+        for(int i=0;i<styleSize;i++){
             if(styleList.get(i).getItemCode().toUpperCase().equals(style.toUpperCase())){
                 stPrice = styleList.get(i).getItemPrice();
                 st = styleList.get(i).getItemName();
             }
         }
         
-        for(int i=0;i<sizeList.size();i++){
+        for(int i=0;i<sizeSize;i++){
             if(sizeList.get(i).getItemCode().toUpperCase().equals(size.toUpperCase())){
                 szPrice = sizeList.get(i).getItemPrice();
                 sz = sizeList.get(i).getItemName();
             }
         }
         
-        for(int i=0;i<typeList.size();i++){
+        for(int i=0;i<typeSize;i++){
             if(typeList.get(i).getProdID().toUpperCase().equals(type1.toUpperCase())){
-                tyPrice1 = (int)typeList.get(i).getprodPrice();
                 tyIndex1 = i;
                 ty1 = typeList.get(i).getprodName();
             }
             else if(typeList.get(i).getProdID().toUpperCase().equals(type2.toUpperCase())){
-                tyPrice2 = (int)typeList.get(i).getprodPrice();
                 tyIndex2 = i;
                 ty2 = typeList.get(i).getprodName();
             }
             else if(typeList.get(i).getProdID().toUpperCase().equals(type3.toUpperCase())){
-                tyPrice3 = (int)typeList.get(i).getprodPrice();
                 tyIndex3 = i;
                 ty3 = typeList.get(i).getprodName();
             }
         }
         
-        for(int i=0;i<accList.size();i++){
+        for(int i=0;i<accSize;i++){
             if(accList.get(i).getProdID().toUpperCase().equals(acc1.toUpperCase())){
-                accPrice1 = (int)accList.get(i).getprodPrice();
                 acIndex1 = i;
                 ac1 = accList.get(i).getprodName();
             }
             else if(accList.get(i).getProdID().toUpperCase().equals(acc2.toUpperCase())){
-                accPrice2 = (int)accList.get(i).getprodPrice();
                 acIndex2 = i;
                 ac2 = accList.get(i).getprodName();
             }
             else if(accList.get(i).getProdID().toUpperCase().equals(acc3.toUpperCase())){
-                accPrice3 = (int)accList.get(i).getprodPrice();
                 acIndex3 = i;
                 ac3 = accList.get(i).getprodName();
             }
         }
+        
+        tyPrice1 = ty1Pr * ty1Q;
+        tyPrice2 = ty2Pr * ty2Q;
+        tyPrice3 = ty3Pr * ty3Q;
+        accPrice1 = ac1Pr * ac1Q;
+        accPrice2 = ac2Pr * ac2Q;
+        accPrice3 = ac3Pr * ac3Q;
         
         if(prior.equals("1"))
             prPrice = 30;
@@ -652,43 +785,31 @@ public class CustomizedFloralArrangements {
         ListInterface<CustomizedEntity> custList = readDataList("CO");
         ListInterface<CustomizedEntity> styleList = readDataList("ST");
         ListInterface<CustomizedEntity> sizeList = readDataList("SZ");
-        CatalogMaintenance cat = new CatalogMaintenance();
-        ListInterface<Product> typeList = cat.readProdDatList();
-        ListInterface<Product> accList = cat.readProdDatList();
-        int stPrice=0, szPrice=0, tyPrice1=0, tyPrice2=0, tyPrice3=0, accPrice1=0, accPrice2=0, accPrice3=0, prPrice=0;
+        int stPrice=0, szPrice=0, prPrice=0;
+        double tyPrice1=0, tyPrice2=0, tyPrice3=0, accPrice1=0, accPrice2=0, accPrice3=0;
         String prName="";
+        int custSize=custList.size(), styleSize=styleList.size(), sizeSize=sizeList.size();
         
-        for(int x=0;x<custList.size();x++){
+        for(int x=0;x<custSize;x++){
             if(custList.get(x).getOrderNo().toUpperCase().equals(CustNo.toUpperCase())){
                 
-                for(int i=0;i<styleList.size();i++){
+                for(int i=0;i<styleSize;i++){
                     if(styleList.get(i).getItemName().toUpperCase().equals(custList.get(x).getStyle().toUpperCase()))
                         stPrice = styleList.get(i).getItemPrice();
                         
                 }
 
-                for(int i=0;i<sizeList.size();i++){
+                for(int i=0;i<sizeSize;i++){
                     if(sizeList.get(i).getItemName().toUpperCase().equals(custList.get(x).getSize().toUpperCase()))
                         szPrice = sizeList.get(i).getItemPrice();
                 }
-
-                for(int i=0;i<typeList.size();i++){
-                    if(typeList.get(i).getprodName().toUpperCase().equals(custList.get(x).getType1().toUpperCase()))
-                        tyPrice1 = (int)typeList.get(i).getprodPrice();
-                    else if(typeList.get(i).getprodName().toUpperCase().equals(custList.get(x).getType2().toUpperCase()))
-                        tyPrice2 = (int)typeList.get(i).getprodPrice();
-                    else if(typeList.get(i).getprodName().toUpperCase().equals(custList.get(x).getType3().toUpperCase()))
-                        tyPrice3 = (int)typeList.get(i).getprodPrice();
-                }
-
-                for(int i=0;i<accList.size();i++){
-                    if(accList.get(i).getprodName().toUpperCase().equals(custList.get(x).getAcc1().toUpperCase()))
-                        accPrice1 = (int)accList.get(i).getprodPrice();
-                    else if(accList.get(i).getprodName().toUpperCase().equals(custList.get(x).getAcc2().toUpperCase()))
-                        accPrice2 = (int)accList.get(i).getprodPrice();
-                    else if(accList.get(i).getprodName().toUpperCase().equals(custList.get(x).getAcc3().toUpperCase()))
-                        accPrice3 = (int)accList.get(i).getprodPrice();
-                }
+                
+                tyPrice1 = custList.get(x).getTy1Price();
+                tyPrice2 = custList.get(x).getTy2Price();
+                tyPrice3 = custList.get(x).getTy3Price();
+                accPrice1 = custList.get(x).getAc1Price();
+                accPrice2 = custList.get(x).getAc2Price();
+                accPrice3 = custList.get(x).getAc3Price();
                 
                 if(custList.get(x).getPrior()==1){
                     prPrice = 30;
@@ -710,12 +831,12 @@ public class CustomizedFloralArrangements {
                 System.out.println("Customer ID: " + custList.get(x).getCustID() + "                     Collection Date: " + custList.get(x).getCollectionDate());
                 System.out.println("\nFlower Arrangement Style: " + custList.get(x).getStyle() + "(RM " + stPrice + ")");
                 System.out.println("\nFlower Arrangement Size: " + custList.get(x).getSize() + "(RM " + szPrice + ")");
-                System.out.println("\nFlower Type 1: " + custList.get(x).getType1() + "(RM " + tyPrice1 + ")");
-                System.out.println("Flower Type 2: " + custList.get(x).getType2() + "(RM " + tyPrice2 + ")");
-                System.out.println("Flower Type 3: " + custList.get(x).getType3() + "(RM " + tyPrice3 + ")");
-                System.out.println("\nAccessory 1: " + custList.get(x).getAcc1() + "(RM " + accPrice1 + ")");
-                System.out.println("Accessory 2: " + custList.get(x).getAcc2() + "(RM " + accPrice2 + ")");
-                System.out.println("Accessory 3: " + custList.get(x).getAcc3() + "(RM " + accPrice3 + ")");
+                System.out.println("\nFlower Type 1: " + custList.get(x).getType1() + "(RM " + tyPrice1 + " X " + custList.get(x).getTy1Quan() + ")");
+                System.out.println("Flower Type 2: " + custList.get(x).getType2() + "(RM " + tyPrice2 + " X " + custList.get(x).getTy2Quan() + ")");
+                System.out.println("Flower Type 3: " + custList.get(x).getType3() + "(RM " + tyPrice3 + " X " + custList.get(x).getTy3Quan() + ")");
+                System.out.println("\nAccessory 1: " + custList.get(x).getAcc1() + "(RM " + accPrice1 + " X " + custList.get(x).getAc1Quan() + ")");
+                System.out.println("Accessory 2: " + custList.get(x).getAcc2() + "(RM " + accPrice2 + " X " + custList.get(x).getAc2Quan() + ")");
+                System.out.println("Accessory 3: " + custList.get(x).getAcc3() + "(RM " + accPrice3 + " X " + custList.get(x).getAc3Quan() + ")");
                 System.out.println("\nPick-up Priority: " + prName + "(RM " + prPrice + ")");
                 System.out.println("\nTotal Price: RM " + custList.get(x).getPrice());
                 System.out.println("\n======================================================================");
@@ -775,9 +896,9 @@ public class CustomizedFloralArrangements {
         ListInterface<CustomizedEntity> orderList = readDataList("CO");
         
         do{
-            System.out.println("\n\n\n=======================================================================================================================================================================================================================================================================================================");
+            System.out.println("\n\n\n===================================================================================================================================================================================================================================================================================================================");
             System.out.println("                                                                                  Customized Order");
-            System.out.println("=======================================================================================================================================================================================================================================================================================================");
+            System.out.println("===================================================================================================================================================================================================================================================================================================================");
             printCustOrderListList(orderList);
             System.out.print("Please Enter Order No. (Enter -1 to Exit) > ");
             inputScanner = scanner.nextLine();
@@ -793,6 +914,7 @@ public class CustomizedFloralArrangements {
     public Boolean checkValidOrderNo(String input){
         ListInterface<CustomizedEntity> orderList = readDataList("CO");
         Boolean returnValue = true;
+        int orderSize=orderList.size();
         
         if(input == null || input.isEmpty()){
             System.out.println("***Do Not Leave Blank. Please enter again...");
@@ -801,7 +923,7 @@ public class CustomizedFloralArrangements {
         else{
             if(returnValue == true){
                 returnValue = false;
-                for(int i=0;i<orderList.size();i++){
+                for(int i=0;i<orderSize;i++){
                     if(orderList.get(i).getOrderNo().toUpperCase().equals(input.toUpperCase())){
                         returnValue = true; 
                         break;
@@ -854,16 +976,16 @@ public class CustomizedFloralArrangements {
     }
     
     public void viewOrder(String status){
-        System.out.println("\n\n\n=======================================================================================================================================================================================================================================================================================================");
+        System.out.println("\n\n\n===================================================================================================================================================================================================================================================================================================================");
         System.out.println("                                                                              View Customized Order("+ status +")");
-        System.out.println("=======================================================================================================================================================================================================================================================================================================");
+        System.out.println("===================================================================================================================================================================================================================================================================================================================");
         QueueInterface<CustomizedEntity> orderList = readCustDat();
         if(status.equals("Pending"))
             printCustOrderList(orderList,1);
         else if(status.equals("Completed"))
             printCustOrderList(orderList,2);
         else if(status.equals("Cancelled"))
-            printCustOrderList(orderList,2);
+            printCustOrderList(orderList,3);
 
         System.out.print("Press enter to continue...");
         try {
@@ -874,17 +996,17 @@ public class CustomizedFloralArrangements {
     }
     
     public boolean modifyOrder(int item) throws ParseException{
-        ListInterface<CustomizedEntity> orderListL = readDataList("Co");
+        ListInterface<CustomizedEntity> orderListL = readDataList("CO");
         QueueInterface<CustomizedEntity> orderListQ = readCustDat();
         
-        int tempCount=0, status=0;
+        int tempCount=0, status=0, orderSize=orderListL.size();
         boolean chkInput;
         String tempDate="";
         CustomizedEntity update=null;
         do{
-            System.out.println("\n\n\n=======================================================================================================================================================================================================================================================================================================");
+            System.out.println("\n\n\n===================================================================================================================================================================================================================================================================================================================");
             System.out.println("                                                                                              Update Status");
-            System.out.println("=======================================================================================================================================================================================================================================================================================================");
+            System.out.println("===================================================================================================================================================================================================================================================================================================================");
             printCustOrderList(orderListQ,1);
             orderListQ = readCustDat();
 
@@ -893,7 +1015,7 @@ public class CustomizedFloralArrangements {
             if(modifyStatus.equals("-1"))
                 return false;
 
-            for(int i=0;i<orderListL.size();i++){
+            for(int i=0;i<orderSize;i++){
                 if(orderListL.get(i).getOrderNo().toUpperCase().equals(modifyStatus.toUpperCase())){
                     update=orderListL.get(i);
                     tempCount = i;
@@ -907,9 +1029,9 @@ public class CustomizedFloralArrangements {
                 System.out.println("\n***The Selected Order Number is NOT Pending. Please enter again...***");
         }while(modifyStatus == null || modifyStatus.isEmpty() || update==null||update.getStatus()!=1);
 
-        System.out.println("\n\n\n=======================================================================================================================================================================================================================================================================================================");
+        System.out.println("\n\n\n===============================================================================================================================================================================================================================================================================================================================");
         System.out.println("                                                                                              Update Order");
-        System.out.println("=======================================================================================================================================================================================================================================================================================================");
+        System.out.println("===============================================================================================================================================================================================================================================================================================================================");
         QueueInterface<CustomizedEntity> tempQueue = new Queue();
         tempQueue.enqueue(update);
         printCustOrderList(tempQueue,0);
@@ -963,9 +1085,9 @@ public class CustomizedFloralArrangements {
             writeDataList(orderListL, "CO");
             System.out.println("\n***Updated successfully!!***");
             tempQueue.enqueue(update);
-            System.out.println("\n\n\n=======================================================================================================================================================================================================================================================================================================");
+            System.out.println("\n\n\n===================================================================================================================================================================================================================================================================================================================");
             System.out.println("                                                                                              Updated Order");
-            System.out.println("=======================================================================================================================================================================================================================================================================================================");
+            System.out.println("===================================================================================================================================================================================================================================================================================================================");
             printCustOrderList(tempQueue,0);  
 
             System.out.print("Press enter to continue...");
@@ -1043,8 +1165,8 @@ public class CustomizedFloralArrangements {
         ListInterface<CustomizedEntity> pendingList = new List();
         
         String prior="", status="";
-        System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-15s|%-15s|%-25s|%-25s|%-25s|%-15s|%-10s|%-10s|\n", "Order Number", "Date/Time", "Collection Date", "Customer ID","Style", "Size", "Flower Type 1", "Flower Type 2", "Flower Type 3", "Accessories 1", "Accessories 2", "Accessories 3", "Priority", "Price(RM)", "Status");
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-1s|%-15s|%-1s|%-15s|%-1s|%-25s|%-1s|%-25s|%-1s|%-25s|%-1s|%-15s|%-10s|%-10s|\n", "Order Number", "Date/Time", "Collection Date", "Customer ID","Style", "Size", "Flower Type 1", "Q", "Flower Type 2", "Q", "Flower Type 3", "Q", "Accessories 1", "Q", "Accessories 2", "Q", "Accessories 3", "Q", "Priority", "Price(RM)", "Status");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
         int size = orderList.size();
         if(input == 0){
@@ -1064,7 +1186,7 @@ public class CustomizedFloralArrangements {
                 else if(cust.getStatus() == 3)
                     status = "Cancelled";
 
-                System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-15s|%-15s|%-25s|%-25s|%-25s|%-15s|%-10d|%-10s|\n", cust.getOrderNo(), cust.getDateTime(), cust.getCollectionDate(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType1(), cust.getType2(), cust.getType3(), cust.getAcc1(), cust.getAcc2(), cust.getAcc3(), prior, cust.getPrice(), status);
+                System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-1d|%-15s|%-1d|%-15s|%-1d|%-25s|%-1d|%-25s|%-1d|%-25s|%-1d|%-15s|%-10.2f|%-10s|\n", cust.getOrderNo(), cust.getDateTime(), cust.getCollectionDate(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType1(), cust.getTy1Quan(), cust.getType2(), cust.getTy2Quan(), cust.getType3(), cust.getTy3Quan(), cust.getAcc1(), cust.getAc1Quan(), cust.getAcc2(), cust.getAc2Quan(), cust.getAcc3(), cust.getAc3Quan(), prior, cust.getPrice(), status);
             }
         }
         else if(input == 1){
@@ -1080,7 +1202,7 @@ public class CustomizedFloralArrangements {
 
                     status = "Pending";
                     pendingList.add(cust);
-                    System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-15s|%-15s|%-25s|%-25s|%-25s|%-15s|%-10d|%-10s|\n", cust.getOrderNo(), cust.getDateTime(), cust.getCollectionDate(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType1(), cust.getType2(), cust.getType3(), cust.getAcc1(), cust.getAcc2(), cust.getAcc3(), prior, cust.getPrice(), status);
+                    System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-1d|%-15s|%-1d|%-15s|%-1d|%-25s|%-1d|%-25s|%-1d|%-25s|%-1d|%-15s|%-10.2f|%-10s|\n", cust.getOrderNo(), cust.getDateTime(), cust.getCollectionDate(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType1(), cust.getTy1Quan(), cust.getType2(), cust.getTy2Quan(), cust.getType3(), cust.getTy3Quan(), cust.getAcc1(), cust.getAc1Quan(), cust.getAcc2(), cust.getAc2Quan(), cust.getAcc3(), cust.getAc3Quan(), prior, cust.getPrice(), status);
                 } 
             }      
         }
@@ -1096,7 +1218,7 @@ public class CustomizedFloralArrangements {
                         prior = "Flexi(7 days)";
 
                     status = "Completed";
-                    System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-15s|%-15s|%-25s|%-25s|%-25s|%-15s|%-10d|%-10s|\n", cust.getOrderNo(), cust.getDateTime(), cust.getCollectionDate(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType1(), cust.getType2(), cust.getType3(), cust.getAcc1(), cust.getAcc2(), cust.getAcc3(), prior, cust.getPrice(), status);
+                    System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-1d|%-15s|%-1d|%-15s|%-1d|%-25s|%-1d|%-25s|%-1d|%-25s|%-1d|%-15s|%-10.2f|%-10s|\n", cust.getOrderNo(), cust.getDateTime(), cust.getCollectionDate(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType1(), cust.getTy1Quan(), cust.getType2(), cust.getTy2Quan(), cust.getType3(), cust.getTy3Quan(), cust.getAcc1(), cust.getAc1Quan(), cust.getAcc2(), cust.getAc2Quan(), cust.getAcc3(), cust.getAc3Quan(), prior, cust.getPrice(), status);
                 }
             }               
         }
@@ -1112,19 +1234,19 @@ public class CustomizedFloralArrangements {
                         prior = "Flexi(7 days)";
 
                     status = "Cancelled";
-                    System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-15s|%-15s|%-25s|%-25s|%-25s|%-15s|%-10d|%-10s|\n", cust.getOrderNo(), cust.getDateTime(), cust.getCollectionDate(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType1(), cust.getType2(), cust.getType3(), cust.getAcc1(), cust.getAcc2(), cust.getAcc3(), prior, cust.getPrice(), status);
+                    System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-1d|%-15s|%-1d|%-15s|%-1d|%-25s|%-1d|%-25s|%-1d|%-25s|%-1d|%-15s|%-10.2f|%-10s|\n", cust.getOrderNo(), cust.getDateTime(), cust.getCollectionDate(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType1(), cust.getTy1Quan(), cust.getType2(), cust.getTy2Quan(), cust.getType3(), cust.getTy3Quan(), cust.getAcc1(), cust.getAc1Quan(), cust.getAcc2(), cust.getAc2Quan(), cust.getAcc3(), cust.getAc3Quan(), prior, cust.getPrice(), status);
                 }
             }                   
         }
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
         return pendingList;
     }
     
     private void printCustOrderListList(ListInterface<CustomizedEntity> orderList){//print Customized Order List
         String prior="", status="";
-        System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-15s|%-15s|%-25s|%-25s|%-25s|%-15s|%-10s|%-10s|\n", "Order Number", "Date/Time", "Collection Date", "Customer ID","Style", "Size", "Flower Type 1", "Flower Type 2", "Flower Type 3", "Accessories 1", "Accessories 2", "Accessories 3", "Priority", "Price(RM)", "Status");
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-1s|%-15s|%-1s|%-15s|%-1s|%-25s|%-1s|%-25s|%-1s|%-25s|%-1s|%-15s|%-10s|%-10s|\n", "Order Number", "Date/Time", "Collection Date", "Customer ID","Style", "Size", "Flower Type 1", "Q", "Flower Type 2", "Q", "Flower Type 3", "Q", "Accessories 1", "Q", "Accessories 2", "Q", "Accessories 3", "Q", "Priority", "Price(RM)", "Status");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
         int size = orderList.size();
         for(int i=0; i<size; i++){
@@ -1144,9 +1266,9 @@ public class CustomizedFloralArrangements {
             else if(cust.getStatus() == 3)
                 status = "Cancelled";
 
-            System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-15s|%-15s|%-25s|%-25s|%-25s|%-15s|%-10d|%-10s|\n", cust.getOrderNo(), cust.getDateTime(), cust.getCollectionDate(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType1(), cust.getType2(), cust.getType3(), cust.getAcc1(), cust.getAcc2(), cust.getAcc3(), prior, cust.getPrice(), status);
+            System.out.printf("|%-15s|%-19s|%-15s|%-15s|%-30s|%-30s|%-15s|%-1d|%-15s|%-1d|%-15s|%-1d|%-25s|%-1d|%-25s|%-1d|%-25s|%-1d|%-15s|%-10.2f|%-10s|\n", cust.getOrderNo(), cust.getDateTime(), cust.getCollectionDate(), cust.getCustID(), cust.getStyle(), cust.getSize(), cust.getType1(), cust.getTy1Quan(), cust.getType2(), cust.getTy2Quan(), cust.getType3(), cust.getTy3Quan(), cust.getAcc1(), cust.getAc1Quan(), cust.getAcc2(), cust.getAc2Quan(), cust.getAcc3(), cust.getAc3Quan(), prior, cust.getPrice(), status);
         }
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
     }
     
     public QueueInterface<CustomizedEntity> readCustDat(){//get orderData from dat file
@@ -1164,7 +1286,7 @@ public class CustomizedFloralArrangements {
             while ((sCurrentLine = br.readLine()) != null) {
                 
                 String[] s =sCurrentLine.split("\\|");
-                CustomizedEntity custEn = new CustomizedEntity(s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8], s[9], s[10], s[11], Integer.parseInt(s[12]), Integer.parseInt(s[13]), Integer.parseInt(s[14]));
+                CustomizedEntity custEn = new CustomizedEntity(s[0], s[1], s[2], s[3], s[4], s[5], s[6], Integer.parseInt(s[7]), Double.parseDouble(s[8]), s[9], Integer.parseInt(s[10]), Double.parseDouble(s[11]), s[12], Integer.parseInt(s[13]), Double.parseDouble(s[14]), s[15], Integer.parseInt(s[16]), Double.parseDouble(s[17]), s[18], Integer.parseInt(s[19]), Double.parseDouble(s[20]), s[21], Integer.parseInt(s[22]), Double.parseDouble(s[23]), Integer.parseInt(s[24]), Double.parseDouble(s[25]), Integer.parseInt(s[26]));
                 custQueue.enqueue(custEn);//add to list
             }
 
@@ -1206,7 +1328,7 @@ public class CustomizedFloralArrangements {
             while ((sCurrentLine = br.readLine()) != null) {
                 String[] s =sCurrentLine.split("\\|");
                 if(item.equals("CO")){
-                    CustomizedEntity custEn = new CustomizedEntity(s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8], s[9], s[10], s[11], Integer.parseInt(s[12]), Integer.parseInt(s[13]), Integer.parseInt(s[14]));
+                    CustomizedEntity custEn = new CustomizedEntity(s[0], s[1], s[2], s[3], s[4], s[5], s[6], Integer.parseInt(s[7]), Double.parseDouble(s[8]), s[9], Integer.parseInt(s[10]), Double.parseDouble(s[11]), s[12], Integer.parseInt(s[13]), Double.parseDouble(s[14]), s[15], Integer.parseInt(s[16]), Double.parseDouble(s[17]), s[18], Integer.parseInt(s[19]), Double.parseDouble(s[20]), s[21], Integer.parseInt(s[22]), Double.parseDouble(s[23]), Integer.parseInt(s[24]), Double.parseDouble(s[25]), Integer.parseInt(s[26]));
                     dataList.add(custEn);
                 }
                 else if(item.equals("ST")||item.equals("SZ")){
@@ -1238,7 +1360,7 @@ public class CustomizedFloralArrangements {
         for(int i=0; i<size; i++){
             CustomizedEntity custEn = list.remove(0);
             if(item.equals("CO"))
-                s += custEn.getOrderNo() + "|" + custEn.getDateTime() + "|" + custEn.getCollectionDate() + "|" + custEn.getCustID()+ "|" + custEn.getStyle() + "|" + custEn.getSize() + "|" + custEn.getType1() + "|" + custEn.getType2() + "|" + custEn.getType3() + "|" + custEn.getAcc1() + "|" + custEn.getAcc2() + "|" + custEn.getAcc3() + "|" + Integer.toString(custEn.getPrior()) + "|" + Integer.toString(custEn.getPrice()) + "|" + Integer.toString(custEn.getStatus()) + "\n";
+                s += custEn.getOrderNo() + "|" + custEn.getDateTime() + "|" + custEn.getCollectionDate() + "|" + custEn.getCustID()+ "|" + custEn.getStyle() + "|" + custEn.getSize() + "|" + custEn.getType1() + "|" + custEn.getTy1Quan() + "|" + custEn.getTy1Price() + "|" + custEn.getType2() + "|" + custEn.getTy2Quan() + "|" + custEn.getTy2Price() + "|" + custEn.getType3() + "|" + custEn.getTy3Quan() + "|" + custEn.getTy3Price() + "|" + custEn.getAcc1() + "|" + custEn.getAc1Quan() + "|" + custEn.getAc1Price() + "|" + custEn.getAcc2() + "|" + custEn.getAc2Quan() + "|" + custEn.getAc3Price() + "|" + custEn.getAcc3() + "|" + custEn.getAc3Quan() + "|" + custEn.getAc3Price() + "|" + Integer.toString(custEn.getPrior()) + "|" + Double.toString(custEn.getPrice()) + "|" + Integer.toString(custEn.getStatus()) + "\n";
             else if(item.equals("ST")||item.equals("SZ"))
                 s += custEn.getItemCode() + "|" + custEn.getItemName() + "|" + Integer.toString(custEn.getItemPrice())+ "|" + custEn.getItemStatus() + "\n";
         }
@@ -1435,7 +1557,7 @@ public class CustomizedFloralArrangements {
     public boolean updateItem(String item){
         ListInterface<CustomizedEntity> custItem = readDataList(item);
         
-        int tempCount=0;
+        int tempCount=0, custSize=custItem.size();
         String status = "";
         boolean chkInput;
         CustomizedEntity update=null;
@@ -1448,7 +1570,7 @@ public class CustomizedFloralArrangements {
             inputScanner = scanner.nextLine();
             if(inputScanner.equals("-1"))
                 return false;
-            for(int i=0;i<custItem.size();i++){
+            for(int i=0;i<custSize;i++){
                 if(custItem.get(i).getItemCode().toUpperCase().equals(inputScanner.toUpperCase())){
                     update=custItem.get(i);
                     tempCount = i;
