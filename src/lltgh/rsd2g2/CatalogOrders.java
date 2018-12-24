@@ -47,7 +47,7 @@ public class CatalogOrders {
                     if (nextCust == 'Y') {
                         order = new Order();
                     } else {
-                        valid=false;
+                        valid = false;
                         break;
                     }
             }
@@ -66,8 +66,11 @@ public class CatalogOrders {
                 default:
                     getQuantity();
                     actOpt = moreItem();
-                    if (actOpt == 1 || actOpt == 3) {
+                    if (actOpt == 1) {
                         valid = false;
+                    } else if (actOpt == 3) {
+                        valid = false;
+                        order = new Order();
                     }
             }
         } while (valid == false);
@@ -702,7 +705,7 @@ public class CatalogOrders {
         System.out.println("|           Sales  Order          |");
         System.out.println("|---------------------------------|");
         System.out.printf("|Order ID   : %-20s|\n", order.getOrderId());
-        System.out.printf("|Customer ID: %-20s|",order.getCustId());
+        System.out.printf("|Customer ID: %-20s|", order.getCustId());
         System.out.printf("\n|%-33s|", " ");
         System.out.printf("\n|Order Item : %-20s|\n", " ");
 
