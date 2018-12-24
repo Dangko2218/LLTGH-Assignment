@@ -384,12 +384,10 @@ public class OrderPickupOrDeliveryAndPayment {
 
         for (int i = 0; i < size; i++) {
             Order orderEntry = orderList.get(i);
-
             s += orderEntry.getOrderId() + "|" + orderEntry.getCustId() + "|";
             s = writeOrderItem(s, orderEntry) + "|";
-            s = writeOrderQuantity(s, orderEntry) + "|";
-            s += orderEntry.getTotal() + "|" + orderEntry.getPaymentMethod() + "|" + orderEntry.getPickUpMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + orderEntry.getAddress() + "|" + orderEntry.getPayment() + "|" + orderEntry.getStatus() + "\n";
-
+            s = writeOrderQuantity(s, orderEntry) + "|" + writeOrderPrice(s, orderEntry) + "|" + writeOrderSubtotal(s, orderEntry) + "|" + writeOrderDesc(s, orderEntry) + "|";
+           s += orderEntry.getTotal() + "|" + orderEntry.getPaymentMethod() + "|" + orderEntry.getPickUpMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + orderEntry.getAddress() + "|" + orderEntry.getPayment() + "|" + orderEntry.getStatus() + "\n";
         }
 
         BufferedWriter bw = null;
@@ -518,6 +516,36 @@ public class OrderPickupOrDeliveryAndPayment {
             if (i != size - 1) {
                 s += ",";
             }
+        }
+        return s;
+    }
+
+    public double writeOrderPrice(String s, Order orderEntry) {
+        int size = orderEntry.getOrderItem().size();
+        for (int i = 0; i < size; i++){
+            s += orderEntry.getPrice().get(i);
+            if (i != size - 1)
+                s += ", ";
+        }
+        return Double.parseDouble(s);
+    }
+
+    public double writeOrderSubtotal(String s, Order orderEntry) {
+        int size = orderEntry.getSubtotal().size();
+        for (int i = 0; i < size; i++){
+            s += orderEntry.getSubtotal().get(i);
+            if (i != size -1)
+                s += ", ";
+        }
+        return Double.parseDouble(s);
+    }
+
+    public String writeOrderDesc(String s, Order orderEntry) {
+        int size = orderEntry.getDesc().size();
+        for (int i = 0; i < size; i++) {
+            s += orderEntry.getDesc().get(i);
+            if (i != size - 1)
+                s += ", ";
         }
         return s;
     }
