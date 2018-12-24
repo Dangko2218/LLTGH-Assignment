@@ -982,6 +982,7 @@ public class CatalogOrders {
                 qtyList = convertToQtyList(s[3]);
                 priceList = convertToPriceList(s[4]);
                 subtotalList = convertToSubtotalList(s[5]);
+                descList = convertToDescList(s[6]);
                 Order orderEntry = new Order(s[0], s[1], itemList, qtyList, priceList, subtotalList, descList, Double.parseDouble(s[7]), s[8], s[9], s[10], s[11], s[12], s[13], Integer.parseInt(s[14]));
                 orderList.add(orderEntry);
             }
