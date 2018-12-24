@@ -1,13 +1,17 @@
 package lltgh.rsd2g2;
 
+import java.util.*;
+
 public class Invoice<T extends Comparable<? super T>> implements InvoiceADT<T> {
 
     private String invoiceNo = null, custID = null, custName = null, custContact = null, custCorp = null, corpAddr = null;
-    private String itemName = null, invoiceStatus = null, date = null;
-    private double itemPrice = 0, subtotal = 0, grandTotal = 0;
-    private int qty;
+    private String invoiceStatus = null, date = null;
+    private List<String> orderItem;
+    private List<Integer> qty;
+    private List<Double> itemPrice, subtotal;
+    private double grandTotal = 0;
 
-    public Invoice(String invoiceNo, String date, String custID, String custName, String custContact, String custCorp, String corpAddr, String itemName, double itemPrice, int itemQty, double subtotal, double grandTotal, String invoiceStatus) {
+    public Invoice(String invoiceNo, String date, String custID, String custName, String custContact, String custCorp, String corpAddr, List orderItem, List itemPrice, List itemQty, List subtotal, double grandTotal, String invoiceStatus) {
         this.invoiceNo = invoiceNo;
         this.date = date;
         this.custID = custID;
@@ -15,7 +19,7 @@ public class Invoice<T extends Comparable<? super T>> implements InvoiceADT<T> {
         this.custContact = custContact;
         this.custCorp = custCorp;
         this.corpAddr = corpAddr;
-        this.itemName = itemName;
+        this.orderItem = orderItem;
         this.itemPrice = itemPrice;
         this.qty = itemQty;
         this.subtotal = subtotal;
@@ -31,10 +35,10 @@ public class Invoice<T extends Comparable<? super T>> implements InvoiceADT<T> {
         this.custContact = null;
         this.custCorp = null;
         this.corpAddr = null;
-        this.itemName = null;
-        this.itemPrice = 0.0;
-        this.qty = 0;
-        this.subtotal = 0.0;
+        this.orderItem = null;
+        this.itemPrice = null;
+        this.qty = null;
+        this.subtotal = null;
         this.grandTotal = 0.0;
         this.invoiceStatus = null;
     }
@@ -110,42 +114,42 @@ public class Invoice<T extends Comparable<? super T>> implements InvoiceADT<T> {
     }
 
     @Override
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public void setOrderItem(List orderItem) {
+        this.orderItem = orderItem;
     }
 
     @Override
-    public String getItemName() {
-        return itemName;
+    public List<String> getOrderItem() {
+        return orderItem;
     }
 
     @Override
-    public void setItemPrice(double itemPrice) {
+    public void setItemPrice(List itemPrice) {
         this.itemPrice = itemPrice;
     }
 
     @Override
-    public double getItemPrice() {
+    public List<Double> getItemPrice() {
         return itemPrice;
     }
 
     @Override
-    public void setItemQty(int qty) {
+    public void setItemQty(List qty) {
         this.qty = qty;
     }
 
     @Override
-    public int getQty() {
+    public List<Integer> getQty() {
         return qty;
     }
 
     @Override
-    public void setSubtotal(double subtotal) {
+    public void setSubtotal(List subtotal) {
         this.subtotal = subtotal;
     }
 
     @Override
-    public double getSubtotal() {
+    public List<Double> getSubtotal() {
         return subtotal;
     }
 
@@ -177,7 +181,7 @@ public class Invoice<T extends Comparable<? super T>> implements InvoiceADT<T> {
                 + "Contact No: " + custContact + "\n"
                 + "Corporation: " + custCorp + "\n"
                 + "Address: " + corpAddr + "\n"
-                + "Item: " + itemName + "\n"
+                + "Item: " + getOrderItem() + "\n"
                 + "Unit Price: " + itemPrice + "\n"
                 + "Quantity: " + qty + "\n"
                 + "Subtotal: " + subtotal + "\n"

@@ -17,6 +17,9 @@ public interface OrderADT<T> {
     public void setOrderId();
     public void setOrderItem(String orderItem);
     public void setQuantity(int quantity);
+    public void setPrice(double price);
+    public void setSubtotal(double subtotal);
+    public void setDesc(String desc);
     public void setTotal(double total);
     public void setMethod(String method);
     public void setPDate(String pDate);
@@ -26,6 +29,9 @@ public interface OrderADT<T> {
     public String getOrderId();
     public List<String> getOrderItem();
     public List<Integer> getQuantity();
+    public List<Double> getPrice();
+    public List<Double> getSubtotal();
+    public List<String> getDesc();
     public double getTotal();
     public String getMethod();
     public String getPDate();

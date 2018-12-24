@@ -1,5 +1,7 @@
 package lltgh.rsd2g2;
 
+import java.util.*;
+
 public interface InvoiceADT<T> {
     
     public void setInvoiceNo(String invoiceNo);
@@ -23,17 +25,17 @@ public interface InvoiceADT<T> {
     public void setCorpAddr(String corpAddr);
     public String getCorpAddr();
     
-    public void setItemName(String itemName);
-    public String getItemName();
+    public void setOrderItem(List orderItem);
+    public List<String> getOrderItem();
     
-    public void setItemPrice(double itemPrice);
-    public double getItemPrice();
+    public void setItemPrice(List itemPrice);
+    public List<Double> getItemPrice();
 
-    public void setItemQty(int qty);
-    public int getQty();
+    public void setItemQty(List qty);
+    public List<Integer> getQty();
     
-    public void setSubtotal(double subtotal);
-    public double getSubtotal();
+    public void setSubtotal(List subtotal);
+    public List<Double> getSubtotal();
     
     public void setGrandTotal(double grandTotal);
     public double getGrandTotal();
