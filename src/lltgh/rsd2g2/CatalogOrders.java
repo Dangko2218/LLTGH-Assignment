@@ -881,7 +881,7 @@ public class CatalogOrders {
             Order orderEntry = orderList.get(i);
             s += orderEntry.getOrderId() + "|" + orderEntry.getCustId() + "|";
             s = writeOrderItem(s, orderEntry) + "|";
-            s = writeOrderQuantity(s, orderEntry) + "|";
+            s = writeOrderQuantity(s, orderEntry) + "|" + writeOrderPrice(s, orderEntry) + "|" + writeOrderSubtotal(s, orderEntry) + "|" + writeOrderDesc(s, orderEntry) + "|";
            s += orderEntry.getTotal() + "|" + orderEntry.getPaymentMethod() + "|" + orderEntry.getPickUpMethod() + "|" + orderEntry.getPDate() + "|" + orderEntry.getPTime() + "|" + orderEntry.getAddress() + "|" + orderEntry.getPayment() + "|" + orderEntry.getStatus() + "\n";
         }
 
@@ -930,12 +930,45 @@ public class CatalogOrders {
         return s;
     }
 
+    public double writeOrderPrice(String s, Order orderEntry) {
+        int size = orderEntry.getOrderItem().size();
+        for (int i = 0; i < size; i++){
+            s += orderEntry.getPrice().get(i);
+            if (i != size - 1)
+                s += ", ";
+        }
+        return Double.parseDouble(s);
+    }
+
+    public double writeOrderSubtotal(String s, Order orderEntry) {
+        int size = orderEntry.getSubtotal().size();
+        for (int i = 0; i < size; i++){
+            s += orderEntry.getSubtotal().get(i);
+            if (i != size -1)
+                s += ", ";
+        }
+        return Double.parseDouble(s);
+    }
+
+    public String writeOrderDesc(String s, Order orderEntry) {
+        int size = orderEntry.getDesc().size();
+        for (int i = 0; i < size; i++) {
+            s += orderEntry.getDesc().get(i);
+            if (i != size - 1)
+                s += ", ";
+        }
+        return s;
+    }
+
     public InvListInterface<Order> readOrderDatList() {
         InvListInterface<Order> orderList = new InvLinkedList<>();
         BufferedReader br = null;
         FileReader fr = null;
         List itemList = new ArrayList();
         List qtyList = new ArrayList();
+        List priceList = new ArrayList();
+        List subtotalList = new ArrayList();
+        List descList = new ArrayList();
 
         try {
             fr = new FileReader("../LLTGH-Assignment/src/lltgh/rsd2g2/Order.dat");
@@ -947,7 +980,9 @@ public class CatalogOrders {
                 String[] s = sCurrentLine.split("\\|");
                 itemList = convertToItemList(s[2]);
                 qtyList = convertToQtyList(s[3]);
-                Order orderEntry = new Order(s[0], s[1], itemList, qtyList, Double.parseDouble(s[4]), s[5], s[6], s[7], s[8], s[9],s[10],Integer.parseInt(s[11]));
+                priceList = convertToPriceList(s[4]);
+                subtotalList = convertToSubtotalList(s[5]);
+                Order orderEntry = new Order(s[0], s[1], itemList, qtyList, priceList, subtotalList, descList, Double.parseDouble(s[7]), s[8], s[9], s[10], s[11], s[12], s[13], Integer.parseInt(s[14]));
                 orderList.add(orderEntry);
             }
 
@@ -984,5 +1019,29 @@ public class CatalogOrders {
             qtyList.add(qty[i]);
         }
         return qtyList;
+    }
+
+    public List convertToPriceList(String s3){
+        String[] price = s3.split(",");
+        List priceList = new ArrayList();
+        for (int i = 0; i < price.length; i++)
+            priceList.add(price[i]);
+        return priceList;
+    }
+
+    public List convertToSubtotalList(String s4){
+        String[] subtotal = s4.split(",");
+        List subtotalList = new ArrayList();
+        for (int i = 0; i < subtotal.length; i++)
+            subtotalList.add(subtotal[i]);
+        return subtotalList;
+    }
+
+    public List convertToDescList(String s5){
+        String[] desc = s5.split(",");
+        List descList = new ArrayList();
+        for (int i = 0; i < desc.length; i++)
+            descList.add(desc[i]);
+        return descList;
     }
 }

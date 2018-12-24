@@ -8,6 +8,9 @@ public class Order{
     private String custId;
     private List<String> orderItem;
     private List<Integer> quantity;
+    private List<Double> price;
+    private List<Double> subtotal;
+    private List<String> desc;
     private double total;
     private String paymentMethod;
     private String pickUpMethod;
@@ -22,6 +25,9 @@ public class Order{
         custId=null;
         orderItem=new ArrayList<>();
         quantity=new ArrayList<>();
+        price = new ArrayList<>();
+        subtotal = new ArrayList<>();
+        desc = new ArrayList<>();
         total=0;
         paymentMethod=null;
         pickUpMethod=null;
@@ -32,11 +38,14 @@ public class Order{
         status = 0;
     }
     
-    public Order(String orderId,String custId,List orderItem,List quantity,double total,String paymentMethod,String pickUpMethod,String pDate,String pTime,String address,String payment,int status){
+    public Order(String orderId,String custId,List orderItem,List quantity, List price, List subtotal, List desc ,double total,String paymentMethod,String pickUpMethod,String pDate,String pTime,String address,String payment,int status){
         this.orderId=orderId;
         this.custId=custId;
         this.orderItem=orderItem;
         this.quantity=quantity;
+        this.price = price;
+        this.subtotal = subtotal;
+        this.desc = desc;
         this.total=total;
         this.paymentMethod=paymentMethod;
         this.pickUpMethod=pickUpMethod;
@@ -63,6 +72,18 @@ public class Order{
     
     public void setQuantity(int quantity){
         this.quantity.add(quantity);
+    }
+
+    public void setPrice(double price){
+        this.price.add(price);
+    }
+
+    public void setSubtotal(double subtotal){
+        this.subtotal.add(subtotal);
+    }
+
+    public void setDesc(String desc){
+        this.desc.add(desc);
     }
     
     public void setTotal(double total){
@@ -103,6 +124,18 @@ public class Order{
     
     public List<Integer> getQuantity(){
         return quantity;
+    }
+
+    public List<Double> getPrice(){
+        return price;
+    }
+
+    public List<Double> getSubtotal(){
+        return subtotal;
+    }
+
+    public List<String> getDesc(){
+        return desc;
     }
     
     public double getTotal(){
